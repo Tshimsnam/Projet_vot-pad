@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="shortcut icon" href="{{ asset('img/orange.png') }}" type="image/x-icon">
 
-        <title>{{ $title??'Projet' }}</title>
+        <title>{{ $title??'VotePad2' }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
