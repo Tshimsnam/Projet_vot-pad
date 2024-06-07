@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
 use App\Models\Evenement;
 use App\Http\Requests\StoreEvenementRequest;
 use App\Http\Requests\UpdateEvenementRequest;
@@ -22,7 +23,7 @@ class EvenementController extends Controller
      */
     public function create()
     {
-        //
+        return view('evenements.create');
     }
 
     /**
@@ -30,7 +31,39 @@ class EvenementController extends Controller
      */
     public function store(StoreEvenementRequest $request)
     {
-        //
+        $request->validate([
+            'name' =>'required',
+            'description' =>'required',
+            'type' =>'required',
+            'status' =>'required'
+            ]
+        );
+
+        $datedebut = $request->datedebut;
+        $heuredebut = $request->heuredebut;
+        $dateTimeD = DateTime::createFromFormat('m/d/Y', $datedebut);
+        $formatDateDebut = $dateTimeD->format('Y-m-d');
+        $dateTimeDebut = ($formatDateDebut.' '.$heuredebut.':00');
+
+        $datefin = $request->datefin;
+        $heurefin = $request->heurefin;
+        $dateTimeF = DateTime::createFromFormat('m/d/Y', $datefin);
+        $formatDateFin = $dateTimeF->format('Y-m-d');
+        $dateTimeFin = ($formatDateFin.' '.$heurefin.':00');
+
+
+        $evenement = Evenement::create(
+            [
+                'nom' => $request->name,
+                'description' => $request->description,
+                'type' => $request->type,
+                'date_debut' => $dateTimeDebut,
+                'date_fin' => $dateTimeFin,
+                'status' => $request->status,
+            ]
+        );
+
+       return redirect(route('evenements.index'))->with('success', 'Enregistrement reussi');
     }
 
     /**

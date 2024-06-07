@@ -19,9 +19,9 @@ class EvenementFactory extends Factory
         return [
             'nom'=>$this->faker->unique()->numerify('Compétition ##'),
             'description'=>$this->faker->unique()->sentence(),
+            'type'=>$this->faker->randomElement(['Compétition', 'Evaluation']),
             'date_debut'=>$this->faker->unique()->dateTime($max = 'now'),
             'date_fin'=>$this->faker->unique()->dateTime($max = 'now'),
-            'type'=>$this->faker->randomElement(['Compétition', 'Evaluation']),
             'status'=>$this->faker->randomElement(['en cours','en attente','fermer']),
         ];
     }
