@@ -27,7 +27,7 @@ class PhaseController extends Controller
     public function create()
     {
         $evenements=Evenement:: orderBy('nom')->get();
-        return view("phases.creat", compact("evenements"));
+        return view("phases.create", compact("evenements"));
     }
 
     /**
@@ -51,7 +51,7 @@ class PhaseController extends Controller
 
         );
         
-        return redirect()->route('phase.index')->with('success','Enregistrement reussit');
+        return redirect()->route('phases.index')->with('success','Enregistrement reussit');
     }
 
     /**
@@ -84,7 +84,7 @@ class PhaseController extends Controller
             'date_debut'=> $request->date_debut,
             'date_fin'=> $request->date_fin
         ]);
-        return redirect()->route('phase.index')->with('success','phase modifiée avec succes');
+        return redirect()->route('phases.index')->with('success','phase modifiée avec succes');
     }
 
     /**

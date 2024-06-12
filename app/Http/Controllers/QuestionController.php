@@ -26,7 +26,7 @@ class QuestionController extends Controller
     {
 
         $phase= Phase::orderBy('id', 'desc')->get();
-        return view('questions.creat', compact('phase'));
+        return view('questions.create', compact('phase'));
     }
 
     /**
@@ -40,7 +40,7 @@ class QuestionController extends Controller
             'statut'=> $request->statut,
             'phase_id'=> $request->phase_id,
         ]);
-        return redirect()->route('question.index')->with('success','question enregistrée avec succes');
+        return redirect()->route('questions.index')->with('success','question enregistrée avec succes');
     }
 
     /**
@@ -75,7 +75,7 @@ class QuestionController extends Controller
             'ponderation'=>$request->ponderation,
             'statut'=>$request->statut
         ]);
-        return redirect()->route('question.index')->with('success','Question modifiée avec succes');
+        return redirect()->route('questions.index')->with('success','Question modifiée avec succes');
     }
 
     /**
