@@ -20,4 +20,7 @@ class Question extends Model
     public function phase(){
         return $this->belongsTo(Phase::class);
     }
+    public function assertion(){
+        return $this->hasMany(Assertion::class);
+    }
 }
