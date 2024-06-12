@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Question;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
+use App\Models\Phase;
+use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
 {
@@ -13,7 +15,7 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::orderBy('id', 'desc')->get();
+        $questions = Question::orderBy('id', 'desc')->paginate(25);
         return view('questions.index', compact('questions'));
     }
 
@@ -22,7 +24,9 @@ class QuestionController extends Controller
      */
     public function create()
     {
-        return view('questions.creat');
+
+        $phase= Phase::orderBy('id', 'desc')->get();
+        return view('questions.creat', compact('phase'));
     }
 
     /**
@@ -36,7 +40,7 @@ class QuestionController extends Controller
             'statut'=> $request->statut,
             'phase_id'=> $request->phase_id,
         ]);
-        return redirect()->route('questions.index')->with('success','question enregistrée avec succes');
+        return redirect()->route('question.index')->with('success','question enregistrée avec succes');
     }
 
     /**
@@ -44,8 +48,9 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
+        $phaseAssoc = Phase::latest()->where('id', $question->phase_id)->get();
         $questionShow=$question;
-        return view('questions.show', compact('questionShow'));
+        return view('questions.show', compact('questionShow','phaseAssoc'));
     }
 
     /**
@@ -53,8 +58,11 @@ class QuestionController extends Controller
      */
     public function edit(Question $question)
     {
-       $questionEdit=$question;
-       return view('questions.edit', compact('questionEdit'));
+
+        $phases=Phase::orderBy('id','desc')->get();
+        $questionEdit=$question;
+        $phaseAssoc = Phase::latest()->where('id', $question->phase_id)->get();
+       return view('questions.edit', compact('questionEdit','phases','phaseAssoc'));
     }
 
     /**
@@ -63,9 +71,11 @@ class QuestionController extends Controller
     public function update(UpdateQuestionRequest $request, Question $question)
     {
         $question->update([
+            'question'=> $request->question,
             'ponderation'=>$request->ponderation,
             'statut'=>$request->statut
         ]);
+        return redirect()->route('question.index')->with('success','Question modifiée avec succes');
     }
 
     /**
