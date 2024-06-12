@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssertionController;
 use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function () {
 
      Route::resource('phases', PhaseController::class);
      Route::resource('questions', QuestionController::class);
+     Route::resource('assertions', AssertionController::class);
    
 });
 
