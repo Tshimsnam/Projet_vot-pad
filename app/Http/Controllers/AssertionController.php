@@ -87,6 +87,6 @@ class AssertionController extends Controller
      */
     public function destroy(Assertion $assertion)
     {
-        //
+        //desactiver à la place de supprimer
     }
 }

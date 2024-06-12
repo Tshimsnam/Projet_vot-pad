@@ -10,7 +10,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('phase/create', [PhaseController::class,'create'])->name('phase.create');
     Route::get('phase/{id}', [PhaseController::class,'evenementPhase'])->name('phase.show');
-    // Route::get('phase/{evenement}', [PhaseController::class,'editPhase'])->name('phases.edite');
 
     Route::get('phase/encours', [PhaseController::class,'encours'])->name('phase.encours');
     Route::get('phase/active', [PhaseController::class,'active'])->name('phase.active');
