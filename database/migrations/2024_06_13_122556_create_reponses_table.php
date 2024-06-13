@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reponses', function (Blueprint $table) {
             $table->id();
             $table->double('cote');
-            $table->foreignId('queston_id')
+            $table->foreignId('question_id')
                 ->constrained()
                 ->onDelete('no action')
                 ->onUpdate('cascade');
