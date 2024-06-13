@@ -19,7 +19,7 @@ class AssertionFactory extends Factory
         return [
             "assertion"=> $this->faker->words(5, true),
             "ponderation"=>(int)$this->faker->numberBetween(1,15),
-            "statut"=>(int)$this->faker->randomElement(['active','desactive']),
+            "statut"=>$this->faker->randomElement(['active','desactive']),
             "question_id"=>(int)$this->faker->numberBetween(1,120),
         ];
     }

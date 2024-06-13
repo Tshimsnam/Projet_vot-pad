@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Assertion;
 use App\Http\Requests\StoreAssertionRequest;
 use App\Http\Requests\UpdateAssertionRequest;
+use App\Models\Question;
 
 class AssertionController extends Controller
 {
@@ -13,8 +14,9 @@ class AssertionController extends Controller
      */
     public function index()
     {
-        $assertion = Assertion::latest()->get();
-        return view("assertions.index", compact("assertion"));
+        $assertions = Assertion:: orderBy('question_id')->paginate(50);
+       // $questionAssoc = Question::latest()->where('id', $assertions)->get();
+        return view("assertions.index", compact("assertions"));
     }
 
     /**
@@ -22,7 +24,8 @@ class AssertionController extends Controller
      */
     public function create()
     {
-        return view("assertions.create");
+        $questions= Question::orderBy("id","desc")->get();
+        return view("assertions.create", compact("questions"));
     }
 
     /**
@@ -36,8 +39,9 @@ class AssertionController extends Controller
         ]);
         $assertion = Assertion::create(
             [
-                'assertion'=> $request->libele,
+                'assertion'=> $request->assertion,
                 'ponderation'=> $request->ponderation,
+                'statut'=> $request->statut,
                 'question_id'=> $request->question_id,
             ]
         );
@@ -59,7 +63,9 @@ class AssertionController extends Controller
     public function edit(Assertion $assertion)
     {
         $assertionEdit=$assertion;
-        return view('assertions.edit', compact('assertionEdit'));
+        $questions= Question::orderBy('id', 'desc')->get();
+        $questionAssoc = Question::latest()->where('id', $assertion->question_id)->get();
+        return view('assertions.edit', compact('assertionEdit','questions','questionAssoc'));
     }
 
     /**
@@ -68,9 +74,10 @@ class AssertionController extends Controller
     public function update(UpdateAssertionRequest $request, Assertion $assertion)
     {
         $assertion->update([
-            'assertion'=> $request->libele,
+            'assertion'=> $request->assertion,
             'ponderation'=> $request->ponderation,
             'statut'=> $request->statut,
+            'question_id'=> $request->question_id
         ]);
         return redirect()->route('assertions.index')->with('success','Modification effectuée avec succes');
     }
@@ -80,6 +87,6 @@ class AssertionController extends Controller
      */
     public function destroy(Assertion $assertion)
     {
-        //
+        //desactiver à la place de supprimer
     }
 }
