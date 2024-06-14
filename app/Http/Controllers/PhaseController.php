@@ -6,6 +6,7 @@ use App\Models\Phase;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
 use App\Models\Evenement;
+use App\Models\Question;
 use Illuminate\Support\Facades\DB;
 
 class PhaseController extends Controller
@@ -60,7 +61,8 @@ class PhaseController extends Controller
     public function show(Phase $phase)
     {
         $phaseShow=$phase;
-        return view('phases.show', compact('phaseShow'));
+        $question= Question::latest()->get();  
+        return view('phases.show', compact('phaseShow','question'));
     }
     
     /**
@@ -150,8 +152,8 @@ class PhaseController extends Controller
             ->where("evenements.id","=", (isset($evenement))?$evenement:null)
             ->where("phases.id","=",$id)
             ->get();
-       
-        return view('phases.show', compact('phaseShow'));
+       $question= Question::latest()->get();
+        return view('phases.show', compact('phaseShow', 'question'));
     }
     public function editPhase($id){
         $phaseShow1 = Phase::latest()->where('id', $id)->get();

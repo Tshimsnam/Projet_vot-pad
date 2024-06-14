@@ -23,8 +23,4 @@ class Phase extends Model
     {
         return $this->belongsTo(Evenement::class,"evenement_id");
     }
-    public function questions():HasMany
-    {
-        return $this->hasMany(Question::class);
-    }
 }
