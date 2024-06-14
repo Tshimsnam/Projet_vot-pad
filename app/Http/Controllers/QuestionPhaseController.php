@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\QuestionPhase;
 use App\Http\Requests\StoreQuestionPhaseRequest;
 use App\Http\Requests\UpdateQuestionPhaseRequest;
-
+use Illuminate\Support\Facades\DB;
 class QuestionPhaseController extends Controller
 {
     /**
@@ -29,7 +29,31 @@ class QuestionPhaseController extends Controller
      */
     public function store(StoreQuestionPhaseRequest $request)
     {
-        //
+        DB::connection()->enableQueryLog();
+        $verif=QuestionPhase::all()->where("phase_id", $request->phase_id);//on recupere tout 
+        foreach ($verif as $key => $value) {
+           $verif2= $value->question_id;
+           if ($verif2 == $request->question_id) 
+           {  
+               return back()->with("echec","Cet enregistrement existe déjà"); 
+           }else{
+            
+           $questionPhase = QuestionPhase::firstOrCreate([
+                "phase_id"=> $request->phase_id,
+                "question_id"=> $request->question_id,
+                "ponderation"=> $request->ponderation
+            ]);
+            $questionPhase->save();
+            return back()->with("success","Question enregistrée avec succes"); 
+            }
+        } 
+        $questionPhase = QuestionPhase::firstOrCreate([
+            "phase_id"=> $request->phase_id,
+            "question_id"=> $request->question_id,
+            "ponderation"=> $request->ponderation
+        ]);
+        $questionPhase->save();
+        return back()->with("success","Question enregistrée avec succes");     
     }
 
     /**
