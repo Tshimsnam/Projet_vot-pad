@@ -4,17 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     protected $fillable = [
-        "question"
+        "question",
+        "ponderation",
+        "statut",
+        "phase_id",
     ];
     public function questionPhase(){
         return $this->hasMany(Phase::class);
+    }
+    public function phase(){
+        return $this->belongsTo(Phase::class);
     }
     public function assertion(){
         return $this->hasMany(Assertion::class);
