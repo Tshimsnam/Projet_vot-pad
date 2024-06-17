@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call(EvenementSeeder::class);
+        $this->call(IntervenantPhaseSeeder::class);
+        $this->call(PhaseSeeder::class);
     }
 }
