@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Phase;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Assertion;
 use App\Models\Evenement;
 use App\Models\Question;
+use App\Models\QuestionPhase;
 use Illuminate\Support\Facades\DB;
 
 class PhaseController extends Controller
@@ -148,7 +150,7 @@ class PhaseController extends Controller
         foreach($phaseShow1 as $key => $value) {
             $evenement=$value->evenement_id;
            }//recuperation de l' id de l'evenement
-
+           
         $phaseShow= DB::table('evenements')
             ->join('phases',"evenements.id","=","phases.evenement_id")
             // ->select('evenements.*', 'phases.*') //on recupere tout mais avec conflit de champs identitiques
@@ -166,8 +168,26 @@ class PhaseController extends Controller
             ->where("evenements.id","=", (isset($evenement))?$evenement:null)
             ->where("phases.id","=",$id)
             ->get();
-       $question= Question::latest()->get();
-        return view('phases.show', compact('phaseShow', 'question'));
+        foreach($phaseShow as $key => $value) {
+            $phase_id=$value->id;
+        }
+        $question= Question::latest()->get();
+
+        $questionPhase0= QuestionPhase::orderBy('id')->where("phase_id", $phase_id)->get();
+
+        $tabAssertion=array();
+        $questionPhase=array();
+        foreach ($questionPhase0 as $key=>$valeur) {
+            $question_id= $valeur->id;
+            $assertion= Assertion::where('question_id', $question_id)->count();//nombre assertion liées
+            $tabAssertion['assertNombre'] = $assertion;
+            $tabAssertion['question']=$valeur->question->question;
+            $tabAssertion['ponderation']=$valeur->ponderation;
+            array_push($questionPhase, $tabAssertion);
+        }
+        $questionAssert=$questionPhase;
+        
+        return view('phases.show', compact('phaseShow', 'question','questionAssert'));
     }
     public function editPhase($id){
         $phaseShow1 = Phase::latest()->where('id', $id)->get();

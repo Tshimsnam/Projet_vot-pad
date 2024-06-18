@@ -82,9 +82,61 @@
 
             </div>
         </div>
-        
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 p-4">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                
+                    <div class="p-4">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    N°
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Question
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Ponderation
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Assertion
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                          
+                            @foreach ($questionAssert as $key=> $item )
+                               <tr>
+                                    <th scope="col" class="px-6 py-3">
+                                        {{$key+1}}
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        {{$item['question']}}
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        {{$item['ponderation']}}
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        {{$item['assertNombre']}}
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                       supprimer
+                                    </th> 
+                                </tr>
+                             @endforeach
+                           
+                        </tbody>
+                    </div>
+                
+                </div>
 
-
+            </div>
+        </div>
 
         <!-- Main modal -->
         <div id="authentication-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
