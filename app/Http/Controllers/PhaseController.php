@@ -157,7 +157,7 @@ class PhaseController extends Controller
             ->select(
                 'evenements.id as id_event',
                 'evenements.nom as nom_event',
-                'type as type_envent',
+                'evenements.type as type_envent',
                 'status as stat_event',
                 'phases.id as id',
                 'phases.nom as nom_phase',
