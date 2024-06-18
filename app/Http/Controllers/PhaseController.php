@@ -42,11 +42,25 @@ class PhaseController extends Controller
             'nom'=> 'require [ max:50 | min:3',
             'description'=> 'require'
         ]);
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersNumber = strlen($characters);
+        $codeLength = 3;
+        $slug = null;
+
+        do {
+            $slug = '';
+            for ($i = 0; $i < $codeLength; $i++) {
+                $position = mt_rand(0, $charactersNumber - 1);
+                $slug .= $characters[$position];
+            }
+        }while (Phase::where('slug', $slug)->exists());
+
         $phase = Phase::create(
             [
                 'nom'=> $request->nom,
                 'description'=> $request->description,
                 'statut'=> $request->statut,
+                'slug'=> $slug,
                 'date_debut'=> $request->date_debut,
                 'date_fin'=> $request->date_fin,
                 'evenement_id'=> $request->evenement_id
