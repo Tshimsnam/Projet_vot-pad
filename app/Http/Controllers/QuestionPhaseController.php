@@ -38,7 +38,6 @@ class QuestionPhaseController extends Controller
         foreach ($verif as $key => $value) {
            $verif2= $value->question_id;
           array_push($tabQuestion, $verif2);
-           
         }
         if(in_array($request->question_id, $tabQuestion)){
             return back()->with("echec","Question existe dja dans cette phase"); 
