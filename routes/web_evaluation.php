@@ -13,6 +13,8 @@ Route::middleware('auth')->group(function () {
     Route::get('phase/create', [PhaseController::class,'create'])->name('phase.create');
     Route::get('phase/{id}', [PhaseController::class,'evenementPhase'])->name('phase.show');
 
+    Route::post('auto-question-get', [QuestionController::class,'getQuestionAuto'])->name('auto-question-get');
+
     Route::get('phase/encours', [PhaseController::class,'encours'])->name('phase.encours');
     Route::get('phase/active', [PhaseController::class,'active'])->name('phase.active');
     Route::get('phase/desactive', [PhaseController::class,'desactive'])->name('phase.desactive');

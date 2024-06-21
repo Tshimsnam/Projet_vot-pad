@@ -32,6 +32,12 @@ class QuestionPhaseController extends Controller
      */
     public function store(StoreQuestionPhaseRequest $request)
     {
+         $request->validated([
+           'phase_id'=>'require',
+            'question_id'=> 'require',
+            'ponderation'=> 'require'
+        ]);
+        if(isEmpty($request->question_id)) {return back()->with("echec","Cette question n'existe pas, prière de la créer"); }else{
         DB::connection()->enableQueryLog();
         $verif=QuestionPhase::all()->where("phase_id", $request->phase_id);//on recupere tout dans question phase et on verifie si l'enregistrement existe deja
         $tabQuestion=array();
@@ -50,7 +56,7 @@ class QuestionPhaseController extends Controller
                 $questionPhase->save();
                 return back()->with("success","Question enregistrée avec succes"); 
         }
-        
+    }
             
     }
 

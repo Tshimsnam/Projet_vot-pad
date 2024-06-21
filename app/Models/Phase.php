@@ -18,7 +18,8 @@ class Phase extends Model
         "slug",
         "date_debut",
         "date_fin",
-        "evenement_id"
+        "evenement_id",
+        "type"
     ];
 
     public function evenement():BelongsTo
