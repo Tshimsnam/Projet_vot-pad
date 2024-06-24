@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\PhaseController;
+use App\Http\Controllers\Api\QuestionController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Phase;
 
-Route::get('/phases', [PhaseController::class ,'index']);
-// Route::apiResource('phases', Phase::class, ['as'=> 'api']);
-
+// Route::get('/phases', [PhaseController::class ,'index']);
+ Route::apiResource('/phases', PhaseController::class, ['as'=> 'api'])->middleware('auth:sanctum');
+ Route::apiResource('/questions', QuestionController::class, ['as'=> 'api'])->middleware('auth:sanctum');

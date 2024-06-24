@@ -3,23 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PhaseResource;
-use App\Models\Phase;
+use App\Http\Resources\QuestionResource;
+use App\Models\Question;
 use Illuminate\Http\Request;
 
-class PhaseController extends Controller
+class QuestionController extends Controller
 {
-   
-    /**
+     /**
      * Display a listing of the resource.
      */
             /**
      * @OA\Get(
-     *      path="/phases",
-     *      operationId="getPhasesList",
-     *      tags={"phases"},
-     *      summary="Afficher la liste des Phases",
-     *      description="Api qui nous retourne la liste des Phases",
+     *      path="/questions",
+     *      operationId="getQuestionsList",
+     *      tags={"questions"},
+     *      summary="Afficher la liste des questions",
+     *      description="Api qui nous retourne la liste des questions",
      *      security={{"bearerAuth":{}}},
      *      @OA\Response(
      *          response=200,
@@ -40,24 +39,6 @@ class PhaseController extends Controller
      *     )
      */
     public function index(){
-        return PhaseResource::collection(Phase::all());
-    }
-
-    
-    public function show(Phase $phase)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Phase $phase)
-    {
-        //
-    }
-    public function store(Request $request)
-    {
-        //
+        return  QuestionResource::collection(Question::all());
     }
 }
