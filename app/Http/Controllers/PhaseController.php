@@ -10,6 +10,7 @@ use App\Models\Evenement;
 use App\Models\Question;
 use App\Models\QuestionPhase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class PhaseController extends Controller
 {
@@ -61,6 +62,7 @@ class PhaseController extends Controller
                 'description'=> $request->description,
                 'statut'=> $request->statut,
                 'slug'=> $slug,
+                'type'=>$request->type,
                 'date_debut'=> $request->date_debut,
                 'date_fin'=> $request->date_fin,
                 'evenement_id'=> $request->evenement_id
@@ -145,7 +147,7 @@ class PhaseController extends Controller
         return view("phases.index", compact("phase"));
     }
 
-    public function evenementPhase($id){
+    public function evenementPhase(Request $request, $id){
         $phaseShow1 = Phase::latest()->where('id', $id)->get();
         foreach($phaseShow1 as $key => $value) {
             $evenement=$value->evenement_id;
@@ -172,7 +174,7 @@ class PhaseController extends Controller
             $phase_id=$value->id;
         }
         $question= Question::latest()->get();
-
+       
         $questionPhase0= QuestionPhase::orderBy('id')->where("phase_id", $phase_id)->get();
 
         $tabAssertion=array();
@@ -189,6 +191,8 @@ class PhaseController extends Controller
         
         return view('phases.show', compact('phaseShow', 'question','questionAssert'));
     }
+
+   
     public function editPhase($id){
         $phaseShow1 = Phase::latest()->where('id', $id)->get();
         foreach($phaseShow1 as $key => $value) {
