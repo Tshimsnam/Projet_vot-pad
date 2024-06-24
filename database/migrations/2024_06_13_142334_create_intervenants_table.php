@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('email');
             $table->string('token')->default('0');
-            $table->string('coupon')->default('def#')->unique();
             $table->foreignId('groupe_id')->default(0)->constrained()
                   ->onDelete('no action')
                   ->onUpdate('cascade');
