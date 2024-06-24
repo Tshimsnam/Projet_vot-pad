@@ -15,6 +15,7 @@ class Phase extends Model
         "nom",
         "description",
         "statut",
+        "duree",
         "slug",
         "date_debut",
         "date_fin",

@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api",
+            "url": "http://127.0.0.1:8000/api",
             "description": "API Server VotePad2"
         }
     ],
@@ -106,46 +106,55 @@
                 ]
             }
         },
-        "/intervenants-authenticate": {
-            "post": {
+        "/phases": {
+            "get": {
                 "tags": [
-                    "Intervenants"
+                    "phases"
                 ],
-                "summary": "Récuperer la phase liée à l'intervenant",
-                "description": "Api qui nous retourne la phase liée à l'intervenant",
-                "operationId": "getIntervenantPhase",
-                "parameters": [
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "L'email de l'intervenant",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "coupon",
-                        "in": "query",
-                        "description": "Le coupon de l'intervenant",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "summary": "Afficher la liste des Phases",
+                "description": "Api qui nous retourne la liste des Phases",
+                "operationId": "getPhasesList",
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/questions": {
+            "get": {
+                "tags": [
+                    "questions"
+                ],
+                "summary": "Afficher la liste des questions",
+                "description": "Api qui nous retourne la liste des questions",
+                "operationId": "getQuestionsList",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 },
                 "security": [

@@ -63,6 +63,7 @@ class PhaseController extends Controller
                 'statut'=> $request->statut,
                 'slug'=> $slug,
                 'type'=>$request->type,
+                'duree'=> $request->duree,
                 'date_debut'=> $request->date_debut,
                 'date_fin'=> $request->date_fin,
                 'evenement_id'=> $request->evenement_id
