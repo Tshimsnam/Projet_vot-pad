@@ -147,7 +147,7 @@ class IntervenantController extends Controller
                     $phaseSlug = substr($intervenantPhaseCoupon, 0, 3);
                     $phase = Phase::where('slug', $phaseSlug)->first();
                     $phase->token = $intervenantToken;
-                    return response()->json($phase);
+                    return response()->json([$phase, $intervenant]);
                 }           
             }
         }
