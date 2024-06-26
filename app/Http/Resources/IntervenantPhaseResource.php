@@ -14,12 +14,14 @@ class IntervenantPhaseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+                return 
+        [
             'id'=>$this->id,
             'phases_intervenants_id'=>$this->intervenantPhaseId,
             'email'=>$this->email,
             'created_at'=>$this->created_at,
             'updated_at'=>$this->updated_at,
+            'token'=> $this->intervenantToken
         ];
     }
 }
