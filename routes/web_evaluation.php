@@ -22,6 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::get('phase/attente', [PhaseController::class,'enAttente'])->name('phase.attente');
     Route::get('phase/pause', [PhaseController::class,'pause'])->name('phase.pause');
     Route::get('phase/terminer', [PhaseController::class,'terminer'])->name('phase.terminer');
+    
+    Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
 
     Route::resource('phases', PhaseController::class);
     Route::resource('questions', QuestionController::class);
