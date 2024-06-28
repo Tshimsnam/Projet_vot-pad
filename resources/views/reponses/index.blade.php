@@ -30,7 +30,7 @@
                         </button>
                     </div>
                 @endif    
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg gap-2 p-4 grid grid-cols-1 lg:grid-cols-3">
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg gap-2 p-4 grid grid-cols-1 lg:grid-cols-2">
                     <div class="p-6 w-full my-5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 grid grid-cols-1">
                         <svg xmlns="http://www.w3.org/2000/svg" class="justify-self-center items-center md:w-24 lg:w-28 lg:h-28 w-12"  viewBox="0 -960 960 960" fill="#5f6368"><path d="M107-67v-306h120v-160h200v-54H307v-306h346v306H533v54h200v160h120v306H507v-306h120v-54H333v54h120v306H107Zm306-626h134v-94H413v94ZM213-173h134v-94H213v94Zm400 0h134v-94H613v94ZM480-693ZM347-267Zm266 0Z"/></svg>
                         @if (!session('debut'))
@@ -49,15 +49,13 @@
                         @else
                         <div class="justify-self-center items-center">
                             <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{session('phase')->nom}}</h5>
-                            <form action="" method="">
-                                 @csrf
-                                @method('')
+                          
                                 <input type="text" name="phase_id" id="" class="hidden" value="3">
-                                <input type="text" name="intervenant_id" id="" class="hidden" value="3">
-                                <input type="text" name="" id="" class="hidden" value="3">
                                 
-                                <button type="button" class="px-3 py-2 w-full text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Terminer</button>
-                            </form>
+                                
+                                
+                                <label for="envoi_reponse" class="px-3 py-2 w-full text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Terminer</label>
+                            
                         </div>
                        
                         <div >
@@ -92,25 +90,30 @@
                             </div>
                         </div>
                     </div>
-           
-                </div>
-                    @foreach (session('questionAssetionTab') as $key=> $value )
-                    <div class="p-6 my-5 mx-5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                        <label>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#e8eaed"><path d="M186.67-120q-27 0-46.84-19.83Q120-159.67 120-186.67v-168h66.67v168h168V-120h-168Zm586.66 0h-168v-66.67h168v-168H840v168q0 27-19.83 46.84Q800.33-120 773.33-120ZM120-773.33q0-27 19.83-46.84Q159.67-840 186.67-840h168v66.67h-168v168H120v-168Zm720 0v168h-66.67v-168h-168V-840h168q27 0 46.84 19.83Q840-800.33 840-773.33Zm-361.98 530q17.65 0 29.81-12.19Q520-267.7 520-285.35t-12.19-29.82q-12.18-12.16-29.83-12.16t-29.81 12.18Q436-302.96 436-285.31q0 17.64 12.19 29.81 12.18 12.17 29.83 12.17ZM444-393h62.33q0-30.67 9-50t35.34-45.67q33-33 45.83-57.16 12.83-24.17 12.83-53.22 0-52.28-36.74-84.95t-93.26-32.67q-50 0-86.66 24.34Q356-668 339.33-622l57.34 23.67q11.66-26 33.5-41.84Q452-656 479.35-656q30.5 0 48.91 16.5 18.41 16.5 18.41 42.5 0 20-10.5 38.17-10.5 18.16-35.5 41.16-33 31-44.84 56.34Q444-436 444-393Z"/></svg>
-                            <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{$value['question']['question']}}?</h5>
-                        </label>
-                        @foreach ($value['assertion'] as $key1=>$assertions )
-                        @foreach ( $assertions as $i=>$var)
-                        <div class="flex items-center ps-4 my-1 border border-gray-200 rounded dark:border-gray-700">
-                            <input id="{{$var->id}}" type="radio" value="{{$var->ponderation}}" name="{{$value['question']['question']}}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                            <label for="{{$var->id}}" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{$var->assertion}}</label>
-                        </div>
-                         @endforeach
+                    <form action="{{route('reponses.store')}}" method="post">
+                        @csrf
+                        @method('post')
+                        <input type="text" name="intervenant_id" id="" class="hidden" value="1">
+                        <input type="text" name="phase_id" id="" class="hidden" value="3">
+                        @foreach (session('questionAssetionTab') as $key=> $value )
+                        <div class="p-6 my-5 mx-5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                            <label>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#e8eaed"><path d="M186.67-120q-27 0-46.84-19.83Q120-159.67 120-186.67v-168h66.67v168h168V-120h-168Zm586.66 0h-168v-66.67h168v-168H840v168q0 27-19.83 46.84Q800.33-120 773.33-120ZM120-773.33q0-27 19.83-46.84Q159.67-840 186.67-840h168v66.67h-168v168H120v-168Zm720 0v168h-66.67v-168h-168V-840h168q27 0 46.84 19.83Q840-800.33 840-773.33Zm-361.98 530q17.65 0 29.81-12.19Q520-267.7 520-285.35t-12.19-29.82q-12.18-12.16-29.83-12.16t-29.81 12.18Q436-302.96 436-285.31q0 17.64 12.19 29.81 12.18 12.17 29.83 12.17ZM444-393h62.33q0-30.67 9-50t35.34-45.67q33-33 45.83-57.16 12.83-24.17 12.83-53.22 0-52.28-36.74-84.95t-93.26-32.67q-50 0-86.66 24.34Q356-668 339.33-622l57.34 23.67q11.66-26 33.5-41.84Q452-656 479.35-656q30.5 0 48.91 16.5 18.41 16.5 18.41 42.5 0 20-10.5 38.17-10.5 18.16-35.5 41.16-33 31-44.84 56.34Q444-436 444-393Z"/></svg>
+                                <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{$value['question']['question']}}?</h5>
+                            </label>
+                            @foreach ($value['assertion'] as $key1=>$assertions )
+                            @foreach ( $assertions as $i=>$var)
+                            <div class="flex items-center ps-4 my-1 border border-gray-200 rounded dark:border-gray-700">
+                                <input id="{{$var->id}}" type="radio" value="{{$var->id}}" name="id_collection_keyQuestion_valAssertion[{{$value['question']['id']}}]" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="{{$var->id}}" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{$var->assertion}}</label>
+                            </div>
+                            @endforeach
+                            @endforeach
+                        </div>   
+                            
                         @endforeach
-                    </div>   
-                          
-                    @endforeach
+                        <button type="submit" id="envoi_reponse">Terminer</button>
+                    </form>
                 </div>
                 @endif
             </div>

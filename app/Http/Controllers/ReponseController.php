@@ -8,6 +8,9 @@ use App\Http\Requests\UpdateReponseRequest;
 use App\Models\Assertion;
 use App\Models\Question;
 use Illuminate\Support\Facades\DB;
+use App\Models\QuestionPhase;
+use Illuminate\Support\Facades\Redirect;
+
 class ReponseController extends Controller
 {
     /**
@@ -50,7 +53,50 @@ class ReponseController extends Controller
      */
     public function store(StoreReponseRequest $request)
     {
-        //
+       
+        $reponse=$request->id_collection_keyQuestion_valAssertion;
+        $intervenant=$request->intervenant_id;
+        $phase_id=$request->phase_id;
+        if(!empty($reponse)){
+            foreach ($reponse as $key => $value) { 
+                $question_id=$key;
+                $assertion_id=$value;
+                // dd($question_id, $assertion_id, $intervenant,$phase_id);
+                $ponderationQuestion=DB::table('question_phases')
+                                    ->select('ponderation')
+                                    ->where('question_id',$question_id)
+                                    ->where('phase_id',$phase_id)
+                                    ->get();
+                $allAssertionQuestion=DB::table('assertions')
+                                    ->select('id','ponderation')
+                                    ->where('question_id',$question_id)
+                                    ->get();
+                $tabPonderation=array();
+                foreach ($allAssertionQuestion as $key => $value) {
+                    array_push($tabPonderation,$value->ponderation);
+                }
+                $maxAssertion=max($tabPonderation); 
+                $ponderationAssertionChoisie=DB::table('assertions')
+                                            ->select('ponderation')
+                                            ->where('id',$assertion_id)
+                                            ->get();
+                //traitement pour trouver cote
+                
+                $Pdq=$ponderationQuestion[0]->ponderation;
+                $Pda=$ponderationAssertionChoisie[0]->ponderation;
+                $cote=round($Pdq*$Pda/$maxAssertion,2);//on prend 2 rangs apres la virgule
+                //sauvegarde dans la base de donnees
+                $saveReponse=Reponse::firstOrCreate([
+                    'question_id'=> $question_id,
+                    'candidat_id'=> $intervenant,
+                    'cote'=> $cote,
+                ]);
+             }
+             return Redirect::back()->with('success','Merci d"avoir répondu et Felicitation!');
+        }else{
+            dd('formulaire vite') ;
+        }
+       
     }
 
     /**
