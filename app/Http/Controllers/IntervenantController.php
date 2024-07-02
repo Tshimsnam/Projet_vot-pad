@@ -49,9 +49,6 @@ class IntervenantController extends Controller
         $codeLength = 3;
         $coupon = null;
     
-        $request->validate([
-            'fichier' => 'bail|required|file|mimes:csv'
-        ]);
     
         $fichier = $request->fichier->move(public_path(), $request->fichier->hashName());
         $reader = SimpleExcelReader::create($fichier);
@@ -101,7 +98,7 @@ class IntervenantController extends Controller
             $reader->close();
             unlink($fichier);
             $insertionsCount = count($data);
-            return redirect(route('intervenants.index'))->with('success', 'Insertion effectuée : '.$insertionsCount.' sur '.$getRows.' lignes.');
+            return redirect(route('phase.show', $phaseId))->with('success', 'Insertion effectuée : '.$insertionsCount.' sur '.$getRows.' lignes.');
         }
     }
 

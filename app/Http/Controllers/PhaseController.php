@@ -7,8 +7,10 @@ use App\Models\Critere;
 use App\Models\Question;
 use App\Models\Assertion;
 use App\Models\Evenement;
+use App\Models\Intervenant;
 use Illuminate\Http\Request;
 use App\Models\QuestionPhase;
+use App\Models\IntervenantPhase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
@@ -197,12 +199,26 @@ class PhaseController extends Controller
         $questionAssert = $questionPhase;
 
         if ($phase_type === 'Vote' || $phase_type === 'vote') {
-            
+
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+            $intervenants = [];
+            foreach ($intervenantPhases as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenants[] = $intervenant;
+            }
             $phases = $phaseShow;
             $criteres = Critere::with('phases')->latest()->paginate(13);
-            return view('criteres.index', compact('criteres', 'phases', 'phase_id'));
+            return view('criteres.index', compact('criteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases'));
         } else {
-            return view('phases.show', compact('phaseShow', 'question', 'questionAssert'));
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+            $intervenants = [];
+            foreach ($intervenantPhases as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenants[] = $intervenant;
+            }
+            return view('phases.show', compact('phaseShow', 'question', 'questionAssert', 'intervenants', 'intervenantPhases'));
         }
     }
 

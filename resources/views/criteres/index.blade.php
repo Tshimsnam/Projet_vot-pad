@@ -86,18 +86,114 @@
                 @endforeach
             </p>
             <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4" style="margin-right: 0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
+                    style="margin-right: 0.5rem;">
                     <path fill-rule="evenodd"
                         d="M15 8A7 7 0 1 0 1 8a7 7 0 0 0 14 0ZM4.75 7.25a.75.75 0 0 0 0 1.5h4.69L8.22 9.97a.75.75 0 1 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06l-2.5-2.5a.75.75 0 0 0-1.06 1.06l1.22 1.22H4.75Z"
                         clip-rule="evenodd" />
                 </svg>
-  
+
                 @foreach ($phases as $phase)
                     {{ $phase->fin_phase }}
                 @endforeach
             </p>
         </div>
     </x-slot>
+
+    <div class=" relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+        <div id="accordion-open" data-accordion="open">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight "
+                id="accordion-open-heading-1">
+                <button type="button"
+                    class="flex items-center justify-between w-full p-4 font-medium rtl:text-right text-gray-500 border border-b border-gray-200  focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                    data-accordion-target="#accordion-open-body-1" aria-expanded="false"
+                    aria-controls="accordion-open-body-1">
+                    <span class="flex items-center">Détails des intervenants</span>
+                    <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5 5 1 1 5" />
+                    </svg>
+                </button>
+            </h2>
+            <div id="accordion-open-body-1" class="hidden" aria-labelledby="accordion-open-heading-1">
+                <div class="p-2 border border-b border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                    <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+                        <div class="bg-white dark:bg-gray-800 shadow">
+                            <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 leading-tight ">
+                                        {{ __('Insertion des candidats') }}
+                                    </h3>
+                                    <a onclick="inserer(event, '{{ route('intervenants.store') }}', '{{ $phase_id }}')"
+                                        data-modal-target="create-modal-interv"
+                                        data-modal-toggle="create-modal-interv"
+                                        class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
+                        @if (session('success'))
+                            <div id="alert-3"
+                                class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                                role="alert">
+                                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div class="ms-3 text-sm font-medium">
+                                    {{ session('success') }}
+                                </div>
+                                <button type="button"
+                                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                                    data-dismiss-target="#alert-3" aria-label="Close">
+                                    <span class="sr-only">Close</span>
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                </button>
+                            </div>
+                        @endif
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead
+                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-6 py-2">N°</th>
+                                    <th scope="col" class="py-2">Email</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($intervenants as $i => $item)
+                                    <tr
+                                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                        <td class="px-6 py-2">{{ $intervenantPhases->firstItem() + $i }}</td>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->email }}</th>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="p-2">
+                            {{ $intervenantPhases->withPath(request()->url())->links() }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
         <div class="bg-white dark:bg-gray-800 shadow">
@@ -109,8 +205,8 @@
                     <a onclick="creer(event, {{ $phase_id }})" data-modal-target="create-modal"
                         data-modal-toggle="create-modal"
                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-5 h-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
@@ -119,7 +215,7 @@
             </div>
         </div>
     </div>
-    <div class="relative shadow-md sm:rounded-lg" style="padding-top: 10px;">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
         @if (session('success'))
             <div id="alert-3"
                 class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
@@ -229,6 +325,7 @@
         </div>
     </div>
     <x-delete :message="__('Voulez-vous vraiment supprimer cette critère?')" />
+    <x-intervenants.create />
     <x-criteres.create />
     <x-criteres.edit />
     <script>
@@ -257,6 +354,15 @@
             event.preventDefault();
             const phaseSelect = document.querySelector('#create-modal form div div #phase');
             phaseSelect.setAttribute('value', $phase_id);
+        }
+
+        function inserer(event, url, phaseId) {
+            event.preventDefault();
+            const form = document.querySelector('#create-modal-interv form')
+            form.setAttribute('action', url);
+
+            const inputPhaseId = document.querySelector('#create-modal-interv form #phaseId')
+            inputPhaseId.setAttribute('value', phaseId);
         }
     </script>
 </x-app-layout>
