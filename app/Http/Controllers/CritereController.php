@@ -57,7 +57,7 @@ class CritereController extends Controller
             ]
         );
 
-        return redirect(route('criteres.index'))->with('success', 'Enregistrement reussi');
+        return back()->with('success', 'Enregistrement reussi');
     }
 
     /**
@@ -98,7 +98,7 @@ class CritereController extends Controller
             ]
         );
 
-        return redirect(route('criteres.index'))->with('success', 'Modification reussi');
+        return back()->with('success', 'Modification reussi');
     }
 
     /**
@@ -107,6 +107,6 @@ class CritereController extends Controller
     public function destroy(Critere $critere)
     {
         $critere->delete();
-        return redirect()->route('criteres.index')->with('success', 'Critère supprimé avec succès');
+        return back()->with('success', 'Critère supprimé avec succès');
     }
 }
