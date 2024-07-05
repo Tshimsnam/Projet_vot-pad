@@ -14,6 +14,9 @@ use App\Models\IntervenantPhase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Jury;
+use App\Models\JuryPhase;
+use App\Models\PhaseCritere;
 
 class PhaseController extends Controller
 {
@@ -110,7 +113,7 @@ class PhaseController extends Controller
             'date_fin' => $request->date_fin,
             'duree' => $request->duree
         ]);
-        
+
         return redirect(route('phase.show', $phase->id))->with('success', 'phase modifiée avec succes');
     }
 
@@ -199,7 +202,9 @@ class PhaseController extends Controller
         $questionAssert = $questionPhase;
 
         if ($phase_type === 'Vote' || $phase_type === 'vote') {
+            // module phase vote
 
+            //recuperer les intervenats liés à une phase 
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
             $intervenants = [];
             foreach ($intervenantPhases as $intervenantPhase) {
@@ -207,10 +212,53 @@ class PhaseController extends Controller
                 $intervenant->intervenantPhaseId = $intervenantPhase->id;
                 $intervenants[] = $intervenant;
             }
+
+            //recuperer les criteres liés à une phase
             $phases = $phaseShow;
-            $criteres = Critere::with('phases')->latest()->paginate(13);
-            return view('criteres.index', compact('criteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases'));
+            $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
+            $criteres = [];
+            foreach ($phaseCriteres as $phaseCritere) {
+                $critere = Critere::find($phaseCritere->critere_id);
+                $critere->criterePhaseId = $phaseCritere->id;
+                $criteres[] = $critere;
+            }
+
+            //rerecuperer les jurys liés à une phase
+            $juryPhases = JuryPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+            $jurys = [];
+            foreach ($juryPhases as $juryPhase) {
+
+                if (is_string($juryPhase->jury_id) && json_decode($juryPhase->jury_id, true) !== null) {
+                    
+                    $juryIds = json_decode($juryPhase->jury_id, true);
+                } else {
+                    $juryIds = $juryPhase->jury_id;
+                }
+
+                if (is_array($juryIds)) {
+                    foreach ($juryIds as $juryId) {
+                        $jury = Jury::find($juryId);
+
+                        if ($jury->type == 'prive') {
+                            $jury->ponderation = $juryPhase->ponderation_prive;
+                        } else {
+                            $jury->ponderation = $juryPhase->ponderation_public;
+                        }
+                        $jurys[] = $jury;
+                    }
+                } else {
+                    $jury = Jury::find($juryIds);
+                    if ($jury->type == 'prive') {
+                        $jury->ponderation = $juryPhase->ponderation_prive;
+                    } else {
+                        $jury->ponderation = $juryPhase->ponderation_public;
+                    }
+                    $jurys[] = $jury;
+                }
+            }
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases'));
         } else {
+            // module phase evaluation
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
             $intervenants = [];
             foreach ($intervenantPhases as $intervenantPhase) {
