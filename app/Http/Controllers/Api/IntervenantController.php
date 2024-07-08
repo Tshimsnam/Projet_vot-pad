@@ -124,20 +124,20 @@ class IntervenantController extends Controller
         $email = $request->email;
         $coupon = $request->coupon;
         $intervenant = Intervenant::where('email', $email)->first();
-    
+
         if (!$intervenant) {
-            return response()->json('L\'adresse email insérée est invalide.');
-        } else 
+            return response()->json('L\'adresse email insérée est invalide.', 400);
+        } else
         {
             $intervenantId = $intervenant->id;
             $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('coupon', $coupon)->first();
             if (!$intervenantPhase) {
-                return response()->json('Le coupon inséré est invalide.');
-            } 
+                return response()->json('Le coupon inséré est invalide.', 400);
+            }
             else {
                 $intervenantToken = $intervenantPhase->token;
                 if ($intervenantToken != 0) {
-                    
+
                     $intervenantPhase = IntervenantPhase::where('token', $intervenantToken)->first();
                     $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
                     $intervenant->intervenantPhaseId = $intervenantPhase->phase_id;
@@ -158,7 +158,7 @@ class IntervenantController extends Controller
                     $intervenant->intervenantPhaseId = $intervenantPhase->phase_id;
                     $intervenant->intervenantToken = $intervenantPhase->token;
                     return new IntervenantPhaseResource($intervenant);
-                }           
+                }
             }
         }
     }
