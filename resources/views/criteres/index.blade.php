@@ -48,12 +48,6 @@
                 @endforeach
             </h3>
             <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
-                    style="margin-right: 0.5rem;">
-                    <path fill-rule="evenodd"
-                        d="M2 2.75A.75.75 0 0 1 2.75 2h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 2.75Zm0 10.5a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75ZM2 6.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 9.75Z"
-                        clip-rule="evenodd" />
-                </svg>
                 @foreach ($phases as $phase)
                     {{ $phase->decrip_phase }}
                 @endforeach
@@ -122,12 +116,11 @@
                         <div class="bg-white dark:bg-gray-800 shadow">
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
-                                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 leading-tight ">
-                                        {{ __('Ajout des jurys') }}
+                                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 leading-tight" style="text-transform: uppercase">
+                                        {{ $type_vote }}
                                     </h3>
-                                    <a onclick="ajouter(event, '{{ route('jurys.store') }}', '{{ $phase_id }}')"
-                                        data-modal-target="create-modal-jury"
-                                        data-modal-toggle="create-modal-jury"
+                                    <a onclick="ajouter(event, '{{ route('jurys.store') }}', '{{ $phase_id }}', '{{ $ponderation_public }}', '{{ $ponderation_prive }}', '{{ $type_vote }}')"
+                                        data-modal-target="create-modal-jury" data-modal-toggle="create-modal-jury"
                                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -140,8 +133,8 @@
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-                        @if (session('success'))
-                            <div id="alert-3"
+                        @if (session('successModifJury'))
+                            <div id="alert-3-jury-modif"
                                 class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
                                 role="alert">
                                 <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
@@ -151,11 +144,59 @@
                                 </svg>
                                 <span class="sr-only">Info</span>
                                 <div class="ms-3 text-sm font-medium">
-                                    {{ session('success') }}
+                                    {{ session('successModifJury') }}
                                 </div>
                                 <button type="button"
                                     class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                                    data-dismiss-target="#alert-3" aria-label="Close">
+                                    data-dismiss-target="#alert-3-jury-modif" aria-label="Close">
+                                    <span class="sr-only">Close</span>
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                </button>
+                            </div>
+                        @elseif (session('successInsertJury'))
+                            <div id="alert-3-jury-insert"
+                                class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                                role="alert">
+                                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div class="ms-3 text-sm font-medium">
+                                    {{ session('successInsertJury') }}
+                                </div>
+                                <button type="button"
+                                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                                    data-dismiss-target="#alert-3-jury-insert" aria-label="Close">
+                                    <span class="sr-only">Close</span>
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                </button>
+                            </div>
+                        @elseif (session('successDeleteJury'))
+                            <div id="alert-3-jury-delete"
+                                class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                                role="alert">
+                                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div class="ms-3 text-sm font-medium">
+                                    {{ session('successDeleteJury') }}
+                                </div>
+                                <button type="button"
+                                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                                    data-dismiss-target="#alert-3-jury-delete" aria-label="Close">
                                     <span class="sr-only">Close</span>
                                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                         fill="none" viewBox="0 0 14 14">
@@ -165,6 +206,7 @@
                                 </button>
                             </div>
                         @endif
+
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -172,8 +214,8 @@
                                     <th scope="col" class="px-6 py-2">N°</th>
                                     <th scope="col" class="py-2">type</th>
                                     <th scope="col" class="py-2">coupon</th>
-                                    <th scope="col" class="py-2">ponderation</th>
                                     <th scope="col" class="py-2">is_use</th>
+                                    <th scope="col" class="py-2">action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,11 +241,22 @@
                                         </th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->ponderation }}
+                                            {{ $item->is_use }}
                                         </th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->is_use }}
+                                            <a onclick="supprimer(event, '{{ route('jury.destroy', ['jury' => $item->id, 'phaseId' => $phase_id]) }}');"
+                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                href="#"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+
+                                            </a>
                                         </th>
                                     </tr>
                                 @endforeach
@@ -442,7 +495,7 @@
             {{ $phaseCriteres->links() }}
         </div>
     </div>
-    <x-delete :message="__('Voulez-vous vraiment supprimer cette critère?')" />
+    <x-delete :message="__('Voulez-vous vraiment supprimer cet jury?')" />
     <x-intervenants.create />
     <x-criteres.create />
     <x-jurys.create />
@@ -484,13 +537,139 @@
             inputPhaseId.setAttribute('value', phaseId);
         }
 
-        function ajouter(event, url, phaseId) {
+        function ajouter(event, url, phaseId, ponderation_public, ponderation_prive, type_vote) {
             event.preventDefault();
             const form = document.querySelector('#create-modal-jury form')
             form.setAttribute('action', url);
 
             const inputPhaseId = document.querySelector('#create-modal-jury form #phaseId')
             inputPhaseId.setAttribute('value', phaseId);
+
+            const inputPrive = document.querySelector('#create-modal-jury form #ponderation_prive');
+            inputPrive.setAttribute('value', ponderation_prive);
+
+            const inputPublic = document.querySelector('#create-modal-jury form #ponderation_public');
+            inputPublic.setAttribute('value', ponderation_public);
+
+            const ponderationPrive = document.querySelector('#create-modal-jury form #priveDiv');
+            const ponderationPublic = document.querySelector('#create-modal-jury form #publicDiv');
+            const typeDiv = document.querySelector('#create-modal-jury form #typeDiv');
+
+            const numberPrive = document.querySelector('#create-modal-jury form #nombre_prive');
+            const numberPriveInput = document.querySelector('#create-modal-jury form #nombre_prive_input');
+            const selectType = document.querySelector('#create-modal-jury form #type');
+
+            const ajoutPriveCheckbox = document.querySelector('#create-modal-jury form #ajoutPrive');
+            const ajoutPublicCheckbox = document.querySelector('#create-modal-jury form #ajoutPublic')
+
+            const ajoutDiv = document.querySelector('#create-modal-jury form #ajout');
+            const ponderationPriveH2 = document.querySelector('#create-modal-jury form #getPondprive');
+            const ponderationPublicH2 = document.querySelector('#create-modal-jury form #getPondpublic');
+
+            const titreType = document.querySelector('#create-modal-jury form #titreType');
+            const labelPrive1 = document.querySelector('#create-modal-jury form #label_prive');
+            const labelPrive2 = document.querySelector('#create-modal-jury form #label_prive2');
+
+            const labelPublic1 = document.querySelector('#create-modal-jury form #label_public');
+            const labelPublic2 = document.querySelector('#create-modal-jury form #label_public2');
+
+            const buttonEdit = document.querySelector('#create-modal-jury form #edit');
+            const buttonAnnul = document.querySelector('#create-modal-jury form #annul');
+
+            for (const option of selectType.options) {
+                if (option.value === type_vote) {
+                    option.selected = true;
+
+                    const selectedType = type_vote;
+
+                    if (selectedType === 'prive et public') {
+                        ponderationPrive.style.display = 'none';
+                        ponderationPublic.style.display = 'none';
+                        typeDiv.style.display = 'none';
+                        ajoutDiv.style.display = 'block';
+                        numberPrive.style.display = 'none';
+                        numberPriveInput.setAttribute('value', 0);
+
+                        inputPrive.disabled = true;
+                        inputPublic.disabled = true;
+                        selectType.disabled = true;
+
+                        ajoutPublicCheckbox.checked = false;
+                        ajoutPriveCheckbox.checked = false;
+
+                        ponderationPriveH2.textContent = "P: " + ponderation_prive;
+                        ponderationPublicH2.textContent = "P: " + ponderation_public;
+
+                        titreType.style.display = 'flex';
+
+                        const svgElement = titreType.querySelector('svg');
+                        titreType.innerHTML = '';
+                        titreType.appendChild(svgElement.cloneNode(true));
+                        titreType.insertAdjacentHTML('beforeend', type_vote.toUpperCase());
+                        buttonEdit.style.display = 'flex';
+                        buttonAnnul.style.display = 'none';
+
+                    } else if (selectedType === 'prive') {
+                        ponderationPrive.style.display = 'block';
+                        ponderationPublic.style.display = 'none';
+
+                        typeDiv.style.display = 'none';
+                        inputPrive.required = true;
+                        inputPrive.disabled = true;
+                        inputPublic.required = false;
+                        selectType.disabled = true;
+                        numberPriveInput.setAttribute('value', 1);
+                        labelPrive1.style.display = 'none';
+                        labelPrive2.style.display = 'block';
+
+                        titreType.style.display = 'flex';
+                        const svgElement = titreType.querySelector('svg');
+                        titreType.innerHTML = '';
+                        titreType.appendChild(svgElement.cloneNode(true));
+                        titreType.insertAdjacentHTML('beforeend', type_vote.toUpperCase());
+
+                        ajoutDiv.style.display = 'none';
+                        ajoutPublicCheckbox.checked = false;
+                        ajoutPriveCheckbox.checked = true;
+                        buttonEdit.style.display = 'flex';
+                        buttonAnnul.style.display = 'none';
+
+                    } else if (selectedType === 'public') {
+                        ponderationPrive.style.display = 'none';
+                        ponderationPublic.style.display = 'block';
+                        typeDiv.style.display = 'none';
+
+                        inputPrive.required = false;
+                        inputPublic.required = true;
+                        inputPublic.disabled = true;
+                        selectType.disabled = true;
+
+                        labelPublic1.style.display = 'none';
+                        labelPublic2.style.display = 'block';
+                        titreType.style.display = 'flex';
+                        const svgElement = titreType.querySelector('svg');
+                        titreType.innerHTML = '';
+                        titreType.appendChild(svgElement.cloneNode(true));
+                        titreType.insertAdjacentHTML('beforeend', type_vote.toUpperCase());
+
+                        ajoutDiv.style.display = 'none';
+                        ajoutPublicCheckbox.checked = true;
+                        ajoutPriveCheckbox.checked = false;
+                        buttonEdit.style.display = 'flex';
+                        buttonAnnul.style.display = 'none';
+                    }
+                    break;
+                } else {
+                    ajoutPublicCheckbox.checked = true;
+                    ajoutPriveCheckbox.checked = true;
+                    ajoutDiv.style.display = 'none';
+                    ajoutPublicCheckbox.value = 1;
+                    numberPriveInput.setAttribute('value', 1);
+                    titreType.style.display = 'none';
+                    buttonEdit.style.display = 'none';
+                    buttonAnnul.style.display = 'none';
+                }
+            }
         }
     </script>
 </x-app-layout>

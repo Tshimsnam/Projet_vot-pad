@@ -225,20 +225,44 @@ class PhaseController extends Controller
 
             //rerecuperer les jurys liés à une phase
             $juryPhases = JuryPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+
+            if ($juryPhases->count() > 0) {
+                $ponderation_public = $juryPhases->first()->ponderation_public;
+                $ponderation_prive = $juryPhases->first()->ponderation_prive;
+                $type_vote = $juryPhases->first()->type;
+            } else {
+                $ponderation_public = null;
+                $ponderation_prive = null;
+                $type_vote = null;
+            }
+
             $jurys = [];
             foreach ($juryPhases as $juryPhase) {
-
                 if (is_string($juryPhase->jury_id) && json_decode($juryPhase->jury_id, true) !== null) {
-                    
                     $juryIds = json_decode($juryPhase->jury_id, true);
                 } else {
                     $juryIds = $juryPhase->jury_id;
                 }
 
                 if (is_array($juryIds)) {
+                    $updatedJuryIds = [];
                     foreach ($juryIds as $juryId) {
                         $jury = Jury::find($juryId);
-
+                        if ($jury) {
+                            if ($jury->type == 'prive') {
+                                $jury->ponderation = $juryPhase->ponderation_prive;
+                            } else {
+                                $jury->ponderation = $juryPhase->ponderation_public;
+                            }
+                            $updatedJuryIds[] = $juryId;
+                            $jurys[] = $jury;
+                        }
+                    }
+                    $juryPhase->jury_id = json_encode($updatedJuryIds);
+                    $juryPhase->save();
+                } else {
+                    $jury = Jury::find($juryIds);
+                    if ($jury) {
                         if ($jury->type == 'prive') {
                             $jury->ponderation = $juryPhase->ponderation_prive;
                         } else {
@@ -246,17 +270,9 @@ class PhaseController extends Controller
                         }
                         $jurys[] = $jury;
                     }
-                } else {
-                    $jury = Jury::find($juryIds);
-                    if ($jury->type == 'prive') {
-                        $jury->ponderation = $juryPhase->ponderation_prive;
-                    } else {
-                        $jury->ponderation = $juryPhase->ponderation_public;
-                    }
-                    $jurys[] = $jury;
                 }
             }
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases'));
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote'));
         } else {
             // module phase evaluation
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);

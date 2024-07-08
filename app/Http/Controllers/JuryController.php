@@ -59,10 +59,11 @@ class JuryController extends Controller
         }
 
         $typeVote = $request->type;
+        $numberPrive = $request->nombre_prive;
+        $numberPublic = $request->ajoutPublic;
 
         if ($typeVote == 'prive et public') {
             // Créer de nouveaux jurys privés
-            $numberPrive = $request->nombre_prive;
             for ($i = 0; $i < $numberPrive; $i++) {
                 do {
                     $coupon = '';
@@ -85,24 +86,26 @@ class JuryController extends Controller
                 $juryIds[] = $jury->id;
             }
             // Créer de nouveaux jurys publics
-            do {
-                $coupon = '';
-                for ($j = 0; $j < $codeLength; $j++) {
-                    $position = mt_rand(0, $charactersNumber - 1);
-                    $coupon .= $characters[$position];
-                }
-            } while (Jury::where('coupon', $coupon)->exists());
-            $couponPhase = $slug . $coupon;
-            $jury = Jury::create([
-                'coupon' => $couponPhase,
-                'type' => 'public',
-                'is_use' => 0,
-                'token' => '0',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            if ($numberPublic != 0) {
+                do {
+                    $coupon = '';
+                    for ($j = 0; $j < $codeLength; $j++) {
+                        $position = mt_rand(0, $charactersNumber - 1);
+                        $coupon .= $characters[$position];
+                    }
+                } while (Jury::where('coupon', $coupon)->exists());
+                $couponPhase = $slug . $coupon;
+                $jury = Jury::create([
+                    'coupon' => $couponPhase,
+                    'type' => 'public',
+                    'is_use' => 0,
+                    'token' => '0',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
 
-            $juryIds[] = $jury->id;
+                $juryIds[] = $jury->id;
+            }
 
             $data = [
                 'jury_id' => json_encode($juryIds),
@@ -114,7 +117,6 @@ class JuryController extends Controller
                 'updated_at' => $now,
             ];
         } elseif ($typeVote == 'prive') {
-            $numberPrive = $request->nombre_prive;
             for ($i = 0; $i < $numberPrive; $i++) {
                 do {
                     $coupon = '';
@@ -145,48 +147,63 @@ class JuryController extends Controller
                     'updated_at' => $now,
                 ];
             }
+            if ($numberPrive == 0) {
+                $data = [
+                    'jury_id' => json_encode($juryIds),
+                    'phase_id' => $phaseId,
+                    'type' => $request->type,
+                    'ponderation_prive' => $request->ponderation_prive,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
         } elseif ($typeVote == 'public') {
 
-            do {
-                $coupon = '';
-                for ($j = 0; $j < $codeLength; $j++) {
-                    $position = mt_rand(0, $charactersNumber - 1);
-                    $coupon .= $characters[$position];
-                }
-            } while (Jury::where('coupon', $coupon)->exists());
-            $couponPhase = $slug . $coupon;
+            if ($numberPublic != 0) {
+                do {
+                    $coupon = '';
+                    for ($j = 0; $j < $codeLength; $j++) {
+                        $position = mt_rand(0, $charactersNumber - 1);
+                        $coupon .= $characters[$position];
+                    }
+                } while (Jury::where('coupon', $coupon)->exists());
+                $couponPhase = $slug . $coupon;
+                $jury = Jury::create([
+                    'coupon' => $couponPhase,
+                    'type' => 'public',
+                    'is_use' => 0,
+                    'token' => '0',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
 
-            $jury = Jury::create([
-                'coupon' => $couponPhase,
-                'type' => 'public',
-                'is_use' => 0,
-                'token' => '0',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
-
-            $juryIds[] = $jury->id;
+                $juryIds[] = $jury->id;
+            }
 
             $data = [
                 'jury_id' => json_encode($juryIds),
                 'phase_id' => $phaseId,
                 'type' => $request->type,
-                'ponderation_prive' => $request->ponderation_public,
+                'ponderation_public' => $request->ponderation_public,
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
         }
 
-
+        //return dd("prive:" . $numberPrive . " public:" . $numberPublic);
         if ($pahseRecord) {
             // Mettre à jour l'enregistrement existant
             $pahseRecord->update($data);
+            if ($numberPrive == 0 && $numberPublic == 0) {
+                return redirect(route('phase.show', $phaseId))->with('successModifJury', 'Modification effectuée');
+            } else {
+                return redirect(route('phase.show', $phaseId))->with('successInsertJury', 'Insertion effectuée');
+            }
         } else {
             // Créer un nouvel enregistrement
             $status = JuryPhase::insert($data);
+            return redirect(route('phase.show', $phaseId))->with('successInsertJury', 'Insertion effectuée');
         }
-
-        return redirect(route('phase.show', $phaseId))->with('success', 'Insertion des jurys effectuée');
     }
 
     /**
@@ -216,8 +233,9 @@ class JuryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Jury $jury)
+    public function destroy(Jury $jury, $phaseId)
     {
-        //
+        $jury->delete();
+        return redirect(route('phase.show', $phaseId))->with('successDeleteJury', 'Suppression effectuée');
     }
 }
