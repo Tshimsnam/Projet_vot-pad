@@ -12,6 +12,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('criteres',CritereController::class);
     Route::resource('intervenants',IntervenantController::class);
     Route::resource('jurys',JuryController::class);
+    Route::delete('/jurys/{jury}/{phaseId}', [JuryController::class, 'destroy'])->name('jury.destroy');
 });
 
 Route::get('/intervenants-form', [IntervenantController::class, 'form'])->name('form-authenticate');
