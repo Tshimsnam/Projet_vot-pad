@@ -20,3 +20,4 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 require __DIR__.'/webGlody.php';
 require __DIR__.'/web_evaluation.php';
+require __DIR__.'/web_vote.php';
