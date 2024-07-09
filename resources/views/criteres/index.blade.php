@@ -116,7 +116,8 @@
                         <div class="bg-white dark:bg-gray-800 shadow">
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
-                                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 leading-tight" style="text-transform: uppercase">
+                                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 leading-tight"
+                                        style="text-transform: uppercase">
                                         {{ $type_vote }}
                                     </h3>
                                     <a onclick="ajouter(event, '{{ route('jurys.store') }}', '{{ $phase_id }}', '{{ $ponderation_public }}', '{{ $ponderation_prive }}', '{{ $type_vote }}')"
@@ -279,7 +280,7 @@
                     class="flex items-center justify-between w-full p-3 font-medium rtl:text-right text-gray-500 border border-b border-gray-200  focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
                     data-accordion-target="#accordion-open-body-1" aria-expanded="false"
                     aria-controls="accordion-open-body-1">
-                    <span class="flex items-center">Détails des intervenants</span>
+                    <span class="flex items-center">Détails des candidats</span>
                     <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -297,8 +298,8 @@
                                         {{ __('Insertion des candidats') }}
                                     </h3>
                                     <a onclick="inserer(event, '{{ route('intervenants.store') }}', '{{ $phase_id }}')"
-                                        data-modal-target="create-modal-interv"
-                                        data-modal-toggle="create-modal-interv"
+                                        data-modal-target="create-modal-candidat"
+                                        data-modal-toggle="create-modal-candidat"
                                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -311,8 +312,8 @@
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-                        @if (session('success'))
-                            <div id="alert-3"
+                        @if (session('successCand'))
+                            <div id="alert-3-cand"
                                 class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
                                 role="alert">
                                 <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
@@ -322,11 +323,11 @@
                                 </svg>
                                 <span class="sr-only">Info</span>
                                 <div class="ms-3 text-sm font-medium">
-                                    {{ session('success') }}
+                                    {{ session('successCand') }}
                                 </div>
                                 <button type="button"
                                     class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                                    data-dismiss-target="#alert-3" aria-label="Close">
+                                    data-dismiss-target="#alert-3-cand" aria-label="Close">
                                     <span class="sr-only">Close</span>
                                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                         fill="none" viewBox="0 0 14 14">
@@ -341,8 +342,10 @@
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-6 py-2">N°</th>
+                                    <th scope="col" class="py-2">Nom</th>
                                     <th scope="col" class="py-2">Email</th>
-
+                                    <th scope="col" class="py-2">Image</th>
+                                    <th scope="col" class="py-2">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -352,7 +355,44 @@
                                         <td class="px-6 py-2">{{ $intervenantPhases->firstItem() + $i }}</td>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->nom_groupe }}</th>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ $item->email }}</th>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <img src="{{ $item->image ? asset($item->image) : asset('images/profil.jpg') }}"
+                                                width="40" height="40" class="img img-responsive" />
+                                        </th>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
+                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                href="#"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+
+                                            </a>
+                                            <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->nom_groupe }}', '{{ $item->email }}', '{{ asset($item->image) }}', '{{ $phase_id }}')"
+                                                data-modal-target="edit-modal-candidat"
+                                                data-modal-toggle="edit-modal-candidat" href="#"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path
+                                                        d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                    <path
+                                                        d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                </svg>
+
+
+                                            </a>
+                                        </th>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -495,8 +535,9 @@
             {{ $phaseCriteres->links() }}
         </div>
     </div>
-    <x-delete :message="__('Voulez-vous vraiment supprimer cet jury?')" />
-    <x-intervenants.create />
+    <x-delete :message="__('Voulez-vous vraiment supprimer?')" />
+    <x-candidats.create />
+    <x-candidats.edit />
     <x-criteres.create />
     <x-jurys.create />
     <x-criteres.edit />
@@ -530,10 +571,10 @@
 
         function inserer(event, url, phaseId) {
             event.preventDefault();
-            const form = document.querySelector('#create-modal-interv form')
+            const form = document.querySelector('#create-modal-candidat form')
             form.setAttribute('action', url);
 
-            const inputPhaseId = document.querySelector('#create-modal-interv form #phaseId')
+            const inputPhaseId = document.querySelector('#create-modal-candidat form #phaseId')
             inputPhaseId.setAttribute('value', phaseId);
         }
 
@@ -670,6 +711,25 @@
                     buttonAnnul.style.display = 'none';
                 }
             }
+        }
+
+        // section candidats
+
+        function editer(event, url, nomGroupe, email, image, phaseId) {
+            event.preventDefault();
+            const form = document.querySelector('#edit-modal-candidat div form')
+            form.setAttribute('action', url);
+
+            const inputPhase = document.querySelector('#edit-modal-candidat div form #phaseId')
+            inputPhase.setAttribute('value', phaseId);
+
+
+            const inputNom = document.querySelector('#edit-modal-candidat div form div #name')
+            inputNom.setAttribute('value', nomGroupe);
+
+            const inputEmail = document.querySelector('#edit-modal-candidat div form div #email')
+            inputEmail.setAttribute('value', email);
+
         }
     </script>
 </x-app-layout>

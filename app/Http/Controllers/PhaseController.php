@@ -14,6 +14,7 @@ use App\Models\IntervenantPhase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Groupe;
 use App\Models\Jury;
 use App\Models\JuryPhase;
 use App\Models\PhaseCritere;
@@ -204,15 +205,18 @@ class PhaseController extends Controller
         if ($phase_type === 'Vote' || $phase_type === 'vote') {
             // module phase vote
 
-            //recuperer les intervenats liés à une phase 
+            //recuperer les intervenats liés à une phase
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
             $intervenants = [];
             foreach ($intervenantPhases as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $groupe = Groupe::find($intervenant->groupe_id);
                 $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenant->nom_groupe = $groupe->nom;
+                $intervenant->image = $groupe->image;
                 $intervenants[] = $intervenant;
             }
-
+            
             //recuperer les criteres liés à une phase
             $phases = $phaseShow;
             $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
