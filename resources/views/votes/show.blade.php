@@ -29,7 +29,7 @@
                             </td>
                             <td class="px-6 py-4">0</td>
                             <td class="px-4">
-                                <a href="#"
+                                <a href="{{route('showIntervenant',$item->id)}}"
                                     class="px-3 text-sm  gap-3 font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 focus:font-medium rounded-lg focus:text-sm focus:px-5 py-2.5 me-2  dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                                     <span class="text-md">Voter</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
