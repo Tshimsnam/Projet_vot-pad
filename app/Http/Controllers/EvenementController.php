@@ -94,7 +94,6 @@ class EvenementController extends Controller
                 'name' => 'required',
                 'description' => 'required',
                 'type' => 'required',
-                'status' => 'required'
             ]
         );
 
@@ -120,7 +119,7 @@ class EvenementController extends Controller
                 'type' => $request->type,
                 'date_debut' => $dateTimeDebut,
                 'date_fin' => $dateTimeFin,
-                'status' => $request->status,
+                'status' => 'en attente',
             ]
         );
 

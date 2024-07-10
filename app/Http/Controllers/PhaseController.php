@@ -165,6 +165,7 @@ class PhaseController extends Controller
             $evenement = $value->evenement_id;
             $phase_type = $value->type;
             $phase_id = $value->id;
+            $status_phase = $value->statut;
         }
 
         $phaseShow = DB::table('evenements')
@@ -216,7 +217,7 @@ class PhaseController extends Controller
                 $intervenant->image = $groupe->image;
                 $intervenants[] = $intervenant;
             }
-            
+
             //recuperer les criteres liés à une phase
             $phases = $phaseShow;
             $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
@@ -276,7 +277,7 @@ class PhaseController extends Controller
                     }
                 }
             }
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote'));
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase'));
         } else {
             // module phase evaluation
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
@@ -288,6 +289,25 @@ class PhaseController extends Controller
             }
             return view('phases.show', compact('phaseShow', 'question', 'questionAssert', 'intervenants', 'intervenantPhases'));
         }
+    }
+
+    //changer le status de la phase	
+
+    public function changeStatus($phaseId, $status)
+    {
+        $phase = Phase::find($phaseId);
+        $phase->statut = $status;
+
+        $evenementId = $phase->evenement_id;
+        $evenement = Evenement::find($evenementId);
+
+        if ($status== 'En cours' || $status== 'en cours') {
+            $evenement->status = $status;
+            $evenement->update();
+        }
+        
+        $phase->update();
+        return redirect(route('phase.show', $phaseId))->with('successStatus', 'Statut de la phase modifié avec succès');
     }
 
 
