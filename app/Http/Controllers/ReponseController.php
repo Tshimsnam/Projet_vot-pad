@@ -53,7 +53,6 @@ class ReponseController extends Controller
      */
     public function store(StoreReponseRequest $request)
     {
-       
         $reponse=$request->id_collection_keyQuestion_valAssertion;
         $intervenant=$request->intervenant_id;
         $phase_id=$request->phase_id;
