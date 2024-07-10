@@ -20,3 +20,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/intervenants-form', [IntervenantController::class, 'form'])->name('form-authenticate');
 Route::post('/intervenants-authenticate', [IntervenantController::class, 'authenticate'])->name('authenticate');
+
+Route::get('/jurys-form', [JuryController::class, 'form'])->name('form-juryAuthenticate');
+Route::post('/jurys-authenticate',[JuryController::class, 'authenticate'])->name('juryAuthenticate');
