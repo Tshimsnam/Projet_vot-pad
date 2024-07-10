@@ -45,6 +45,10 @@ class VoteController extends Controller
         return view("votes.show",compact('phaseAndSpeaker'));
     }
 
+    public function showIntervenant($vote) {
+        return view("votes.showIntervenant");
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
