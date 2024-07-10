@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Jury;
 use App\Models\Phase;
+use App\Models\JuryPhase;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreJuryRequest;
 use App\Http\Requests\UpdateJuryRequest;
-use App\Models\JuryPhase;
 
 class JuryController extends Controller
 {
@@ -237,5 +238,34 @@ class JuryController extends Controller
     {
         $jury->delete();
         return redirect(route('phase.show', $phaseId))->with('successDeleteJury', 'Suppression effectuée');
+    }
+    public function form(){
+        return view('jurys.authenticate');
+    }
+
+    public function authenticate(Request $request){
+        $coupon = $request->coupon;
+        $jury = Jury::where('coupon', $coupon)->first();
+        if (!$jury) {
+            return redirect(route('form-juryAuthenticate'))->with('unsuccess', 'Le coupon inséré est invalide.');
+        }
+        else {
+            $JuryToken = $jury->token;
+            if ($JuryToken != 0) {
+                return redirect(route('form-juryAuthenticate'))->with('unsuccess', 'ce coupon a été déjà utilisé.');
+            }
+            else{
+                $juryCoupon = $jury->coupon;
+                $token = $jury->createToken($juryCoupon)->plainTextToken;
+                $jury->token = $token;
+                $jury->save();
+                $phaseSlug = substr($juryCoupon, 0, 3);
+                $phase = Phase::where('slug', $phaseSlug)->first();
+                return response()->json($phase);
+                //return view('criteres.index', compact('phase', 'jury'));
+            }
+        }
+
+
     }
 }
