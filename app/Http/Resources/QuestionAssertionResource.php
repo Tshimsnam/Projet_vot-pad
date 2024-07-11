@@ -16,8 +16,7 @@ class QuestionAssertionResource extends JsonResource
     {
         return [
             "id"=> $this->id,
-            "assertion"=> $this->assertion,
-            "ponderation"=> $this->ponderation,
+            "libele"=> $this->assertion,            
         ];
     }
 }
