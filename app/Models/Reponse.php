@@ -10,11 +10,19 @@ class Reponse extends Model
     use HasFactory;
     protected $fillable = [
         "cote",
-        "question_id",
-        "candidat_id"
+        "assertion_id",
+        "intervenant_id",
+        "question_phase_id",
+        "phase_id"
     ] ;
 
-    public function question(){
-        return $this->belongsTo(Question::class);
+    public function question_phase(){
+        return $this->belongsTo(QuestionPhase::class);
+    }
+    public function intervenant(){
+        return $this->belongsTo(Intervenant::class);
+    }
+    public function assertion(){
+        return $this->belongsTo(Assertion::class);
     }
 }

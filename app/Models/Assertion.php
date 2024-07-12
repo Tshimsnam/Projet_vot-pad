@@ -12,10 +12,13 @@ class Assertion extends Model
         "assertion",
         "ponderation",
         "statut",
-        "question_id",
+        "question_id"
     ];
 
     public function question(){
         return $this->belongsTo(Question::class);
+    }
+    public function reponse(){
+        return $this->hasMany(Reponse::class);
     }
 }

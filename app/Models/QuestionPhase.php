@@ -19,4 +19,7 @@ class QuestionPhase extends Model
     public function phase(){
         return $this->belongsTo(Phase::class);
     }
+    public function reponse(){
+        return $this->hasMany(Reponse::class);
+    }
 }
