@@ -35,4 +35,14 @@ class Phase extends Model
     {
         return $this->belongsToMany(Intervenant::class, 'intervenant_phases');
     }
+
+    public function criteres(): BelongsToMany
+    {
+        return $this->belongsToMany(Critere::class, 'phase_criteres');
+    }
+
+    public function juries():BelongsToMany
+    {
+        return $this->BelongsToMany(Jury::class, 'jury_phases');
+    }
 }

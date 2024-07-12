@@ -19,6 +19,11 @@ class Intervenant extends Model
     {
         return $this->belongsToMany(Phase::class, 'intervenant_phases');
     }
+    public function intervenantPhases(): HasMany
+    {
+        return $this->hasMany(IntervenantPhase::class);
+    }
+    
     public function reponse(){
         return $this->hasMany(Reponse::class);
     }

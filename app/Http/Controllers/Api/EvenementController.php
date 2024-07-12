@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Evenement;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\PhaseResource;
+use App\Http\Resources\EvenementResource;
 
 class EvenementController extends Controller
 {
@@ -39,8 +41,9 @@ class EvenementController extends Controller
      */
     public function index()
     {
-        $evenements = Evenement::all();
-        return response()->json($evenements);
+        $evenements = Evenement::where('status','En attente')->get();
+
+        return EvenementResource::collection($evenements);
     }
 
     /**

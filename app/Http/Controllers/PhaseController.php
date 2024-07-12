@@ -3,18 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Phase;
-use App\Http\Requests\StorePhaseRequest;
-use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Critere;
+use App\Models\Question;
 use App\Models\Assertion;
 use App\Models\Evenement;
-use App\Models\Question;
-use App\Models\QuestionPhase;
-use Illuminate\Support\Facades\DB;
+use App\Models\Intervenant;
 use Illuminate\Http\Request;
+use App\Models\QuestionPhase;
+use App\Models\IntervenantPhase;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StorePhaseRequest;
+use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Groupe;
+use App\Models\Jury;
+use App\Models\JuryPhase;
+use App\Models\PhaseCritere;
 
 class PhaseController extends Controller
 {
-  
+
     /**
      * Display a listing of the resource.
      */
@@ -23,15 +30,15 @@ class PhaseController extends Controller
         $phase = Phase::latest()->get();
         return view("phases.index", compact("phase"));
     }
-   
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($evenements)
     {
-        $evenements=Evenement:: orderBy('nom')->get();
-        return view("phases.create", compact("evenements"));
+        $evenement = Evenement::find($evenements);
+        return view("phases.create", compact('evenement'));
     }
 
     /**
@@ -40,9 +47,10 @@ class PhaseController extends Controller
     public function store(StorePhaseRequest $request)
     {
         $request->validated([
-            'nom'=> 'require [ max:50 | min:3',
-            'description'=> 'require'
+            'nom' => 'require [ max:50 | min:3',
+            'description' => 'require'
         ]);
+        $evenement_id = $request->evenement_id;
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersNumber = strlen($characters);
         $codeLength = 3;
@@ -54,43 +62,44 @@ class PhaseController extends Controller
                 $position = mt_rand(0, $charactersNumber - 1);
                 $slug .= $characters[$position];
             }
-        }while (Phase::where('slug', $slug)->exists());
+        } while (Phase::where('slug', $slug)->exists());
 
         $phase = Phase::create(
             [
-                'nom'=> $request->nom,
-                'description'=> $request->description,
-                'statut'=> $request->statut,
-                'slug'=> $slug,
-                'type'=>$request->type,
-                'duree'=> $request->duree,
-                'date_debut'=> $request->date_debut,
-                'date_fin'=> $request->date_fin,
-                'evenement_id'=> $request->evenement_id
+                'nom' => $request->nom,
+                'description' => $request->description,
+                'statut' => 'en attente',
+                'slug' => $slug,
+                'type' => $request->type,
+                'duree' => $request->duree,
+                'date_debut' => $request->date_debut,
+                'date_fin' => $request->date_fin,
+                'evenement_id' => $evenement_id
             ]
 
         );
-        
-        return redirect()->route('phases.index')->with('success','Enregistrement reussit');
+        return redirect()->route('evenements.show', $evenement_id)->with('success', 'Enregistrement reussi');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Phase $phase)
+    public function show(Phase $phase, $evenements)
     {
-        $phaseShow=$phase;
-        $question= Question::latest()->get();  
-        return view('phases.show', compact('phaseShow','question'));
+        $evenement = Evenement::find($evenements);
+        $phaseShow = $phase;
+        $question = Question::latest()->get();
+        return view('phases.show', compact('phaseShow', 'question', 'evenement'));
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Phase $phase, Evenement $evenement)
+    public function edit(Phase $phase, Evenement $evenements)
     {
-        $phaseEdit= $phase;
-        return view('phases.edit', compact('phaseEdit'));
+        $phaseEdit = $phase;
+        $evenement = $evenements;
+        return view('phases.edit', compact('phaseEdit', 'evenement'));
     }
 
     /**
@@ -99,13 +108,14 @@ class PhaseController extends Controller
     public function update(UpdatePhaseRequest $request, Phase $phase)
     {
         $phase->update([
-            'nom'=> $request->nom,
-            'statut'=> $request->statut,
-            'description'=> $request->description,
-            'date_debut'=> $request->date_debut,
-            'date_fin'=> $request->date_fin
+            'nom' => $request->nom,
+            'description' => $request->description,
+            'date_debut' => $request->date_debut,
+            'date_fin' => $request->date_fin,
+            'duree' => $request->duree
         ]);
-        return redirect()->route('phases.index')->with('success','phase modifiée avec succes');
+
+        return redirect(route('phase.show', $phase->id))->with('success', 'phase modifiée avec succes');
     }
 
     /**
@@ -119,44 +129,47 @@ class PhaseController extends Controller
     }
     public function active()
     {
-        $phase = Phase::latest()->where("statut","active")->get();
+        $phase = Phase::latest()->where("statut", "active")->get();
         return view("phases.index", compact("phase"));
     }
     public function encours()
     {
-        $phase = Phase::latest()->where("statut","encours")->get();
+        $phase = Phase::latest()->where("statut", "encours")->get();
         return view("phases.index", compact("phase"));
     }
     public function desactive()
     {
-        $phase = Phase::latest()->where("statut","desactive")->get();
+        $phase = Phase::latest()->where("statut", "desactive")->get();
         return view("phases.index", compact("phase"));
     }
     public function enAttente()
     {
-        $phase = Phase::latest()->where("statut","en attente")->get();
+        $phase = Phase::latest()->where("statut", "en attente")->get();
         return view("phases.index", compact("phase"));
     }
     public function pause()
     {
-        $phase = Phase::latest()->where("statut","pause")->get();
+        $phase = Phase::latest()->where("statut", "pause")->get();
         return view("phases.index", compact("phase"));
     }
     public function terminer()
     {
-        $phase = Phase::latest()->where("statut","terminer")->get();
+        $phase = Phase::latest()->where("statut", "terminer")->get();
         return view("phases.index", compact("phase"));
     }
 
-    public function evenementPhase(Request $request, $id){
+    public function evenementPhase(Request $request, $id)
+    {
         $phaseShow1 = Phase::latest()->where('id', $id)->get();
-        foreach($phaseShow1 as $key => $value) {
-            $evenement=$value->evenement_id;
-           }//recuperation de l' id de l'evenement
-           
-        $phaseShow= DB::table('evenements')
-            ->join('phases',"evenements.id","=","phases.evenement_id")
-            // ->select('evenements.*', 'phases.*') //on recupere tout mais avec conflit de champs identitiques
+        foreach ($phaseShow1 as $key => $value) {
+            $evenement = $value->evenement_id;
+            $phase_type = $value->type;
+            $phase_id = $value->id;
+            $status_phase = $value->statut;
+        }
+
+        $phaseShow = DB::table('evenements')
+            ->join('phases', "evenements.id", "=", "phases.evenement_id")
             ->select(
                 'evenements.id as id_event',
                 'evenements.nom as nom_event',
@@ -167,41 +180,146 @@ class PhaseController extends Controller
                 'phases.description as decrip_phase',
                 'phases.statut as stat_phase',
                 'phases.date_debut as debut_phase',
-                'phases.date_fin as fin_phase')
-            ->where("evenements.id","=", (isset($evenement))?$evenement:null)
-            ->where("phases.id","=",$id)
+                'phases.date_fin as fin_phase',
+                'phases.type as type_phase'
+            )
+            ->where("evenements.id", "=", (isset($evenement)) ? $evenement : null)
+            ->where("phases.id", "=", $id)
             ->get();
-        foreach($phaseShow as $key => $value) {
-            $phase_id=$value->id;
-        }
-        $question= Question::latest()->get();
-       
-        $questionPhase0= QuestionPhase::orderBy('id')->where("phase_id", $phase_id)->get();
 
-        $tabAssertion=array();
-        $questionPhase=array();
-        foreach ($questionPhase0 as $key=>$valeur) {
-            $question_id= $valeur->id;
-            $assertion= Assertion::where('question_id', $question_id)->count();//nombre assertion liées
+        $question = Question::latest()->get();
+
+        $questionPhase0 = QuestionPhase::orderBy('id')->where("phase_id", $id)->get();
+
+        $tabAssertion = array();
+        $questionPhase = array();
+        foreach ($questionPhase0 as $key => $valeur) {
+            $question_id = $valeur->id;
+            $assertion = Assertion::where('question_id', $question_id)->count(); //nombre assertion liées
             $tabAssertion['assertNombre'] = $assertion;
-            $tabAssertion['question']=$valeur->question->question;
-            $tabAssertion['ponderation']=$valeur->ponderation;
+            $tabAssertion['question'] = $valeur->question->question;
+            $tabAssertion['ponderation'] = $valeur->ponderation;
             array_push($questionPhase, $tabAssertion);
         }
-        $questionAssert=$questionPhase;
-        
-        return view('phases.show', compact('phaseShow', 'question','questionAssert'));
+        $questionAssert = $questionPhase;
+
+        if ($phase_type === 'Vote' || $phase_type === 'vote') {
+            // module phase vote
+
+            //recuperer les intervenats liés à une phase
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+            $intervenants = [];
+            foreach ($intervenantPhases as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $groupe = Groupe::find($intervenant->groupe_id);
+                $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenant->nom_groupe = $groupe->nom;
+                $intervenant->image = $groupe->image;
+                $intervenants[] = $intervenant;
+            }
+
+            //recuperer les criteres liés à une phase
+            $phases = $phaseShow;
+            $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
+            $criteres = [];
+            foreach ($phaseCriteres as $phaseCritere) {
+                $critere = Critere::find($phaseCritere->critere_id);
+                $critere->criterePhaseId = $phaseCritere->id;
+                $criteres[] = $critere;
+            }
+
+            //rerecuperer les jurys liés à une phase
+            $juryPhases = JuryPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+
+            if ($juryPhases->count() > 0) {
+                $ponderation_public = $juryPhases->first()->ponderation_public;
+                $ponderation_prive = $juryPhases->first()->ponderation_prive;
+                $type_vote = $juryPhases->first()->type;
+            } else {
+                $ponderation_public = null;
+                $ponderation_prive = null;
+                $type_vote = null;
+            }
+
+            $jurys = [];
+            foreach ($juryPhases as $juryPhase) {
+                if (is_string($juryPhase->jury_id) && json_decode($juryPhase->jury_id, true) !== null) {
+                    $juryIds = json_decode($juryPhase->jury_id, true);
+                } else {
+                    $juryIds = $juryPhase->jury_id;
+                }
+
+                if (is_array($juryIds)) {
+                    $updatedJuryIds = [];
+                    foreach ($juryIds as $juryId) {
+                        $jury = Jury::find($juryId);
+                        if ($jury) {
+                            if ($jury->type == 'prive') {
+                                $jury->ponderation = $juryPhase->ponderation_prive;
+                            } else {
+                                $jury->ponderation = $juryPhase->ponderation_public;
+                            }
+                            $updatedJuryIds[] = $juryId;
+                            $jurys[] = $jury;
+                        }
+                    }
+                    $juryPhase->jury_id = json_encode($updatedJuryIds);
+                    $juryPhase->save();
+                } else {
+                    $jury = Jury::find($juryIds);
+                    if ($jury) {
+                        if ($jury->type == 'prive') {
+                            $jury->ponderation = $juryPhase->ponderation_prive;
+                        } else {
+                            $jury->ponderation = $juryPhase->ponderation_public;
+                        }
+                        $jurys[] = $jury;
+                    }
+                }
+            }
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase'));
+        } else {
+            // module phase evaluation
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+            $intervenants = [];
+            foreach ($intervenantPhases as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenants[] = $intervenant;
+            }
+            return view('phases.show', compact('phaseShow', 'question', 'questionAssert', 'intervenants', 'intervenantPhases'));
+        }
     }
 
-   
-    public function editPhase($id){
-        $phaseShow1 = Phase::latest()->where('id', $id)->get();
-        foreach($phaseShow1 as $key => $value) {
-            $evenement=$value->evenement_id;
-           }//recuperation de l' id de l'evenement
+    //changer le status de la phase	
 
-        $phaseEdit= DB::table('evenements')
-            ->join('phases',"evenements.id","=","phases.evenement_id")
+    public function changeStatus($phaseId, $status)
+    {
+        $phase = Phase::find($phaseId);
+        $phase->statut = $status;
+
+        $evenementId = $phase->evenement_id;
+        $evenement = Evenement::find($evenementId);
+
+        if ($status== 'En cours' || $status== 'en cours') {
+            $evenement->status = $status;
+            $evenement->update();
+        }
+        
+        $phase->update();
+        return redirect(route('phase.show', $phaseId))->with('successStatus', 'Statut de la phase modifié avec succès');
+    }
+
+
+    public function editPhase($id)
+    {
+        $phaseShow1 = Phase::latest()->where('id', $id)->get();
+        foreach ($phaseShow1 as $key => $value) {
+            $evenement = $value->evenement_id;
+        } //recuperation de l' id de l'evenement
+
+        $phaseEdit = DB::table('evenements')
+            ->join('phases', "evenements.id", "=", "phases.evenement_id")
             // ->select('evenements.*', 'phases.*') //on recupere tout mais avec conflit de champs identitiques
             ->select(
                 'evenements.id as id_event',
@@ -213,12 +331,12 @@ class PhaseController extends Controller
                 'phases.description as decrip_phase',
                 'phases.statut as stat_phase',
                 'phases.date_debut as debut_phase',
-                'phases.date_fin as fin_phase')
-            ->where("evenements.id","=", (isset($evenement))?$evenement:null)
-            ->where("phases.id","=",$id)
+                'phases.date_fin as fin_phase'
+            )
+            ->where("evenements.id", "=", (isset($evenement)) ? $evenement : null)
+            ->where("phases.id", "=", $id)
             ->get();
-       
+
         return view('phases.edit', compact('phaseEdit'));
     }
-   
 }

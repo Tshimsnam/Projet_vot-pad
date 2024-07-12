@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CritereResource;
 use App\Models\Critere;
 use Illuminate\Http\Request;
 
@@ -40,7 +41,7 @@ class CritereController extends Controller
     public function index()
     {
         $criteres = Critere::all();
-        return response()->json($criteres);
+        return CritereResource::collection($criteres);
     }
 
     /**

@@ -22,7 +22,7 @@ class StoreIntervenantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            //'fichier' => 'bail|required|file|mimes:csv',
         ];
     }
 }

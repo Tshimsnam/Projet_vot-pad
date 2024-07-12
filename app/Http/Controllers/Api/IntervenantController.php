@@ -7,6 +7,7 @@ use App\Models\Intervenant;
 use Illuminate\Http\Request;
 use App\Models\IntervenantPhase;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\IntervenantPhaseResource;
 
 class IntervenantController extends Controller
 {
@@ -123,20 +124,25 @@ class IntervenantController extends Controller
         $email = $request->email;
         $coupon = $request->coupon;
         $intervenant = Intervenant::where('email', $email)->first();
-    
+
         if (!$intervenant) {
-            return response()->json('L\'adresse email insérée est invalide.');
-        } else 
+            return response()->json('L\'adresse email insérée est invalide.', 400);
+        } else
         {
             $intervenantId = $intervenant->id;
             $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('coupon', $coupon)->first();
             if (!$intervenantPhase) {
-                return response()->json('Le coupon inséré est invalide.');
-            } 
+                return response()->json('Le coupon inséré est invalide.', 400);
+            }
             else {
                 $intervenantToken = $intervenantPhase->token;
                 if ($intervenantToken != 0) {
-                    return response()->json(['token' => $intervenantToken]);
+
+                    $intervenantPhase = IntervenantPhase::where('token', $intervenantToken)->first();
+                    $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                    $intervenant->intervenantPhaseId = $intervenantPhase->phase_id;
+                    $intervenant->intervenantToken = $intervenantPhase->token;
+                    return new IntervenantPhaseResource($intervenant);
                 }
                 else{
                     $intervenantPhaseCoupon = $intervenantPhase->coupon;
@@ -147,8 +153,12 @@ class IntervenantController extends Controller
                     $phaseSlug = substr($intervenantPhaseCoupon, 0, 3);
                     $phase = Phase::where('slug', $phaseSlug)->first();
                     $phase->token = $intervenantToken;
-                    return response()->json($phase);
-                }           
+                    $intervenantPhase = IntervenantPhase::where('token', $intervenantToken)->first();
+                    $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                    $intervenant->intervenantPhaseId = $intervenantPhase->phase_id;
+                    $intervenant->intervenantToken = $intervenantPhase->token;
+                    return new IntervenantPhaseResource($intervenant);
+                }
             }
         }
     }
