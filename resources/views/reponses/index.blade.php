@@ -39,7 +39,7 @@
                                 <form action="{{route('phasequestion')}}" method="get">
                                     @csrf
                                     @method('get')
-                                    <input type="text" name="phase_id" id="" class="hidden" value="3">
+                                    <input type="text" name="phase_id" id="" class="hidden" value="1">
                                     <input type="text" name="intervenant_id" id="" class="hidden" value="1">
                                     <input type="text" name="" id="" class="hidden" value="3">
                                     <button type="submit" class="px-3 py-2 w-full text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Demarrer</button>
@@ -89,7 +89,7 @@
                         @csrf
                         @method('post')
                         <input type="text" name="intervenant_id" id="" class="hidden" value="10">
-                        <input type="text" name="phase_id" id="" class="hidden" value="3">
+                        <input type="text" name="phase_id" id="" class="hidden" value="1">
                         
                         @foreach (session('questionAssetionTab') as $key=> $value )
                             <div id="{{$value['question']['question']}}" value="{{$value['question']['question']}}" class="hidden">
@@ -133,7 +133,9 @@
             </div>
         </div>      
     </div>
-    
+    <script>
+  
+  </script>
     <script>
         //script pour afficher une question à la fois
         const data1=document.getElementById('tab_qst_qsr').value;
