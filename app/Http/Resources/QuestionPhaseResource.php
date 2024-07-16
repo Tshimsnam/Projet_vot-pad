@@ -4,8 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Maatwebsite\Excel\Concerns\ToArray;
 
-class QuestionResource extends JsonResource
+class QuestionPhaseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,12 +15,6 @@ class QuestionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            "question"=> [
-                "id"=>$this->id,
-                "libele"=> $this->question,
-            ],
-            "assertions"=> QuestionAssertionResource::collection($this->assertion),
-        ];
+        return ["data"=>new QuestionResource($this->resource->question)];
     }
 }

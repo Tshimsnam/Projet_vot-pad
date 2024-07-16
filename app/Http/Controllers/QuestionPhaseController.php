@@ -98,16 +98,20 @@ class QuestionPhaseController extends Controller
     public function questionPhase(Request $request){
         
         $phase= Phase::where("id", $request->phase_id)->first();
-        $question= QuestionPhase::orderBy('id')->select('question_id','ponderation')->where("phase_id", $request->phase_id)->get();//recupere toutes les questions
+        $question= QuestionPhase::orderBy('id')
+                ->select('question_id')
+                ->where("phase_id", $request->phase_id)
+                ->get();//recupere toutes les questions
 
        $questionAssetionTab=array();
        $tableau=array();
         foreach ($question as $key => $value) {
-            $assertion= Assertion::orderBy('id')->select('id','ponderation','assertion','question_id')->where("question_id", $value->question_id)->get();
-            $tableau['question']=['question'=>$value->question->question,'id'=>$value->question->id,'ponderation'=>$value->ponderation];//tabeau pour question
+            $assertion= Assertion::orderBy('id')->select('id','assertion','question_id')->where("question_id", $value->question_id)->get();
+            $tableau['question']=['question'=>$value->question->question,'id'=>$value->question->id];//tabeau pour question
             $tableau['assertion']=[$assertion];//tabeau pour assertion
             array_push($questionAssetionTab, $tableau);
         }
+       
         
         foreach ($questionAssetionTab as $key => $value) {
             //value a deux tableaux [question] et [assertion] mais assertion un objet
@@ -130,6 +134,10 @@ class QuestionPhaseController extends Controller
         //         $tabAsseetionSimplifier[0]['id']
         // );
         // // dd($questionAssetionTab);
+    
+        
+       
+        
         return Redirect::back()
             ->with('debut','Bonne chance')
             ->with(compact('questionAssetionTab','phase'));

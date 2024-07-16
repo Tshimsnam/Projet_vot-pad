@@ -14,6 +14,7 @@ use App\Models\IntervenantPhase;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Groupe;
 use App\Models\Jury;
 use App\Models\JuryPhase;
 use App\Models\PhaseCritere;
@@ -164,6 +165,7 @@ class PhaseController extends Controller
             $evenement = $value->evenement_id;
             $phase_type = $value->type;
             $phase_id = $value->id;
+            $status_phase = $value->statut;
         }
 
         $phaseShow = DB::table('evenements')
@@ -204,12 +206,15 @@ class PhaseController extends Controller
         if ($phase_type === 'Vote' || $phase_type === 'vote') {
             // module phase vote
 
-            //recuperer les intervenats liés à une phase 
+            //recuperer les intervenats liés à une phase
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
             $intervenants = [];
             foreach ($intervenantPhases as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $groupe = Groupe::find($intervenant->groupe_id);
                 $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenant->nom_groupe = $groupe->nom;
+                $intervenant->image = $groupe->image;
                 $intervenants[] = $intervenant;
             }
 
@@ -272,7 +277,7 @@ class PhaseController extends Controller
                     }
                 }
             }
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote'));
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase'));
         } else {
             // module phase evaluation
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
@@ -284,6 +289,25 @@ class PhaseController extends Controller
             }
             return view('phases.show', compact('phaseShow', 'question', 'questionAssert', 'intervenants', 'intervenantPhases'));
         }
+    }
+
+    //changer le status de la phase	
+
+    public function changeStatus($phaseId, $status)
+    {
+        $phase = Phase::find($phaseId);
+        $phase->statut = $status;
+
+        $evenementId = $phase->evenement_id;
+        $evenement = Evenement::find($evenementId);
+
+        if ($status== 'En cours' || $status== 'en cours') {
+            $evenement->status = $status;
+            $evenement->update();
+        }
+        
+        $phase->update();
+        return redirect(route('phase.show', $phaseId))->with('successStatus', 'Statut de la phase modifié avec succès');
     }
 
 

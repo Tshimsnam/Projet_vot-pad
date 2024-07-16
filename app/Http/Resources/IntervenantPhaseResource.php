@@ -16,8 +16,9 @@ class IntervenantPhaseResource extends JsonResource
     {
                 return 
         [
-            'id'=>$this->id,
-            'phases_intervenants_id'=>$this->intervenantPhaseId,
+            'id'=>$this->intervenantPhaseId,
+            'phase_id'=>$this->phaseId,
+            'intervenant'=>$this->id,
             'email'=>$this->email,
             'created_at'=>$this->created_at,
             'updated_at'=>$this->updated_at,

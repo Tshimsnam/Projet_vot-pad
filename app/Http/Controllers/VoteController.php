@@ -6,15 +6,21 @@ use App\Models\Vote;
 use App\Models\Phase;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
+use App\Models\Evenement;
 
 class VoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($event)
     {
-        $phases = Phase::latest()->paginate(10);
+        $phases=null;
+        $eventId = $event;
+        $event= Evenement::where('id',$eventId)->first();
+        if ($event) {
+           $phases = $event->phases;
+        }
         return view("votes.index",compact('phases'));
     }
 
@@ -43,6 +49,10 @@ class VoteController extends Controller
        $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
         // return response()->json($phaseAndSpeaker);
         return view("votes.show",compact('phaseAndSpeaker'));
+    }
+
+    public function showIntervenant($vote) {
+        return view("votes.showIntervenant");
     }
 
     /**

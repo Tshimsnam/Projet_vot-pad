@@ -54,10 +54,10 @@
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                     </svg>
                                 </div>
-                                <input datepicker datepicker-autohide datepicker-orientation="top" type="text"
-                                    name="date_debut"
+                                <input id="dateDebut" datepicker datepicker-autohide datepicker-orientation="top"
+                                    type="text" name="datedebut"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Select date">
+                                    placeholder="Select date" autocomplete="off" required>
                             </div>
                         </div>
                         <div>
@@ -72,10 +72,10 @@
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                     </svg>
                                 </div>
-                                <input datepicker datepicker-autohide datepicker-orientation="top" type="text"
-                                    name="date_fin"
+                                <input id="dateFin" datepicker datepicker-autohide datepicker-orientation="top"
+                                    type="text" name="datefin"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Select date">
+                                    placeholder="Select date" autocomplete="off">
                             </div>
                         </div>
                         <div class=" duree px-6">
@@ -105,7 +105,15 @@
                 </button>
             </form>
         </div>
+
+        <button data-modal-target="checkdate-modal" data-modal-toggle="checkdate-modal"
+            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button" style="display: none">
+            Toggle modal
+        </button>
     </div>
+    <x-checkdate />
+
     <script>
         const typeSelect = document.getElementById('type');
         const dureeDiv = document.querySelector('.duree');
@@ -118,6 +126,55 @@
             } else {
                 dureeDiv.style.display = 'block';
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateDebutInput = document.getElementById('dateDebut');
+            const dateFinInput = document.getElementById('dateFin');
+
+            dateDebutInput.addEventListener('blur', function() {
+                const dateDebut = this.value;
+
+                const currentDate = new Date();
+                const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const currentDay = String(currentDate.getDate()).padStart(2, '0');
+                const currentYear = currentDate.getFullYear();
+                const currentFormattedDate = `${currentMonth}/${currentDay}/${currentYear}`;
+
+                const dateDebutDate = new Date(dateDebut);
+                const currentDateDate = new Date(currentFormattedDate);
+
+                if (dateDebutDate < currentDateDate) {
+                    console.log('La date de début est antérieure à la date actuelle.');
+
+                    // Afficher le modal
+                    const checkdate = document.getElementById('checkdate-modal');
+                    const message = document.querySelector('#checkdate-modal #message');
+                    message.textContent = 'La date de début doit être supérieur à la date actuelle.';
+                    checkdate.classList.remove('hidden');
+                    checkdate.classList.add('flex');
+                    this.value = '';
+                }
+            });
+
+            dateFinInput.addEventListener('blur', function() {
+                const dateFin = this.value;
+                const dateDebut = dateDebutInput.value;
+
+                const dateFinDate = new Date(dateFin);
+                const currentDateDate = new Date(dateDebut);
+
+                if (dateFinDate < currentDateDate) {
+                    console.log('La date du début est antérieure à la date actuelle.');
+
+                    const checkdate = document.getElementById('checkdate-modal');
+                    const message = document.querySelector('#checkdate-modal #message');
+                    message.textContent = 'La date de fin ne doit pas être inférieur à la date de début.';
+                    checkdate.classList.remove('hidden');
+                    checkdate.classList.add('flex');
+                    this.value = '';
+                }
+            });
         });
     </script>
 </x-app-layout>

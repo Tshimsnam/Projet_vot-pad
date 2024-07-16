@@ -23,4 +23,8 @@ class Intervenant extends Model
     {
         return $this->hasMany(IntervenantPhase::class);
     }
+    
+    public function reponse(){
+        return $this->hasMany(Reponse::class);
+    }
 }
