@@ -16,6 +16,7 @@ class Jury extends Model
         'type',
         'token',
         'is_use',
+        'identifiant',
     ];
 
     public function phases():BelongsToMany
