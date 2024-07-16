@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
+        <div class="">
+            <h2 class="text-2xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2>
+            <h2 class="font-semibold text-sx text-gray-500 dark:text-gray-400  ">
                 {{ __('Ajouter une phase') }}
             </h2>
         </div>
@@ -31,7 +32,7 @@
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="La description de la phase" required style="height: 132px;"></textarea>
                 </div>
-                <div class="relative z-0 w-full mb-5 group">
+                <div class="relative z-0 w-full mb-5 group" style="padding-top: 20px">
                     <label for="type"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
                     <select id="type" name="type" required
@@ -44,7 +45,7 @@
                     <div style="display: flex; align-items: center;">
                         <div>
                             <label for="datedebut" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Date du début
+                                Date début
                             </label>
                             <div class="relative " style="padding-right: 20px;">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"> <svg
@@ -55,15 +56,16 @@
                                     </svg>
                                 </div>
                                 <input id="dateDebut" datepicker datepicker-autohide datepicker-orientation="top"
-                                    type="text" name="datedebut"
+                                    type="text"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Select date" autocomplete="off" required>
+                                    placeholder="Select date" autocomplete="off" name="date_debut" required
+                                    value="">
                             </div>
                         </div>
                         <div>
                             <label for="datefin"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dâte
-                                Fin</label>
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date
+                                fin</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                     <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -73,7 +75,7 @@
                                     </svg>
                                 </div>
                                 <input id="dateFin" datepicker datepicker-autohide datepicker-orientation="top"
-                                    type="text" name="datefin"
+                                    type="text" name="date_fin"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Select date" autocomplete="off">
                             </div>
@@ -147,7 +149,6 @@
                 if (dateDebutDate < currentDateDate) {
                     console.log('La date de début est antérieure à la date actuelle.');
 
-                    // Afficher le modal
                     const checkdate = document.getElementById('checkdate-modal');
                     const message = document.querySelector('#checkdate-modal #message');
                     message.textContent = 'La date de début doit être supérieur à la date actuelle.';
@@ -159,7 +160,6 @@
 
             dateFinInput.addEventListener('blur', function() {
                 const dateFin = this.value;
-                const dateDebut = dateDebutInput.value;
 
                 const dateFinDate = new Date(dateFin);
                 const currentDateDate = new Date(dateDebut);

@@ -98,7 +98,7 @@ class PhaseController extends Controller
     public function edit(Phase $phase, Evenement $evenements)
     {
         $phaseEdit = $phase;
-        $evenement = $evenements;
+        $evenement = Evenement::find($phase->evenement_id);
         return view('phases.edit', compact('phaseEdit', 'evenement'));
     }
 
@@ -123,10 +123,13 @@ class PhaseController extends Controller
      */
     public function destroy(Phase $phase)
     {
-        // $phase->delete();
-        // return redirect()->route('phases.index')->with('success','Suppression effectuée avec succès');
-        //Je suggere la desactivation de la phase dans le statut
+        $evenement = Evenement::find($phase->evenement_id);
+        $evenement_id = $evenement->id;
+        $phase->delete();
+        $phases = $evenement->phases;
+        return redirect()->route('evenements.show', $evenement_id)->with('success', 'Phase supprimée avec succes');
     }
+
     public function active()
     {
         $phase = Phase::latest()->where("statut", "active")->get();

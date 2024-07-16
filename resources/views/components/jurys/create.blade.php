@@ -109,7 +109,7 @@
                         class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                         Valider
                     </button>
-                    <button id="edit" type="button" onclick="editer()"
+                    <button id="edit" type="button" onclick="changer()"
                         class="ml-auto text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-2.5 py-2.5 text-center inline-flex items-center dark:bg-gray-600 dark:focus:ring-gray-500 me-2 mb-2"
                         style="padding-top:10px; transition: all 1.0s ease-in-out;">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -120,8 +120,7 @@
                                 d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                         </svg>
                     </button>
-
-                    <button id="annul" type="button" onclick="editer()"
+                    <button id="annul" type="button" onclick="changer()"
                         class="ml-auto text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-2.5 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:focus:ring-red-700 me-2 mb-2"
                         style="padding-top:10px; transition: all 1.0s ease-in-out; display: none;">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -230,14 +229,14 @@
             ajoutPublicCheckbox.value = 1;
 
         } else if (selectedType === 'prive') {
-            ponderationPrive.style.display = 'block';
+            ponderationPrive.style.display = 'none';
             ponderationPublic.style.display = 'none';
-            ponderationPriveInput.required = true;
+            ponderationPriveInput.required = false;
             ponderationPublicInput.required = false;
 
             //prive checked,public no
             ponderationPrive.style.display = 'block';
-            ponderationPriveInput.style.display = 'block';
+            ponderationPriveInput.style.display = 'none';
             labelPrive.style.display = 'block';
             numberPrive.style.display = 'block';
             numberPriveInput.setAttribute('value', 1);
@@ -247,12 +246,12 @@
 
         } else if (selectedType === 'public') {
             ponderationPrive.style.display = 'none';
-            ponderationPublic.style.display = 'block';
+            ponderationPublic.style.display = 'none';
             ponderationPriveInput.required = false;
-            ponderationPublicInput.required = true;
+            ponderationPublicInput.required = false;
 
             //public checked,prive no
-            ponderationPublic.style.display = 'block';
+            ponderationPublic.style.display = 'none';
             ajoutPublicCheckbox.value = 1;
 
             ponderationPrive.style.display = 'none';
@@ -288,8 +287,7 @@
     let originPondPublic
     let originPondPrive
 
-    function editer() {
-
+    function changer() {
         const buttonEdit = document.getElementById('edit');
         const buttonAnnul = document.getElementById('annul');
 

@@ -6,30 +6,30 @@
                     type="button"
                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                        <path fill-rule="evenodd"
-                            d="M2 3.75A.75.75 0 0 1 2.75 3h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 3.75ZM2 8a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 8Zm0 4.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z"
-                            clip-rule="evenodd" />
+                        <path
+                            d="M8 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM8 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM9.5 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
                     </svg>
                 </button>
                 <!-- Dropdown menu -->
                 <div id="dropdownLeft"
                     class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-15 dark:bg-gray-700 dark:divide-gray-600">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLeftButton">
-                        <li>
+                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLeftButton">
+                        <li style="margin-right: 0.2rem; margin-left: 0.2rem;">
                             <a href="{{ route('phases.edit', $phase_id) }}"
-                                class="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white border-2 rounded-md border-gray-700">
+                                class="block px-3 py-2 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md ">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    stroke-width="1.5" stroke="currentColor" class="size-5">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                 </svg>
                             </a>
                         </li>
-                        <li>
-                            <a href=""
-                                class="block px-4 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white border-2 rounded-md border-gray-700">
+                        <li style="margin-right: 0.2rem; margin-left: 0.2rem;">
+                            <a onclick="supprimer(event, '{{ route('phases.destroy', $phase_id) }}')"
+                                data-modal-target="delete-modal" data-modal-toggle="delete-modal" href="#"
+                                class="block px-3 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md ">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    stroke-width="1.5" stroke="currentColor" class="size-5">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
@@ -96,26 +96,28 @@
                 <button type="button" id="dropdownLeftButtonStatus" data-dropdown-toggle="dropdownLeftStatus"
                     data-dropdown-placement="left"
                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
+                        style="margin-right: 0.5rem;">
                         <path fill-rule="evenodd"
                             d="M6.455 1.45A.5.5 0 0 1 6.952 1h2.096a.5.5 0 0 1 .497.45l.186 1.858a4.996 4.996 0 0 1 1.466.848l1.703-.769a.5.5 0 0 1 .639.206l1.047 1.814a.5.5 0 0 1-.14.656l-1.517 1.09a5.026 5.026 0 0 1 0 1.694l1.516 1.09a.5.5 0 0 1 .141.656l-1.047 1.814a.5.5 0 0 1-.639.206l-1.703-.768c-.433.36-.928.649-1.466.847l-.186 1.858a.5.5 0 0 1-.497.45H6.952a.5.5 0 0 1-.497-.45l-.186-1.858a4.993 4.993 0 0 1-1.466-.848l-1.703.769a.5.5 0 0 1-.639-.206l-1.047-1.814a.5.5 0 0 1 .14-.656l1.517-1.09a5.033 5.033 0 0 1 0-1.694l-1.516-1.09a.5.5 0 0 1-.141-.656L2.46 3.593a.5.5 0 0 1 .639-.206l1.703.769c.433-.36.928-.65 1.466-.848l.186-1.858Zm-.177 7.567-.022-.037a2 2 0 0 1 3.466-1.997l.022.037a2 2 0 0 1-3.466 1.997Z"
                             clip-rule="evenodd" />
                     </svg>
+                    <p class="flex justify-inline items-center">Changer statut</p>
                 </button>
                 <!-- Dropdown menu -->
                 <div id="dropdownLeftStatus"
                     class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-15 dark:bg-gray-700 dark:divide-gray-600">
 
-                    <ul class="py-2 text-xs text-gray-700 dark:text-gray-200"
+                    <ul class="py-1 text-xs text-gray-700 dark:text-gray-200"
                         aria-labelledby="dropdownLeftButtonStatus">
-                        <li id = "enCours">
+                        <li id = "enCours" style="margin-right: 0.2rem; margin-left: 0.2rem;">
                             <?php $message = 'Voulez-vous lancer cette phase?'; ?>
                             <a href="#"
                                 onclick="status(event, '{{ $message }}', '{{ route('phases.status', ['status' => 'En cours', 'id' => $phase_id]) }}')"
                                 data-modal-target="status-modal" data-modal-toggle="status-modal"
-                                class="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md ">
+                                class="block px-3 py-1 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md ">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                                    class="size-4">
+                                    class="size-5">
                                     <path fill-rule="evenodd"
                                         d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm3.844-8.791a.75.75 0 0 0-1.188-.918l-3.7 4.79-1.649-1.833a.75.75 0 1 0-1.114 1.004l2.25 2.5a.75.75 0 0 0 1.15-.043l4.25-5.5Z"
                                         clip-rule="evenodd" />
@@ -123,14 +125,14 @@
                             </a>
                         </li>
 
-                        <li id="fermer">
+                        <li id="fermer" style="margin-right: 0.2rem; margin-left: 0.2rem;">
                             <?php $message = 'Voulez-vous fermer cette phase?'; ?>
                             <a href="#"
                                 onclick="status(event, '{{ $message }}' , '{{ route('phases.status', ['status' => 'Fermer', 'id' => $phase_id]) }}')"
                                 data-modal-target="status-modal" data-modal-toggle="status-modal"
-                                class="block px-4 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md">
+                                class="block px-3 py-1 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                                    class="size-4">
+                                    class="size-5">
                                     <path
                                         d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
                                 </svg>
@@ -749,27 +751,28 @@
                         ponderationPriveH2.textContent = "P: " + ponderation_prive;
                         ponderationPublicH2.textContent = "P: " + ponderation_public;
 
-                        titreType.style.display = 'flex';
+                        buttonEdit.style.display = 'flex';
+                        buttonAnnul.style.display = 'none';
 
+                        titreType.style.display = 'flex';
                         const svgElement = titreType.querySelector('svg');
                         titreType.innerHTML = '';
                         titreType.appendChild(svgElement.cloneNode(true));
                         titreType.insertAdjacentHTML('beforeend', type_vote.toUpperCase());
-                        buttonEdit.style.display = 'flex';
-                        buttonAnnul.style.display = 'none';
 
                     } else if (selectedType === 'prive') {
                         ponderationPrive.style.display = 'block';
                         ponderationPublic.style.display = 'none';
+                        inputPrive.style.display = 'none';
 
                         typeDiv.style.display = 'none';
-                        inputPrive.required = true;
+                        inputPrive.required = false;
                         inputPrive.disabled = true;
                         inputPublic.required = false;
                         selectType.disabled = true;
                         numberPriveInput.setAttribute('value', 1);
                         labelPrive1.style.display = 'none';
-                        labelPrive2.style.display = 'block';
+                        labelPrive2.style.display = 'none';
 
                         titreType.style.display = 'flex';
                         const svgElement = titreType.querySelector('svg');
@@ -780,21 +783,21 @@
                         ajoutDiv.style.display = 'none';
                         ajoutPublicCheckbox.checked = false;
                         ajoutPriveCheckbox.checked = true;
-                        buttonEdit.style.display = 'flex';
+                        buttonEdit.style.display = 'none';
                         buttonAnnul.style.display = 'none';
 
                     } else if (selectedType === 'public') {
                         ponderationPrive.style.display = 'none';
-                        ponderationPublic.style.display = 'block';
+                        ponderationPublic.style.display = 'none';
                         typeDiv.style.display = 'none';
 
                         inputPrive.required = false;
-                        inputPublic.required = true;
+                        inputPublic.required = false;
                         inputPublic.disabled = true;
                         selectType.disabled = true;
 
                         labelPublic1.style.display = 'none';
-                        labelPublic2.style.display = 'block';
+                        labelPublic2.style.display = 'none';
                         titreType.style.display = 'flex';
                         const svgElement = titreType.querySelector('svg');
                         titreType.innerHTML = '';
@@ -804,7 +807,7 @@
                         ajoutDiv.style.display = 'none';
                         ajoutPublicCheckbox.checked = true;
                         ajoutPriveCheckbox.checked = false;
-                        buttonEdit.style.display = 'flex';
+                        buttonEdit.style.display = 'none';
                         buttonAnnul.style.display = 'none';
                     }
                     break;

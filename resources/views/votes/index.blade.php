@@ -7,7 +7,7 @@
     <section class="sm:mx-auto md:w-3/4 space-y-5">
       <div x-data="{status: '{{$phase->statut}}'}">
         <a
-        :href="status != 'active' ? 'javascript:void(0)' : '{{route('show',$phase->slug)}}'"
+        
         :class="status != 'active' ? 'bg-gray-500 text-gray-300 cursor-not-allowed' : ''"
         class="block mb-4 border-0 hover:border border-orange-400 rounded "
         >
