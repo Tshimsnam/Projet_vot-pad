@@ -37,6 +37,7 @@ class IntervenantPhaseController extends Controller
         foreach ($intervenantPhases as $intervenantPhase) {
             $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
             $intervenant->intervenantPhaseId = $intervenantPhase->id;
+            $intervenant->phaseId = (int) $phaseId;
             $intervenants[] = $intervenant;
         }
     
