@@ -47,46 +47,74 @@ class JuryController extends Controller
     public function destroy(Jury $jury, $phaseId)
     {
         $jury->delete();
-        return redirect(route('phase.show', $phaseId))->with('successDeleteJury', 'Suppression effectuée');
-    }
-    public function form(){
-        return view('jurys.authenticate');
+        return response()->json(['Suppression effectuée']);
     }
 
-    public function authenticate(Request $request){
+    public function authenticate(Request $request)
+    {
         $coupon = $request->coupon;
+        $identifiant = $request->identifiant;
         $jury = Jury::where('coupon', $coupon)->first();
         if (!$jury) {
             return response()->json([
                 "error" => "le coupon est invalide"
             ]);
-        }
-        else {
-            $JuryToken = $jury->token;
-            if ($JuryToken != 0) {
-                return response()->json([
-                    "error"=>"ce coupon a été déjà utilisé."]);
+        } else {
+
+            $type = $jury->type;
+            if ($type == "public") {
+                return $this->publicAuthenticate($jury, $identifiant);
+            } else if ($type == "prive") {
+                return $this->privateAuthenticate($jury);
+            } else {
             }
-            else{
-                $juryCoupon = $jury->coupon;
-                $evenementId = $jury->evenement_id;
+        }
+    }
+
+    private function publicAuthenticate(Jury $jury, $identifiant)
+    {
+        $juryCoupon = $jury->coupon;
+        $juryExistant = Jury::where('coupon', $juryCoupon)->where('identifiant', $identifiant)->first();
+        if ($juryExistant) {
+            return response()->json([
+                "error" => "Desolé, vous ne pouvez plus acceder à ce vote"
+            ]);
+        }
+        $phaseSlug = substr($juryCoupon, 0, 3);
+        $phase = Phase::where('slug', $phaseSlug)->first();
+        if ($phase->statut == 'En cours') {
+            $userData = array('coupon' => $juryCoupon, 'identifiant' => $identifiant, 'type' => 'public');
+            $newJury = Jury::create($userData);
+            $token = $newJury->createToken($juryCoupon)->plainTextToken;
+            $newJury->token = $token;
+            $newJury->save();
+            return response()->json(["phase" => $phase, "token" => $token]);;
+        } else {
+            $message = 'Desolé, cette phase est ' . $phase->statut;
+            return $message;
+        }
+    }
+
+    private function privateAuthenticate(Jury $jury)
+    {
+        $JuryToken = $jury->token;
+        if ($JuryToken != 0) {
+            return response()->json([
+                "error" => "ce coupon a été déjà utilisé."
+            ]);
+        } else {
+            $juryCoupon = $jury->coupon;
+            $phaseSlug = substr($juryCoupon, 0, 3);
+            $phase = Phase::where('slug', $phaseSlug)->first();
+            if ($phase->statut == 'En cours') {
                 $token = $jury->createToken($juryCoupon)->plainTextToken;
                 $jury->token = $token;
                 $jury->save();
-                $phaseSlug = substr($juryCoupon, 0, 3);
-                $phase = Phase::where('slug', $phaseSlug)->first();
-            if ($phase->statut=='active') {
-                return response()->json($phase);;
-                }
-            else {
-                $message = 'Desolée, cette phase est '.$phase->statut;
+                return response()->json(["phase" => $phase, "token" => $token]);;
+            } else {
+                $message = 'Desolée, cette phase est ' . $phase->statut;
                 return $message;
-                }
-
-
             }
         }
-
-
     }
 }
