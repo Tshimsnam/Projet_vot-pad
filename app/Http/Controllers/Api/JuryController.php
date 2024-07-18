@@ -87,6 +87,9 @@ class JuryController extends Controller
             $newJury = Jury::create($userData);
             $token = $newJury->createToken($juryCoupon)->plainTextToken;
             $newJury->token = $token;
+            $getNumber = $jury->is_use;
+            $jury->is_use = $getNumber + 1;
+            $jury->save();
             $newJury->save();
             return response()->json(["phase" => $phase, "token" => $token]);;
         } else {
@@ -109,6 +112,7 @@ class JuryController extends Controller
             if ($phase->statut == 'En cours') {
                 $token = $jury->createToken($juryCoupon)->plainTextToken;
                 $jury->token = $token;
+                $jury->is_use = 1;
                 $jury->save();
                 return response()->json(["phase" => $phase, "token" => $token]);;
             } else {
