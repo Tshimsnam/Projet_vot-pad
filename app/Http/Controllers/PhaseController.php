@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Phase;
-use App\Models\Critere;
-use App\Models\Question;
-use App\Models\Assertion;
-use App\Models\Evenement;
-use App\Models\Intervenant;
-use Illuminate\Http\Request;
-use App\Models\QuestionPhase;
-use App\Models\IntervenantPhase;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Assertion;
+use App\Models\Critere;
+use App\Models\Evenement;
 use App\Models\Groupe;
+use App\Models\Intervenant;
+use App\Models\IntervenantPhase;
 use App\Models\Jury;
 use App\Models\JuryPhase;
+use App\Models\Phase;
 use App\Models\PhaseCritere;
+use App\Models\Question;
+use App\Models\QuestionPhase;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PhaseController extends Controller
 {
@@ -262,6 +263,9 @@ class PhaseController extends Controller
                             } else {
                                 $jury->ponderation = $juryPhase->ponderation_public;
                             }
+                            $coupon = $jury->coupon;
+                            $qrCode = QrCode::size(650)->generate($coupon);
+                            $jury->qr_code = $qrCode;
                             $updatedJuryIds[] = $juryId;
                             $jurys[] = $jury;
                         }
@@ -276,6 +280,9 @@ class PhaseController extends Controller
                         } else {
                             $jury->ponderation = $juryPhase->ponderation_public;
                         }
+                        $coupon = $jury->coupon;
+                        $qrCode = QrCode::size(600)->generate($coupon);
+                        $jury->qr_code = $qrCode;
                         $jurys[] = $jury;
                     }
                 }
@@ -304,11 +311,11 @@ class PhaseController extends Controller
         $evenementId = $phase->evenement_id;
         $evenement = Evenement::find($evenementId);
 
-        if ($status== 'En cours' || $status== 'en cours') {
+        if ($status == 'En cours' || $status == 'en cours') {
             $evenement->status = $status;
             $evenement->update();
         }
-        
+
         $phase->update();
         return redirect(route('phase.show', $phaseId))->with('successStatus', 'Statut de la phase modifié avec succès');
     }
