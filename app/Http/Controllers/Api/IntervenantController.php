@@ -14,7 +14,7 @@ class IntervenantController extends Controller
     /**
      * Display a listing of the resource.
      */
-            /**
+    /**
      * @OA\Get(
      *      path="/intervenants",
      *      operationId="getIntervenantsList",
@@ -127,24 +127,24 @@ class IntervenantController extends Controller
 
         if (!$intervenant) {
             return response()->json('L\'adresse email insérée est invalide.', 400);
-        } else
-        {
+        } else {
             $intervenantId = $intervenant->id;
             $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('coupon', $coupon)->first();
             if (!$intervenantPhase) {
                 return response()->json('Le coupon inséré est invalide.', 400);
-            }
-            else {
+            } else {
                 $intervenantToken = $intervenantPhase->token;
                 if ($intervenantToken != 0) {
 
                     $intervenantPhase = IntervenantPhase::where('token', $intervenantToken)->first();
+                    $phase = Phase::find($intervenantPhase->phase_id);
                     $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
-                    $intervenant->intervenantPhaseId = $intervenantPhase->phase_id;
+                    $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                    $intervenant->phaseId = $intervenantPhase->phase_id;
+                    $intervenant->phase_nom = $phase->nom;
                     $intervenant->intervenantToken = $intervenantPhase->token;
                     return new IntervenantPhaseResource($intervenant);
-                }
-                else{
+                } else {
                     $intervenantPhaseCoupon = $intervenantPhase->coupon;
                     $token = $intervenantPhase->createToken($intervenantPhaseCoupon)->plainTextToken;
                     $intervenantPhase->token = $token;
@@ -154,8 +154,11 @@ class IntervenantController extends Controller
                     $phase = Phase::where('slug', $phaseSlug)->first();
                     $phase->token = $intervenantToken;
                     $intervenantPhase = IntervenantPhase::where('token', $intervenantToken)->first();
+                    $phase = Phase::find($intervenantPhase->phase_id);
                     $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
-                    $intervenant->intervenantPhaseId = $intervenantPhase->phase_id;
+                    $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                    $intervenant->phaseId = $intervenantPhase->phase_id;
+                    $intervenant->phase_nom = $phase->nom;
                     $intervenant->intervenantToken = $intervenantPhase->token;
                     return new IntervenantPhaseResource($intervenant);
                 }
