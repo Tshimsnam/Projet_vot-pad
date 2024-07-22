@@ -6,19 +6,22 @@ use App\Models\Evenement;
 use App\Models\Jury;
 use App\Models\JuryPhase;
 use App\Models\Phase;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class QRCodeController extends Controller
 {
-    public function index($jury)
+    public function index($printData, $nombre)
     {
-        $phase_id = (int) $jury;
+        $valsPrint = explode(",", $printData);
+
+        $phase_id = intval($valsPrint[0]);
+        $numPrive = intval($valsPrint[1]);
         $juryPhases = JuryPhase::where('phase_id', $phase_id)->get();
         $phase = Phase::find($phase_id);
         $evenement = Evenement::find($phase->evenement_id);
+        $nombrePublic = $nombre;
 
         foreach ($juryPhases as $juryPhase) {
             if (is_string($juryPhase->jury_id) && json_decode($juryPhase->jury_id, true) !== null) {
@@ -31,6 +34,8 @@ class QRCodeController extends Controller
                 foreach ($juryIds as $juryId) {
                     $jury = Jury::find($juryId);
                     if ($jury) {
+                        $jury->nombrePublic = $nombrePublic;
+                        $jury->numPrive = $numPrive;
                         $jury->event_nom = $evenement->nom;
                         $jurys[] = $jury;
                     }
@@ -38,6 +43,8 @@ class QRCodeController extends Controller
             } else {
                 $jury = Jury::find($juryIds);
                 if ($jury) {
+                    $jury->nombrePublic = $nombrePublic;
+                    $jury->numPrive = $numPrive;
                     $jury->event_nom = $evenement->nom;
                     $jurys[] = $jury;
                 }

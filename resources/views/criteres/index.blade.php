@@ -293,8 +293,10 @@
                                 </button>
                             </div>
                         @endif
-                        <div class="py-2 px-8 float-right">
-                            <button id="showQrCodesButton" onclick="printPage()"
+                        <div id="printDiv" class="py-2 px-8 float-right">
+                            <a id="showQrCodesButton"
+                                onclick="print(event, '{{ $phase_id }}', '{{ $type_vote }}')"
+                                data-modal-target="print-modal" data-modal-toggle="print-modal" href="#"
                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
                                     class="size-4">
@@ -304,7 +306,7 @@
                                 </svg>
 
                                 <p class="flex justify-inline items-center">Imprimer les QrCodes</p>
-                            </button>
+                            </a>
                         </div>
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
@@ -707,10 +709,12 @@
     <x-criteres.create />
     <x-jurys.create />
     <x-criteres.edit />
+    <x-qrcodes.printcode />
 
     <script>
         window.onload = function() {
             initial("{{ $status_phase }}");
+            printCheck("{{ $type_vote }}");
         };
 
         function initial(status_phase) {
@@ -720,6 +724,13 @@
             } else if (status_phase == 'Fermer' || status_phase == 'fermer') {
                 document.getElementById('enCours').hidden = false;
                 document.getElementById('fermer').hidden = true;
+            }
+        }
+
+        function printCheck(typeVote) {
+            printDiv = document.getElementById('printDiv');
+            if (typeVote == '') {
+                printDiv.style.display = 'none';
             }
         }
 
@@ -806,6 +817,9 @@
 
             const buttonEdit = document.querySelector('#create-modal-jury form #edit');
             const buttonAnnul = document.querySelector('#create-modal-jury form #annul');
+            const infoPublic = document.querySelector('#create-modal-jury form #infoPublic');
+
+            infoPublic.style.display = 'none';
 
             for (const option of selectType.options) {
                 if (option.value === type_vote) {
@@ -817,6 +831,7 @@
                         ponderationPrive.style.display = 'none';
                         ponderationPublic.style.display = 'none';
                         typeDiv.style.display = 'none';
+                        infoPublic.style.display = 'none';
                         ajoutDiv.style.display = 'block';
                         numberPrive.style.display = 'none';
                         numberPriveInput.setAttribute('value', 0);
@@ -842,9 +857,9 @@
 
                     } else if (selectedType === 'prive') {
                         ponderationPrive.style.display = 'block';
+                        infoPublic.style.display = 'none';
                         ponderationPublic.style.display = 'none';
                         inputPrive.style.display = 'none';
-
                         typeDiv.style.display = 'none';
                         inputPrive.required = false;
                         inputPrive.disabled = true;
@@ -870,7 +885,7 @@
                         ponderationPrive.style.display = 'none';
                         ponderationPublic.style.display = 'none';
                         typeDiv.style.display = 'none';
-
+                        infoPublic.style.display = 'block';
                         inputPrive.required = false;
                         inputPublic.required = false;
                         inputPublic.disabled = true;
@@ -923,24 +938,51 @@
 
         }
 
-        function printPage() {
-            var url = '{{ route('qrcodes', ['jurys' => $phase_id]) }}';
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                    var iframe = document.createElement('iframe');
-                    iframe.srcdoc = html;
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
 
-                    setTimeout(() => {
-                        iframe.contentWindow.print();
-                        document.body.removeChild(iframe);
-                    }, 1000);
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la récupération du contenu :', error);
-                });
+
+        function print(event, phaseId, type) {
+
+            event.preventDefault();
+            const phase = document.querySelector('#print-modal #idPhase')
+            phase.setAttribute('value', phaseId);
+
+            const nombreInp = document.querySelector('#print-modal #nombrePublic');
+            const numPrive = document.querySelector('#print-modal #numPrive');
+
+            nombreInp.setAttribute('value', 0)
+            numPrive.setAttribute('value', 0);
+
+            const printPriveCheckbox = document.querySelector('#print-modal #printPrive');
+            const printPublicCheckbox = document.querySelector('#print-modal #printPublic');
+            const numberDiv = document.querySelector('#print-modal #numberDiv');
+            const checkDiv = document.querySelector('#print-modal #ajout');
+            const typeVote = document.querySelector('#print-modal #typeVote');
+            const infoPrive = document.querySelector('#print-modal #infoPrive');
+
+            typeVote.setAttribute('value', type);
+
+            if (type === 'prive et public') {
+                numberDiv.style.display = 'none';
+                infoPrive.style.display = 'none';
+                printPriveCheckbox.checked = false;
+                printPublicCheckbox.checked = false;
+
+            } else if (type === 'prive') {
+
+                numberDiv.style.display = 'none';
+                checkDiv.style.display = 'none';
+                numPrive.setAttribute('value', 1);
+                printPriveCheckbox.checked = true;
+                printPublicCheckbox.checked = false;
+            } else if (type === 'public') {
+                numberDiv.style.display = 'block';
+                infoPrive.style.display = 'none';
+                checkDiv.style.display = 'none';
+                nombreInp.setAttribute('value', 1)
+                printPriveCheckbox.checked = false;
+                printPublicCheckbox.checked = true;
+            }
+
         }
     </script>
 </x-app-layout>

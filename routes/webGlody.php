@@ -17,7 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/jurys/{jury}/{phaseId}', [JuryController::class, 'destroy'])->name('jury.destroy');
     Route::delete('/intervenants/{intervenant}/{phaseId}', [IntervenantController::class, 'destroy'])->name('intervenant.destroy');
     Route::put('/phases/{id}/{status}', [PhaseController::class, 'changeStatus'])->name('phases.status');
-    Route::get('/qrcodes/{jurys}', [QRCodeController::class, 'index'])->name('qrcodes');
+    Route::get('/qrcodes/{jurys}/{nombre}', [QRCodeController::class, 'index'])->name('qrcodes');
 });
 
 Route::get('/intervenants-form', [IntervenantController::class, 'form'])->name('form-authenticate');
