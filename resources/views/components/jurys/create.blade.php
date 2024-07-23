@@ -71,6 +71,10 @@
                         </li>
                     </ul>
                 </div>
+                <div id="infoPublic" class="">
+
+                    <p class="text-gray-500 dark:text-gray-400">Ici, un seul coupon public qui sera créé. <br> Veuillez cliquez sur le bouton pour générer le coupon</p>
+                </div>
                 <div id="priveDiv">
                     <div id="nombre_prive">
                         <label for="nombre_prive"

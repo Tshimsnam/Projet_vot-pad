@@ -49,27 +49,55 @@
 
     <div class="page">
         @foreach ($jurys as $item)
-            <div class="qr-code">
-                <h6 class="dark:text-white">{{ strtoupper($item->event_nom) }}</h6>
-                <p class="dark:text-white">TYPE : {{ strtoupper($item->type) }}</p>
-                <div id="qrcode-{{ $item->id }}"></div>
-                <h5>{{ strtoupper($item->coupon) }}</h5>
-            </div>
+            @if ($item->type == 'public')
+                @for ($i = 0; $i < $item->nombrePublic; $i++)
+                    <div class="qr-code">
+                        <h6 class="dark:text-white">{{ strtoupper($item->event_nom) }}</h6>
+                        <p class="dark:text-white">TYPE : {{ strtoupper($item->type) }}</p>
+                        <div id="qrcode-{{ $item->id }}-{{ $i }}"></div>
+                        <h5>{{ strtoupper($item->coupon) }}</h5>
+                    </div>
+                @endfor
+            @else
+                @if ($item->is_use != 1 && $item->numPrive != 0)
+                    <div class="qr-code">
+                        <h6 class="dark:text-white">{{ strtoupper($item->event_nom) }}</h6>
+                        <p class="dark:text-white">TYPE : {{ strtoupper($item->type) }}</p>
+                        <div id="qrcode-{{ $item->id }}"></div>
+                        <h5>{{ strtoupper($item->coupon) }}</h5>
+                    </div>
+                @endif
+            @endif
         @endforeach
     </div>
 </body>
-
 <script>
     function qrcode() {
         @foreach ($jurys as $item)
-            var qrcode = new QRCode(document.getElementById('qrcode-{{ $item->id }}'), {
-                text: '{{ $item->coupon }}',
-                width: 130, // Définissez la largeur souhaitée ici
-                height: 130, // Définissez la hauteur souhaitée ici
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
+            @if ($item->type == 'public')
+                @for ($i = 0; $i < $item->nombrePublic; $i++)
+                    var qrcode = new QRCode(document.getElementById(
+                        'qrcode-{{ $item->id }}-{{ $i }}'), {
+                        text: '{{ $item->coupon }}',
+                        width: 130,
+                        height: 130,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                @endfor
+            @else
+                @if ($item->is_use != 1 && $item->numPrive != 0)
+                    var qrcode = new QRCode(document.getElementById('qrcode-{{ $item->id }}'), {
+                        text: '{{ $item->coupon }}',
+                        width: 130,
+                        height: 130,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                @endif
+            @endif
         @endforeach
     }
     qrcode();
