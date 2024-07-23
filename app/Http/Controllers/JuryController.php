@@ -235,5 +235,12 @@ class JuryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    public function destroy(Jury $jury, $phaseId)
+    {
+        //
+        $jury->delete();
+        return redirect(route('phase.show', $phaseId))->with('successDeleteJury', 'Suppression effectuée');
+    }
+
     
     }

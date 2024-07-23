@@ -293,7 +293,21 @@
                                 </button>
                             </div>
                         @endif
+                        <div id="printDiv" class="py-2 px-8 float-right">
+                            <a id="showQrCodesButton"
+                                onclick="print(event, '{{ $phase_id }}', '{{ $type_vote }}')"
+                                data-modal-target="print-modal" data-modal-toggle="print-modal" href="#"
+                                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                    class="size-4">
+                                    <path fill-rule="evenodd"
+                                        d="M4 5a2 2 0 0 0-2 2v3a2 2 0 0 0 1.51 1.94l-.315 1.896A1 1 0 0 0 4.18 15h7.639a1 1 0 0 0 .986-1.164l-.316-1.897A2 2 0 0 0 14 10V7a2 2 0 0 0-2-2V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v3Zm1.5 0V2.5h5V5h-5Zm5.23 5.5H5.27l-.5 3h6.459l-.5-3Z"
+                                        clip-rule="evenodd" />
+                                </svg>
 
+                                <p class="flex justify-inline items-center">Imprimer les QrCodes</p>
+                            </a>
+                        </div>
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -302,6 +316,7 @@
                                     <th scope="col" class="py-2">type</th>
                                     <th scope="col" class="py-2">coupon</th>
                                     <th scope="col" class="py-2">is_use</th>
+                                    <th scope="col" class="py-2">QrCode</th>
                                     <th scope="col" class="py-2">action</th>
                                 </tr>
                             </thead>
@@ -332,6 +347,30 @@
                                         </th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a type="button" data-modal-target="qrcode-modal{{ $item->id }}"
+                                                data-modal-toggle="qrcode-modal{{ $item->id }}" href="#"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path d="M4.75 4.25a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1Z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M2 3.5A1.5 1.5 0 0 1 3.5 2H6a1.5 1.5 0 0 1 1.5 1.5V6A1.5 1.5 0 0 1 6 7.5H3.5A1.5 1.5 0 0 1 2 6V3.5Zm1.5 0H6V6H3.5V3.5Z"
+                                                        clip-rule="evenodd" />
+                                                    <path d="M4.25 11.25a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M2 10a1.5 1.5 0 0 1 1.5-1.5H6A1.5 1.5 0 0 1 7.5 10v2.5A1.5 1.5 0 0 1 6 14H3.5A1.5 1.5 0 0 1 2 12.5V10Zm1.5 2.5V10H6v2.5H3.5Z"
+                                                        clip-rule="evenodd" />
+                                                    <path d="M11.25 4.25a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1Z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 2a1.5 1.5 0 0 0-1.5 1.5V6A1.5 1.5 0 0 0 10 7.5h2.5A1.5 1.5 0 0 0 14 6V3.5A1.5 1.5 0 0 0 12.5 2H10Zm2.5 1.5H10V6h2.5V3.5Z"
+                                                        clip-rule="evenodd" />
+                                                    <path
+                                                        d="M8.5 9.417a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM8.5 13.083a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM13.083 8.5a.917.917 0 1 0 0 1.833.917.917 0 0 0 0-1.833ZM12.166 13.084a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM11.25 10.333a.917.917 0 1 0 0 1.833.917.917 0 0 0 0-1.833Z" />
+                                                </svg>
+                                            </a>
+                                        </th>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             <a onclick="supprimer(event, '{{ route('jury.destroy', ['jury' => $item->id, 'phaseId' => $phase_id]) }}');"
                                                 data-modal-target="delete-modal" data-modal-toggle="delete-modal"
                                                 href="#"
@@ -346,6 +385,47 @@
                                             </a>
                                         </th>
                                     </tr>
+                                    <div id="qrcode-modal{{ $item->id }}" tabindex="-1" aria-hidden="true"
+                                        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                        <div class="relative overflow-x-auto sm:rounded-lg bg-white rounded-lg shadow dark:bg-gray-800"
+                                            style="width: 80%;">
+                                            <div
+                                                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white"
+                                                    style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                                    Veuillez scanner le QrCode</h3>
+                                                </h3>
+                                                <button type="button"
+                                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                    data-modal-toggle="qrcode-modal{{ $item->id }}">
+                                                    <svg class="w-3 h-3" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 14 14">
+                                                        <path stroke="currentColor" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="2"
+                                                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                    </svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+                                            <div
+                                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 90vh;">
+                                                <h2 class="text-white" style="margin: 20px; font-size:50px">
+                                                    @foreach ($phases as $phase)
+                                                        {{ $phase->nom_event }}
+                                                    @endforeach
+                                                </h2>
+                                                <div id="qrcodeUnique">
+                                                    {{ $item->qr_code }}
+                                                </div>
+                                                <h2 id="couponH2" class="text-white"
+                                                    style="margin-top: 20px; font-size:50px">
+                                                    {{ $item->coupon }}
+                                                </h2>
+                                            </div>
+
+                                        </div>
+                                    </div>
                                 @endforeach
                             </tbody>
                         </table>
@@ -619,7 +699,9 @@
         <div class="p-2">
             {{ $phaseCriteres->links() }}
         </div>
+
     </div>
+
     <x-delete :message="__('Voulez-vous vraiment supprimer?')" />
     <x-phases.status />
     <x-candidats.create />
@@ -627,10 +709,12 @@
     <x-criteres.create />
     <x-jurys.create />
     <x-criteres.edit />
+    <x-qrcodes.printcode />
 
     <script>
         window.onload = function() {
             initial("{{ $status_phase }}");
+            printCheck("{{ $type_vote }}");
         };
 
         function initial(status_phase) {
@@ -640,6 +724,13 @@
             } else if (status_phase == 'Fermer' || status_phase == 'fermer') {
                 document.getElementById('enCours').hidden = false;
                 document.getElementById('fermer').hidden = true;
+            }
+        }
+
+        function printCheck(typeVote) {
+            printDiv = document.getElementById('printDiv');
+            if (typeVote == '') {
+                printDiv.style.display = 'none';
             }
         }
 
@@ -726,6 +817,9 @@
 
             const buttonEdit = document.querySelector('#create-modal-jury form #edit');
             const buttonAnnul = document.querySelector('#create-modal-jury form #annul');
+            const infoPublic = document.querySelector('#create-modal-jury form #infoPublic');
+
+            infoPublic.style.display = 'none';
 
             for (const option of selectType.options) {
                 if (option.value === type_vote) {
@@ -737,6 +831,7 @@
                         ponderationPrive.style.display = 'none';
                         ponderationPublic.style.display = 'none';
                         typeDiv.style.display = 'none';
+                        infoPublic.style.display = 'none';
                         ajoutDiv.style.display = 'block';
                         numberPrive.style.display = 'none';
                         numberPriveInput.setAttribute('value', 0);
@@ -762,9 +857,9 @@
 
                     } else if (selectedType === 'prive') {
                         ponderationPrive.style.display = 'block';
+                        infoPublic.style.display = 'none';
                         ponderationPublic.style.display = 'none';
                         inputPrive.style.display = 'none';
-
                         typeDiv.style.display = 'none';
                         inputPrive.required = false;
                         inputPrive.disabled = true;
@@ -790,7 +885,7 @@
                         ponderationPrive.style.display = 'none';
                         ponderationPublic.style.display = 'none';
                         typeDiv.style.display = 'none';
-
+                        infoPublic.style.display = 'block';
                         inputPrive.required = false;
                         inputPublic.required = false;
                         inputPublic.disabled = true;
@@ -840,6 +935,53 @@
 
             const inputEmail = document.querySelector('#edit-modal-candidat div form div #email')
             inputEmail.setAttribute('value', email);
+
+        }
+
+
+
+        function print(event, phaseId, type) {
+
+            event.preventDefault();
+            const phase = document.querySelector('#print-modal #idPhase')
+            phase.setAttribute('value', phaseId);
+
+            const nombreInp = document.querySelector('#print-modal #nombrePublic');
+            const numPrive = document.querySelector('#print-modal #numPrive');
+
+            nombreInp.setAttribute('value', 0)
+            numPrive.setAttribute('value', 0);
+
+            const printPriveCheckbox = document.querySelector('#print-modal #printPrive');
+            const printPublicCheckbox = document.querySelector('#print-modal #printPublic');
+            const numberDiv = document.querySelector('#print-modal #numberDiv');
+            const checkDiv = document.querySelector('#print-modal #ajout');
+            const typeVote = document.querySelector('#print-modal #typeVote');
+            const infoPrive = document.querySelector('#print-modal #infoPrive');
+
+            typeVote.setAttribute('value', type);
+
+            if (type === 'prive et public') {
+                numberDiv.style.display = 'none';
+                infoPrive.style.display = 'none';
+                printPriveCheckbox.checked = false;
+                printPublicCheckbox.checked = false;
+
+            } else if (type === 'prive') {
+
+                numberDiv.style.display = 'none';
+                checkDiv.style.display = 'none';
+                numPrive.setAttribute('value', 1);
+                printPriveCheckbox.checked = true;
+                printPublicCheckbox.checked = false;
+            } else if (type === 'public') {
+                numberDiv.style.display = 'block';
+                infoPrive.style.display = 'none';
+                checkDiv.style.display = 'none';
+                nombreInp.setAttribute('value', 1)
+                printPriveCheckbox.checked = false;
+                printPublicCheckbox.checked = true;
+            }
 
         }
     </script>
