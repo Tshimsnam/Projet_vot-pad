@@ -63,6 +63,8 @@ class ReponseController extends Controller
                     ->where('phase_id',$phase)
                     ->count();     
         if($user_existe>0){
+            session(['phase' => $request->phase_id,
+                    'intervenant'=>$request->intervenant_id]);
             return Redirect::back()->with('success',"Merci d'avoir participé !");
         }else{
                           
@@ -112,8 +114,12 @@ class ReponseController extends Controller
                         'cote'=> $cote,
                     ]);
                 }
+                session(['phase' => $request->phase_id,
+                        'intervenant'=>$request->intervenant_id]);
                 return Redirect::back()->with('success',"Merci d'avoir répondu et Felicitation!");
             }else{
+                session(['phase' => $request->phase_id,
+                        'intervenant'=>$request->intervenant_id]);
                 return Redirect::back()->with('success',"Merci d'avoir participé !");
             }
         }

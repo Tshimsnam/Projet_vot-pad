@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IntervenantPhase;
 use App\Models\QuestionPhase;
 use App\Http\Requests\StoreQuestionPhaseRequest;
 use App\Http\Requests\UpdateQuestionPhaseRequest;
 use App\Models\Assertion;
+use App\Models\Intervenant;
 use App\Models\Phase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Carbon\Carbon;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -96,50 +99,68 @@ class QuestionPhaseController extends Controller
         //
     }
     public function questionPhase(Request $request){
-        
+        $debut_evaluation   = Carbon::now();
+        $heure              = $debut_evaluation->format('H:i:s');
         $phase= Phase::where("id", $request->phase_id)->first();
-        $question= QuestionPhase::orderBy('id')
-                ->select('question_id')
-                ->where("phase_id", $request->phase_id)
-                ->get();//recupere toutes les questions
+        if($phase){
+            $interven = IntervenantPhase::where('intervenant_id','=',$request->intervenant_id)->where('phase_id','=',$request->phase_id)->count();
+            if($interven>0){
+                $question= QuestionPhase::orderBy('id')
+                    ->select('question_id')
+                    ->where("phase_id", $request->phase_id)
+                    ->get();//recupere toutes les questions
 
-       $questionAssetionTab=array();
-       $tableau=array();
-        foreach ($question as $key => $value) {
-            $assertion= Assertion::orderBy('id')->select('id','assertion','question_id')->where("question_id", $value->question_id)->get();
-            $tableau['question']=['question'=>$value->question->question,'id'=>$value->question->id];//tabeau pour question
-            $tableau['assertion']=[$assertion];//tabeau pour assertion
-            array_push($questionAssetionTab, $tableau);
-        }
-       
+                $questionAssetionTab=array();
+                $tableau=array();
+                    foreach ($question as $key => $value) {
+                        $assertion= Assertion::orderBy('id')->select('id','assertion','question_id')->where("question_id", $value->question_id)->get();
+                        $tableau['question']=['question'=>$value->question->question,'id'=>$value->question->id];//tabeau pour question
+                        $tableau['assertion']=[$assertion];//tabeau pour assertion
+                        array_push($questionAssetionTab, $tableau);
+                    }
         
-        foreach ($questionAssetionTab as $key => $value) {
-            //value a deux tableaux [question] et [assertion] mais assertion un objet
-            $tabAsseetionSimplifier=array();
-           foreach ($value['assertion'] as $key2 => $assertions) {
-                foreach ($assertions as $var) {
-                    $varAss['assertion']= $var->assertion;
-                    $varAss['id']= $var->id;
-                    $varAss['ponderation']= $var->ponderation;
-                    array_push($tabAsseetionSimplifier,$varAss);
-                }
-           }
             
-        }
+                    foreach ($questionAssetionTab as $key => $value) {
+                        //value a deux tableaux [question] et [assertion] mais assertion un objet
+                        $tabAsseetionSimplifier=array();
+                    foreach ($value['assertion'] as $key2 => $assertions) {
+                            foreach ($assertions as $var) {
+                                $varAss['assertion']= $var->assertion;
+                                $varAss['id']= $var->id;
+                                $varAss['ponderation']= $var->ponderation;
+                                array_push($tabAsseetionSimplifier,$varAss);
+                            }
+                    }
+                        
+                    }
         
-        // dd(
-        //         $value['question']['question'],
-        //         $value['question']['id'],
-        //         $value['question']['ponderation'],
-        //         $tabAsseetionSimplifier[0]['id']
-        // );
-        // // dd($questionAssetionTab);
+                    // dd(
+                    //         $value['question']['question'],
+                    //         $value['question']['id'],
+                    //         $value['question']['ponderation'],
+                    //         $tabAsseetionSimplifier[0]['id']
+                    // );
+                    // // dd($questionAssetionTab);
     
         
-       
+                session(['phaseId' => $request->phase_id,
+                'intervenantId'=>$request->intervenant_id]);
+                return Redirect::back()
+                        ->with('success','Bonne chance')
+                        ->with('debut','C"est parti')
+                        ->with(compact('questionAssetionTab','phase'));
+            }else{
+                    session(['phaseId' => $request->phase_id,
+                            'intervenantId'=>$request->intervenant_id]);
+                    return Redirect::back()
+                    ->with('success','Intervenant invalide');
+            }
+        }else{
+            session(['phaseId' => $request->phase_id,
+                    'intervenantId'=>$request->intervenant_id]);
+            return Redirect::back()
+            ->with('success','Phase invalide');
+        }
         
-        return Redirect::back()
-            ->with('debut','Bonne chance')
-            ->with(compact('questionAssetionTab','phase'));
     }
 }

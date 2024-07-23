@@ -12,6 +12,7 @@ use Spatie\SimpleExcel\SimpleExcelReader;
 use App\Http\Requests\StoreIntervenantRequest;
 use App\Http\Requests\UpdateIntervenantRequest;
 use App\Models\Groupe;
+use Illuminate\Support\Facades\Session;
 
 class IntervenantController extends Controller
 {
@@ -222,7 +223,7 @@ class IntervenantController extends Controller
     {
         $email = $request->email;
         $coupon = $request->coupon;
-        $intervenant = Intervenant::where('email', $email)->first();
+        $intervenant = Intervenant::select('id','email')->where('email', $email)->first();
 
         if (!$intervenant) {
             return redirect(route('form-authenticate'))->with('unsuccess', 'L\'adresse email insérée est invalide.');
@@ -241,8 +242,14 @@ class IntervenantController extends Controller
                     $intervenantPhase->token = $token;
                     $intervenantPhase->save();
                     $phaseSlug = substr($intervenantPhaseCoupon, 0, 3);
-                    $phase = Phase::where('slug', $phaseSlug)->first();
-                    return view('reponses.index', compact('phase', 'intervenant'));
+                    $phase = Phase::select('id')->where('slug', $phaseSlug)->first();
+                    $IdPhase = $phase->id;
+                    $IdIntervenant = $intervenant->id;
+                    
+                    Session::put('phase_id', $IdPhase);
+                    Session::put( 'intervenant_id',$IdIntervenant);
+                  
+                    return to_route('reponses.index')->with(compact('phase', 'intervenant'));
                 }
             }
         }
