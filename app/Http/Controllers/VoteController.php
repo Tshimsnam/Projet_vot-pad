@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Vote;
 use App\Models\Phase;
+use App\Models\Groupe;
+use App\Models\Critere;
+use App\Models\Evenement;
+use App\Models\Intervenant;
+use App\Models\PhaseCritere;
+use App\Models\IntervenantPhase;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
-use App\Models\Evenement;
 
 class VoteController extends Controller
 {
@@ -15,13 +20,13 @@ class VoteController extends Controller
      */
     public function index($event)
     {
-        $phases=null;
+        $phases = null;
         $eventId = $event;
-        $event= Evenement::where('id',$eventId)->first();
+        $event = Evenement::where('id', $eventId)->first();
         if ($event) {
-           $phases = $event->phases;
+            $phases = $event->phases;
         }
-        return view("votes.index",compact('phases'));
+        return view("votes.index", compact('phases'));
     }
 
     /**
@@ -43,16 +48,32 @@ class VoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $vote)
+    public function show($vote)
     {
-       $phase_id= Phase::where('slug',$vote)->first()->id;
-       $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
-        // return response()->json($phaseAndSpeaker);
-        return view("votes.show",compact('phaseAndSpeaker'));
+        $phase_id = Phase::where('slug', $vote)->first()->id;
+        $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
+        $candidats = $phaseAndSpeaker->intervenants->pluck('id');
+
+        return view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats'));
     }
 
-    public function showIntervenant($vote) {
-        return view("votes.showIntervenant");
+    public function showIntervenant($slugPhase, $candidat_id)
+    {
+        $phase = Phase::where('slug', $slugPhase)->first();
+        $phase_id = $phase->id;
+        $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
+        $criteres = [];
+        foreach ($phaseCriteres as $phaseCritere) {
+            $critere = Critere::find($phaseCritere->critere_id);
+            $critere->criterePhaseId = $phaseCritere->id;
+            $critere->echelle = $phaseCritere->echelle;
+            $critere->phase_id = $phase_id;
+            $criteres[] = $critere;
+        }
+
+        $candidat = Intervenant::findOrFail($candidat_id);
+
+        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat'));
     }
 
     /**

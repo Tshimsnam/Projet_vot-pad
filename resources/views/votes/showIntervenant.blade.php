@@ -1,112 +1,123 @@
 @extends('layouts.template')
 @section('content')
-<section class="">
-    <h1 class="mt-2  text-3xl font-bold">Vote</h1>
-    <p class="mb-5 font-extralight text-gray-500  text-justify sm:w-3/4">Vous trouverez ici la liste des critères lié à cette phase spécifique de la compétition. Chaque candidat est évaluer a l'aide des ces cri-ères.</p>
-    <section class="sm:mx-auto md:w-2/3 space-y-5">
+    <section class="sm:mx-auto md:w-3/3 space-y-5">
+        <div>
+
+            <h1
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                {{ $candidat->email }}</h1>
+        </div>
         <form action="" method="post" class="space-y-4">
             @csrf
-            <div class="px-5 w-full space-y-2">
-                    <div class="px-5 py-3 bg-white flex justify-between items-center rounded-xl border drop-shadow-xl">
-                        <h1 class="text-xl font-bold">1 Critères</h1>
-                        <span class="text-sm font-thin">Ponderation : 30</span>
-                    </div>
+            @foreach ($criteres as $key => $item)
+                <div class="px-5 w-full space-y-2">
                     <div class="px-5 py-3 rounded-xl border bg-white space-y-3 drop-shadow-xl">
                         <div class="">
-                            <h2 class="text-md font-bold mb-1">Déscription</h2>
-                            <p class="text-sm font-thin pb-2">Lorem ipsum dolor sit, amet consectetur adipisicing elit. In aliquid eligendi amet dolore dolor sit, amet consectetur adipisi ab nam explicabo.</p>
+                            <h1 class="text-xl font-bold">{{ $item->libelle }}</h1>
+                            <p class="text-sm font-thin pb-2">{{ $item->description }}
+                            </p>
                         </div>
                         <div class="relative">
                             <label for="labels-range-input" class="sr-only">Labels range</label>
-                            <input id="medium-range-1" type="range" value="0" min="0" max="100" step="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                            <input id="labels-range-input" type="range" value="0" min="0" name="cote"
+                                max="{{ $item->ponderation }}"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                            @if ($item->echelle == 5)
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Assez
+                                    bien</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Bien</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Très
+                                    Bien</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
+                            @else
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/2 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
+                                    bien</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
+                            @endif
+
                         </div>
                         <div class="flex justify-between items-center">
-                            <h1 class="text-md font-bold">Mention</h1>
-                            <span id="score-1" class="text-sm font-thin">Score : 0.0</span>
+                            <span id="score-{{ $item->id }}" class="text-sm font-thin pt-5">Score : 0</span>
                         </div>
                     </div>
-            </div>
-            <div class="px-5 w-full space-y-2">
-                    <div class="px-5 py-3 bg-white flex justify-between items-center rounded-xl border drop-shadow-xl">
-                        <h1 class="text-xl font-bold">2 Critères</h1>
-                        <span class="text-sm font-thin">Ponderation : 40</span>
-                    </div>
-                    <div class="px-5 py-3 rounded-xl border bg-white space-y-3 drop-shadow-xl">
-                        <div class="">
-                            <h2 class="text-md font-bold mb-1">Déscription</h2>
-                            <p class="text-sm font-thin pb-2">Lorem ipsum dolor sit, amet consectetur adipisicing elit. In aliquid eligendi amet dolore dolor sit, amet consectetur adipisi ab nam explicabo.</p>
-                        </div>
-                        <div class="relative">
-                            <label for="labels-range-input" class="sr-only">Labels range</label>
-                            <input id="medium-range-2" type="range" value="0" min="0" max="100" step="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <h1 class="text-md font-bold">Mention</h1>
-                            <span id="score-2" class="text-sm font-thin">Score : 0.0</span>
-                        </div>
-                    </div>
-            </div>
+                </div>
+            @endforeach
             <div class="flex justify-between px-5">
-                <button
-                type="button" 
-                class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                >Annuler</button>
-                <button
-                type="button"
-                id="submit-btn" 
-                class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-                >Envoyer</button>
+                <button type="button"
+                    class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Annuler</button>
+                <button type="button" id="submit-btn"
+                    class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Valider</button>
             </div>
 
         </form>
-    
-     </section>
-</section>
-<script>
-      // Sélectionner tous les inputs de type range et tous les spans de score
-      const rangeInputs = document.querySelectorAll('input[type="range"]');
-      const scoreSpans = document.querySelectorAll('span[id^="score-"]');
-      const urlParams = window.location;
 
-    const getCandidatId = ()=>{
-        const pathname = urlParams.pathname;
-        const idParts = pathname.split('/');
-        const candidatId = idParts[idParts.length - 1]; 
-        return candidatId
-    }
+    </section>
+    <script>
 
+        const rangeInputs = document.querySelectorAll('input[type="range"]');
+        const scoreSpans = document.querySelectorAll('span[id^="score-"]');
+        const urlParams = window.location;
 
-    const redirect = ()=>{
-        const pathname = urlParams.href;
-        const idStartIndex = pathname.lastIndexOf('/');
-        const phaseUrl = pathname.substring(0, idStartIndex)
-       return urlParams.href = `${phaseUrl}`
-    }
+        rangeInputs.forEach((input, index) => {
+            input.addEventListener('input', function() {
 
-    // Ajouter un écouteur d'événement pour chaque input de type range
-    rangeInputs.forEach((input, index) => {
-        input.addEventListener('input', function() {
-            // Mettre à jour le texte du span correspondant avec la nouvelle valeur du range
-            scoreSpans[index].textContent = 'Score : ' + input.value;
-        });
-    });
-
-    // Sélectionner le bouton de soumission
-    const submitBtn = document.getElementById('submit-btn');
-            // Ajouter un écouteur d'événement pour la soumission du formulaire
-            submitBtn.addEventListener('click', function() {
-            // Créer un objet pour stocker les valeurs des inputs
-            let votes = {};
-
-            // Récupérer les valeurs des inputs et les ajouter à l'objet
-            rangeInputs.forEach((input, index) => {
-                votes[`vote${index + 1}`] = input.value;
+                scoreSpans[index].textContent = 'Score : ' + input.value;
             });
-
-            // Stocker l'objet dans le localStorage
-            localStorage.setItem('votes', JSON.stringify({...votes,candidatId:getCandidatId()}));
-            redirect()
         });
 
-</script>
+
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const inputCotes = document.querySelectorAll("input[name='cote']");
+            const nombreCriteres = inputCotes.length;
+
+            for (let i = 0; i < nombreCriteres; i++) {
+                localStorage.setItem(`cote-${i}{{ $phase_id }}{{ $candidat->id }}`, inputCotes[i].value);
+            }
+        });
+
+        function getDataFromLocalStorage(phase_id, candidat) {
+            const data = [];
+            let somme = 0;
+            let i = 0;
+            while (true) {
+
+                const coteValue = localStorage.getItem(`cote-${i}${phase_id}${ candidat }`);
+                if (coteValue === null) {
+                    break;
+                }
+                data.push(coteValue);
+                somme += parseInt(coteValue);
+                i++;
+            }
+            return data;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedData = getDataFromLocalStorage({{ $phase_id }}, {{ $candidat->id }});
+            const taille = savedData.length;
+
+            for (let i = 0; i < taille; i++) {
+                const scoreSpan = document.getElementById(`score-${i+1}`);
+                const labelsRangeInput = document.querySelectorAll(`#labels-range-input`)[taille - i - 1];
+
+                if (scoreSpan) {
+                    scoreSpan.textContent = `Score : ${savedData[taille - i - 1]}`;
+                }
+
+                if (labelsRangeInput) {
+                    labelsRangeInput.value = savedData[taille - i - 1];
+                }
+            }
+        });
+    </script>
 @endsection
