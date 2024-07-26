@@ -81,17 +81,17 @@
             const nombreCriteres = inputCotes.length;
 
             for (let i = 0; i < nombreCriteres; i++) {
-                localStorage.setItem(`cote-${i}{{ $phase_id }}{{ $candidat->id }}`, inputCotes[i].value);
+                localStorage.setItem(`cote-{{ $phase_id }}${i}{{ $jury_id }}{{ $candidat->id }}`, inputCotes[i].value);
             }
         });
 
-        function getDataFromLocalStorage(phase_id, candidat) {
+        function getDataFromLocalStorage(phase_id, candidat, jury_id) {
             const data = [];
             let somme = 0;
             let i = 0;
             while (true) {
 
-                const coteValue = localStorage.getItem(`cote-${i}${phase_id}${ candidat }`);
+                const coteValue = localStorage.getItem(`cote-${phase_id}${i}${ jury_id }${ candidat }`);
                 if (coteValue === null) {
                     break;
                 }
@@ -103,9 +103,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedData = getDataFromLocalStorage({{ $phase_id }}, {{ $candidat->id }});
+            let jury_id = {{ $jury_id }}
+            const savedData = getDataFromLocalStorage({{ $phase_id }}, {{ $candidat->id }}, jury_id);
             const taille = savedData.length;
-
+            console.log(jury_id);
             for (let i = 0; i < taille; i++) {
                 const scoreSpan = document.getElementById(`score-${i+1}`);
                 const labelsRangeInput = document.querySelectorAll(`#labels-range-input`)[taille - i - 1];

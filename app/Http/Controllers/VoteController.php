@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jury;
 use App\Models\Vote;
 use App\Models\Phase;
 use App\Models\Groupe;
@@ -9,6 +10,7 @@ use App\Models\Critere;
 use App\Models\Evenement;
 use App\Models\Intervenant;
 use App\Models\PhaseCritere;
+use Illuminate\Http\Request;
 use App\Models\IntervenantPhase;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
@@ -48,16 +50,12 @@ class VoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($vote)
+    public function show()
     {
-        $phase_id = Phase::where('slug', $vote)->first()->id;
-        $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
-        $candidats = $phaseAndSpeaker->intervenants->pluck('id');
-
-        return view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats'));
+        //
     }
 
-    public function showIntervenant($slugPhase, $candidat_id)
+    public function showIntervenant($slugPhase, $candidat_id, $jury_id)
     {
         $phase = Phase::where('slug', $slugPhase)->first();
         $phase_id = $phase->id;
@@ -70,10 +68,8 @@ class VoteController extends Controller
             $critere->phase_id = $phase_id;
             $criteres[] = $critere;
         }
-
         $candidat = Intervenant::findOrFail($candidat_id);
-
-        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat'));
+        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id'));
     }
 
     /**
@@ -98,5 +94,47 @@ class VoteController extends Controller
     public function destroy(Vote $vote)
     {
         //
+    }
+
+    public function authenticate(Request $request)
+    {
+        $coupon = $request->coupon;
+        $jury = Jury::where('coupon', $coupon)->first();
+
+        if ($jury) {
+            $juryCoupon = $jury->coupon;
+            $phaseSlug = substr($juryCoupon, 0, 3);
+            $phase = Phase::where('slug', $phaseSlug)->first();
+
+            $jury_id = $jury->id;
+            $jury_type = $jury->type;
+            $jury_use = $jury->is_use;
+            $jury_token = $jury->token;
+            if ($jury_type == "prive") {
+                if ($jury_token == "0") {
+                    $token = $jury->createToken($juryCoupon)->plainTextToken;
+                    $jury->token = $token;
+                    $jury->is_use = 1;
+                    $jury->save();
+                }
+            } else {
+                if ($jury_token == "0") {
+                    $token = $jury->createToken($juryCoupon)->plainTextToken;
+                    $jury->token = $token;
+                    $jury->is_use = $jury_use + 1;
+                    $jury->save();
+                } else {
+                    $jury->is_use = $jury_use + 1;
+                    $jury->save();
+                }
+            }
+
+            $phase_id = Phase::where('slug', $phaseSlug)->first()->id;
+            $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
+            $candidats = $phaseAndSpeaker->intervenants->pluck('id');
+            return view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id'));
+        } else {
+            return redirect(route('jury-form'))->with('unsuccess', 'Le coupon inséré est invalide.');
+        }
     }
 }
