@@ -62,7 +62,7 @@
                 </div>
             @else
 				<div class="text-left w-full">
-					<form action="{{route('reponses.store')}}" method="post" class="max-w-sm mx-auto">
+					<form action="{{route('reponses.store')}}" method="post" id="fini_evaluation" class="max-w-sm mx-auto">
                         @csrf
                         @method('post')
                         <input type="text" name="phase_id" id="" class="hidden" value="{{ session()->get('phaseId')}}">
@@ -287,7 +287,13 @@
                 min = parseInt(secondsRemaining / 60);
                 sec = parseInt(secondsRemaining % 60);
 
-                element.textContent = `Il vous reste ${paddedFormat(min)}:${paddedFormat(sec)}`;
+                element.textContent = `Il vous reste ${paddedFormat(min)}:${paddedFormat(sec)} min`;
+                const form =document.getElementById('fini_evaluation');
+                if(`${paddedFormat(min)}`==0 && `${paddedFormat(sec)}`==0){
+                    form.submit()
+                }else{
+                    console.log(`pas fini encore ${paddedFormat(min)} min - ${paddedFormat(sec)} sec`)
+                }
                
                 secondsRemaining = secondsRemaining - 1;
                 if (secondsRemaining < 0) {
@@ -298,10 +304,10 @@
 
         window.onload = function() {
 
-            const dataTime= JSON.parse(`{!! addslashes(json_encode(session('phase'))) !!}`); 
-            console.log(dataTime['duree'])
-
-            var tabHeure= dataTime['duree'].split(":");
+            const dataTime= JSON.parse(`{!! addslashes(json_encode(session('duree_evaluation'))) !!}`); 
+            const starTime= JSON.parse(`{!! addslashes(json_encode(session('debut_evaluation_enreg'))) !!}`); 
+            
+            var tabHeure= dataTime.split(":");
             const dureeHeure=tabHeure[0];
             const dureeMinute=tabHeure[1];
             const dureeSeconde=tabHeure[2];
@@ -310,7 +316,7 @@
             const heure=date.getHours();
             const min=date.getMinutes();
             heure_actu = document.querySelector('#heure_actuel');
-            heure_actu.textContent="Debut à "+heure+'h : '+min;
+            heure_actu.textContent="Debut "+starTime;
 
             let time_heure = dureeHeure;   // Value in hours
             let time_minutes = parseInt(dureeMinute) +parseInt(dureeHeure*60);// Value in minutes
@@ -318,7 +324,7 @@
             let duration = time_minutes * 60 + time_seconds;
 
             element = document.querySelector('#end-time');
-            element.textContent =`Il vous reste ${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`;
+            element.textContent =`Il vous reste ${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)} min`;
             startCountDown(--duration, element);
         };
     </script>
