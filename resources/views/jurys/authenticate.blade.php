@@ -29,7 +29,7 @@
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Authentication
                     </h1>
-                        <form class=" mx-auto" action="{{route('juryAuthenticate')}}" method="post">
+                        <form class=" mx-auto" action="{{route('jury-authenticate')}}" method="post">
                             @csrf
                             <div class="mb-5">
                             <label for="coupon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Coupon</label>

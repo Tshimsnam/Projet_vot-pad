@@ -11,5 +11,5 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('vote')->group(function () {
     Route::get('/events/{evenement}', [VoteController::class,'index']);
     Route::get('/event/{phase}', [VoteController::class,'show'])->name('show');
-    Route::get('event/{phase}/{candidat}', [VoteController::class,'showIntervenant'])->name('showIntervenant');
+    Route::get('event/{phase}/{candidat}{jury}', [VoteController::class,'showIntervenant'])->name('showIntervenant');
 });

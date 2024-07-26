@@ -242,5 +242,8 @@ class JuryController extends Controller
         return redirect(route('phase.show', $phaseId))->with('successDeleteJury', 'Suppression effectuée');
     }
 
-    
+    public function form()
+    {
+        return view('jurys.authenticate');
     }
+}
