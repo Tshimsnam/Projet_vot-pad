@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
+
 
 
 // Route::prefix('vote')->group(function () {
@@ -13,3 +15,7 @@ Route::prefix('vote')->group(function () {
     Route::get('/event/{phase}', [VoteController::class,'show'])->name('show');
     Route::get('event/{phase}/{candidat}{jury}', [VoteController::class,'showIntervenant'])->name('showIntervenant');
 });
+
+Route::get('/results/{phase}', [VoteController::class,'results'])->name('results');
+
+Route::post('passation', [PhaseController::class, 'passation'])->name('passation');

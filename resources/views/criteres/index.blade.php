@@ -93,6 +93,19 @@
                 @endforeach
             </p>
             <div class="float-right">
+                <?php $message = 'Voulez-vous clôturer cette phase?'; ?>
+                <a id="closeVote" href="#" data-modal-target="status-modal" data-modal-toggle="status-modal"
+                    onclick="status(event, '{{ $message }}' , '{{ route('phases.status', ['status' => 'Cloturer', 'id' => $phase_id]) }}')"
+                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
+                        style="margin-right: 0.5rem; display:none">
+                        <path fill-rule="evenodd"
+                            d="M6.455 1.45A.5.5 0 0 1 6.952 1h2.096a.5.5 0 0 1 .497.45l.186 1.858a4.996 4.996 0 0 1 1.466.848l1.703-.769a.5.5 0 0 1 .639.206l1.047 1.814a.5.5 0 0 1-.14.656l-1.517 1.09a5.026 5.026 0 0 1 0 1.694l1.516 1.09a.5.5 0 0 1 .141.656l-1.047 1.814a.5.5 0 0 1-.639.206l-1.703-.768c-.433.36-.928.649-1.466.847l-.186 1.858a.5.5 0 0 1-.497.45H6.952a.5.5 0 0 1-.497-.45l-.186-1.858a4.993 4.993 0 0 1-1.466-.848l-1.703.769a.5.5 0 0 1-.639-.206l-1.047-1.814a.5.5 0 0 1 .14-.656l1.517-1.09a5.033 5.033 0 0 1 0-1.694l-1.516-1.09a.5.5 0 0 1-.141-.656L2.46 3.593a.5.5 0 0 1 .639-.206l1.703.769c.433-.36.928-.65 1.466-.848l.186-1.858Zm-.177 7.567-.022-.037a2 2 0 0 1 3.466-1.997l.022.037a2 2 0 0 1-3.466 1.997Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="flex justify-inline items-center">Clôturer la phase</p>
+                </a>
+
                 <button type="button" id="dropdownLeftButtonStatus" data-dropdown-toggle="dropdownLeftStatus"
                     data-dropdown-placement="left"
                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
@@ -115,13 +128,15 @@
                             <a href="#"
                                 onclick="status(event, '{{ $message }}', '{{ route('phases.status', ['status' => 'En cours', 'id' => $phase_id]) }}')"
                                 data-modal-target="status-modal" data-modal-toggle="status-modal"
-                                class="block px-3 py-1 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md ">
+                                class="block px-3 py-1 text-center inline-flex items-center hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md ">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
                                     class="size-5">
                                     <path fill-rule="evenodd"
                                         d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm3.844-8.791a.75.75 0 0 0-1.188-.918l-3.7 4.79-1.649-1.833a.75.75 0 1 0-1.114 1.004l2.25 2.5a.75.75 0 0 0 1.15-.043l4.25-5.5Z"
                                         clip-rule="evenodd" />
                                 </svg>
+                                <p class="flex justify-inline items-center" style="margin-left: 0.2rem;">Lancer la
+                                    phase </p>
                             </a>
                         </li>
 
@@ -130,12 +145,14 @@
                             <a href="#"
                                 onclick="status(event, '{{ $message }}' , '{{ route('phases.status', ['status' => 'Fermer', 'id' => $phase_id]) }}')"
                                 data-modal-target="status-modal" data-modal-toggle="status-modal"
-                                class="block px-3 py-1 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md">
+                                class="block px-3 py-1 text-center inline-flex items-center hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
                                     class="size-5">
                                     <path
                                         d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
                                 </svg>
+                                <p class="flex justify-inline items-center" style="margin-left: 0.2rem;">Fermer la
+                                    phase </p>
                             </a>
                         </li>
                     </ul>
@@ -567,6 +584,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+                    <div class="bg-white dark:bg-gray-800 shadow">
+                        <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
+                            <div class="flex justify-between items-center">
+                                <a href="{{ route('results', $phase_id) }}"
+                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                    Resultat des votes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -721,9 +755,14 @@
             if (status_phase == 'En cours' || status_phase == 'en cours') {
                 document.getElementById('enCours').hidden = true;
                 document.getElementById('fermer').hidden = false;
+                document.getElementById('closeVote').style.display = 'flex';
+                document.getElementById('dropdownLeftButtonStatus').style.display = 'none';
             } else if (status_phase == 'Fermer' || status_phase == 'fermer') {
                 document.getElementById('enCours').hidden = false;
                 document.getElementById('fermer').hidden = true;
+            } else {
+                document.getElementById('closeVote').style.display = 'none';
+                document.getElementById('dropdownLeftButtonStatus').style.display = 'none';
             }
         }
 
