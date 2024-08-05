@@ -59,7 +59,7 @@ class VoteController extends Controller
     {
         $phase = Phase::where('slug', $slugPhase)->first();
         $phase_id = $phase->id;
-        $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
+        $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->get();
         $criteres = [];
         foreach ($phaseCriteres as $phaseCritere) {
             $critere = Critere::find($phaseCritere->critere_id);
@@ -68,6 +68,9 @@ class VoteController extends Controller
             $critere->phase_id = $phase_id;
             $criteres[] = $critere;
         }
+        usort($criteres, function ($a, $b) {
+            return $a->id - $b->id;
+        });
         $candidat = Intervenant::findOrFail($candidat_id);
         return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id'));
     }
@@ -105,6 +108,9 @@ class VoteController extends Controller
             $juryCoupon = $jury->coupon;
             $phaseSlug = substr($juryCoupon, 0, 3);
             $phase = Phase::where('slug', $phaseSlug)->first();
+            $phase_id = $phase->id;
+            $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
+            $criteres = $criterePhases->pluck('critere_id')->sort()->values();
 
             $jury_id = $jury->id;
             $jury_type = $jury->type;
@@ -132,9 +138,40 @@ class VoteController extends Controller
             $phase_id = Phase::where('slug', $phaseSlug)->first()->id;
             $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
             $candidats = $phaseAndSpeaker->intervenants->pluck('id');
-            return view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id'));
+            return view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres'));
         } else {
             return redirect(route('jury-form'))->with('unsuccess', 'Le coupon inséré est invalide.');
         }
+    }
+    public function results($phase_id)
+    {
+        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+        $intervenants = [];
+        $voteByCandidat = [];
+        $coteMoyenne = [];
+        foreach ($intervenantPhases as $intervenantPhase) {
+            $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+            $groupe = Groupe::find($intervenant->groupe_id);
+            $intervenant->intervenantPhaseId = $intervenantPhase->id;
+            $intervenant->nom_groupe = $groupe->nom;
+            $intervenant->image = $groupe->image;
+
+            $voteByCandidat[$intervenantPhase->id] = Vote::where('intervenant_phase_id', $intervenantPhase->id)->get();
+            $coteMoyenne = [];
+            foreach ($voteByCandidat as $intervenantPhaseId => $votes) {
+                $totalCote = 0;
+                foreach ($votes as $vote) {
+                    $totalCote += $vote->cote;
+                }
+                $coteMoyenne[$intervenantPhaseId] = $totalCote;
+            }
+
+            $intervenant->cote = $coteMoyenne[$intervenantPhase->id];
+            $intervenants[] = $intervenant;
+        }
+        usort($intervenants, function ($a, $b) {
+            return $b->cote - $a->cote;
+        });
+        return view('votes.showResultat', compact('intervenants'));
     }
 }
