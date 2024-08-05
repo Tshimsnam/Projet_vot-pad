@@ -5,6 +5,7 @@ use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuestionPhaseController;
 use App\Http\Controllers\ReponseController;
+use App\Http\Controllers\ResultatController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('assertions', AssertionController::class);
     Route::resource('reponses', ReponseController::class);
     Route::resource('questionPhases', QuestionPhaseController::class);
+    Route::resource('resultats', ResultatController::class);
    
 });
 
