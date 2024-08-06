@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\PhaseController;
-use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VoteController;
+use App\Http\Controllers\PhaseController;
+use App\Http\Middleware\JuryTokenIsValid;
 
 
 
@@ -12,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('vote')->group(function () {
     Route::get('/events/{evenement}', [VoteController::class,'index']);
-    Route::get('/event/{phase}', [VoteController::class,'show'])->name('show');
-    Route::get('event/{phase}/{candidat}{jury}', [VoteController::class,'showIntervenant'])->name('showIntervenant');
+    Route::get('/event/{phase}', [VoteController::class,'show'])->name('show')->middleware(JuryTokenIsValid::class);
+    Route::get('event/{phase}/{candidat}{jury}', [VoteController::class,'showIntervenant'])->name('showIntervenant')->middleware(JuryTokenIsValid::class);
 });
 
 Route::get('/results/{phase}', [VoteController::class,'results'])->name('results');

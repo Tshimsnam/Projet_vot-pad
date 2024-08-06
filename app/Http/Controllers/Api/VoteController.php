@@ -69,17 +69,31 @@ class VoteController extends Controller
                 $coteValue = $cote['valeur'];
 
                 $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
-                $intervenantPhaseIds= $intervenantPhase->id;
+                $intervenantPhaseIds = $intervenantPhase->id;
 
                 $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
                 $criterePhaseId = $criterePhase->id;
 
-                Vote::create([
-                    'intervenant_phase_id' => $intervenantPhaseIds,
-                    'phase_jury_id' => $juryId,
-                    'phase_critere_id' => $criterePhaseId,
-                    'cote' => $coteValue
-                ]);
+                $vote = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('phase_critere_id', $criterePhaseId)->first();
+
+                if ($vote) {
+                    $vote->update([
+                        'intervenant_phase_id' => $intervenantPhaseIds,
+                        'phase_jury_id' => $juryId,
+                        'phase_critere_id' => $criterePhaseId,
+                        'cote' => $coteValue,
+                        'isVerified' => 1
+                    ]);
+                } else {
+
+                    Vote::create([
+                        'intervenant_phase_id' => $intervenantPhaseIds,
+                        'phase_jury_id' => $juryId,
+                        'phase_critere_id' => $criterePhaseId,
+                        'cote' => $coteValue,
+                        'isVerified' => 1
+                    ]);
+                }
             }
         }
         return response()->json(['status' => 'success'], 200);
@@ -93,23 +107,35 @@ class VoteController extends Controller
         $juryId = $voteData['juryId'];
         $candidatId = $voteData['candidatId'];
         $cotes = $voteData['cotes'];
-            foreach ($cotes as $cote) {
-                $critereId = $cote['critereId'];
-                $coteValue = $cote['valeur'];
+        foreach ($cotes as $cote) {
+            $critereId = $cote['critereId'];
+            $coteValue = $cote['valeur'];
 
-                $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
-                $intervenantPhaseIds= $intervenantPhase->id;
+            $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
+            $intervenantPhaseIds = $intervenantPhase->id;
 
-                $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
-                $criterePhaseId = $criterePhase->id;
+            $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
+            $criterePhaseId = $criterePhase->id;
+
+            $vote = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('phase_critere_id', $criterePhaseId)->first();
+
+            if ($vote) {
+                $vote->update([
+                    'intervenant_phase_id' => $intervenantPhaseIds,
+                    'phase_jury_id' => $juryId,
+                    'phase_critere_id' => $criterePhaseId,
+                    'cote' => $coteValue,
+                ]);
+            } else {
 
                 Vote::create([
                     'intervenant_phase_id' => $intervenantPhaseIds,
                     'phase_jury_id' => $juryId,
                     'phase_critere_id' => $criterePhaseId,
-                    'cote' => $coteValue
+                    'cote' => $coteValue,
                 ]);
             }
-        return response()->json(['status' => $voteData], 200);
+        }
+        return response()->json(['status' => 'success'], 200);
     }
 }
