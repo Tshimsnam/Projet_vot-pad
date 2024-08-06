@@ -64,6 +64,52 @@ class EvenementController extends Controller
             ]
         );
 
+
+        $evenement_id = $evenement->id;
+        $type_event = $evenement->type;
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersNumber = strlen($characters);
+        $codeLength = 3;
+        $slug = null;
+
+        do {
+            $slug = '';
+            for ($i = 0; $i < $codeLength; $i++) {
+                $position = mt_rand(0, $charactersNumber - 1);
+                $slug .= $characters[$position];
+            }
+        } while (Phase::where('slug', $slug)->exists());
+
+        if ($type_event == 'Compétition') {
+            $phase = Phase::create(
+                [
+                    'nom' => $request->name,
+                    'description' => $request->description,
+                    'statut' => 'en attente',
+                    'slug' => $slug,
+                    'type' => 'Vote',
+                    'date_debut' => $dateTimeDebut,
+                    'date_fin' => $dateTimeFin,
+                    'evenement_id' => $evenement_id
+                ]
+            );
+        } else {
+            $phase = Phase::create(
+                [
+                    'nom' => $request->name,
+                    'description' => $request->description,
+                    'statut' => 'en attente',
+                    'slug' => $slug,
+                    'type' => 'Evaluation',
+                    'duree' => '01:00:00',
+                    'date_debut' => $dateTimeDebut,
+                    'date_fin' => $dateTimeFin,
+                    'evenement_id' => $evenement_id
+                ]
+            );
+        }
+
+
         return redirect(route('evenements.index'))->with('success', 'Enregistrement reussi');
     }
 

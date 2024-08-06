@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jury;
+use App\Models\Vote;
+use App\Models\Phase;
+use App\Models\Groupe;
+use App\Models\Critere;
+use App\Models\Question;
+use App\Models\Assertion;
+use App\Models\Evenement;
+use App\Models\JuryPhase;
+use App\Models\Intervenant;
+use App\Models\PhaseCritere;
+use Illuminate\Http\Request;
+use App\Models\QuestionPhase;
+use App\Models\IntervenantPhase;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
-use App\Models\Assertion;
-use App\Models\Critere;
-use App\Models\Evenement;
-use App\Models\Groupe;
-use App\Models\Intervenant;
-use App\Models\IntervenantPhase;
-use App\Models\Jury;
-use App\Models\JuryPhase;
-use App\Models\Phase;
-use App\Models\PhaseCritere;
-use App\Models\Question;
-use App\Models\QuestionPhase;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PhaseController extends Controller
@@ -170,6 +171,7 @@ class PhaseController extends Controller
             $phase_type = $value->type;
             $phase_id = $value->id;
             $status_phase = $value->statut;
+            $passNumber = $value->passation_nombre;
         }
 
         $phaseShow = DB::table('evenements')
@@ -287,7 +289,7 @@ class PhaseController extends Controller
                     }
                 }
             }
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase'));
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber'));
         } else {
             // module phase evaluation
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
@@ -307,6 +309,7 @@ class PhaseController extends Controller
     {
         $phase = Phase::find($phaseId);
         $phase->statut = $status;
+        $phase->update();
 
         $evenementId = $phase->evenement_id;
         $evenement = Evenement::find($evenementId);
@@ -314,10 +317,146 @@ class PhaseController extends Controller
         if ($status == 'En cours' || $status == 'en cours') {
             $evenement->status = $status;
             $evenement->update();
+        } else if ($status == 'Cloturer' || $status == 'cloturer') {
+
+            $phaseStart = Phase::findOrFail($phaseId);
+            $evenementId = $phaseStart->evenement_id;
+            $passNumber = $phaseStart->passation_nombre;
+
+            $allPhaseEvent = Phase::where('evenement_id', $evenementId)->orderBy('id')->get();
+
+            $nextPhase = null;
+            foreach ($allPhaseEvent as $phase) {
+                if ($phase->id > $phaseStart->id) {
+                    $nextPhase = $phase;
+                    break;
+                }
+            }
+
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phaseId)->latest()->paginate(10);
+            $intervenants = [];
+            $voteByCandidat = [];
+            $coteMoyenne = [];
+            foreach ($intervenantPhases as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $groupe = Groupe::find($intervenant->groupe_id);
+                $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenant->nom_groupe = $groupe->nom;
+                $intervenant->image = $groupe->image;
+
+                $voteByCandidat[$intervenantPhase->id] = Vote::where('intervenant_phase_id', $intervenantPhase->id)->get();
+                $coteMoyenne = [];
+                foreach ($voteByCandidat as $intervenantPhaseId => $votes) {
+                    $totalCote = 0;
+                    foreach ($votes as $vote) {
+                        $totalCote += $vote->cote;
+                    }
+                    $coteMoyenne[$intervenantPhaseId] = $totalCote;
+                }
+
+                $intervenant->cote = $coteMoyenne[$intervenantPhase->id];
+                $intervenants[] = $intervenant;
+            }
+            usort($intervenants, function ($a, $b) {
+                return $b->cote - $a->cote;
+            });
+
+            $topIntervenants = array_slice($intervenants, 0, $passNumber);
+
+            // insertion des intervnants qualifiés
+            if ($nextPhase) {
+                foreach ($topIntervenants as $intervenant) {
+                    $slug = $nextPhase->slug;
+                    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    $charactersNumber = strlen($characters);
+                    $codeLength = 3;
+                    $coupon = null;
+                    $isVote = $nextPhase->type;
+                    $data = [];
+                    $now = date('Y-m-d H:i:s');
+                    if ($isVote == 'Vote' || $isVote == 'vote') {
+
+                        $getIntervenant = Intervenant::where('email', $intervenant->email)->first();
+                        if ($getIntervenant) {
+                            $intervenantId = $getIntervenant->id;
+                        } else {
+                            $groupe = new Groupe();
+                            if ($intervenant->image === null) {
+                                $groupe->nom = $intervenant->nom_groupe;
+                            } else {
+                                $groupe->nom = $intervenant->nom_groupe;
+                                $groupe->image = $intervenant->image;
+                            }
+                            $groupe->save();
+                            $groupeId = $groupe->id;
+
+                            $intervenant = Intervenant::create([
+                                'email' => $intervenant->email,
+                                'groupe_id' => $groupeId,
+                            ]);
+                            $intervenantId = $intervenant->id;
+                        }
+                        do {
+                            $coupon = '';
+                            for ($i = 0; $i < $codeLength; $i++) {
+                                $position = mt_rand(0, $charactersNumber - 1);
+                                $coupon .= $characters[$position];
+                            }
+                        } while (IntervenantPhase::where('coupon', $coupon)->exists());
+
+                        $couponPhase = $slug . $coupon;
+
+                        $data[] = [
+                            'intervenant_id' => $intervenantId,
+                            'phase_id' => $nextPhase->id,
+                            'coupon' => $couponPhase,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    } else {
+                        $getIntervenant = Intervenant::where('email', $intervenant->email)->first();
+                        if ($getIntervenant) {
+                            $intervenantId = $getIntervenant->id;
+                        } else {
+                            $intervenant = Intervenant::create([
+                                'email' => $intervenant->email,
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ]);
+                            $intervenantId = $intervenant->id;
+                        }
+
+                        do {
+                            $coupon = '';
+                            for ($i = 0; $i < $codeLength; $i++) {
+                                $position = mt_rand(0, $charactersNumber - 1);
+                                $coupon .= $characters[$position];
+                            }
+                        } while (IntervenantPhase::where('coupon', $coupon)->exists());
+
+                        $couponPhase = $slug . $coupon;
+
+                        $data[] = [
+                            'intervenant_id' => $intervenantId,
+                            'phase_id' => $nextPhase->id,
+                            'coupon' => $couponPhase,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
+                    IntervenantPhase::insert($data);
+                }
+            }
         }
 
-        $phase->update();
-        return redirect(route('phase.show', $phaseId))->with('successStatus', 'Statut de la phase modifié avec succès');
+        if ($status == 'Cloturer' || $status == 'cloturer') {
+            return redirect(route('phase.show', $phaseId))->with('successStatus', 'Phase cloturée avec succès');
+        } else if ($status == 'En cours' || $status == 'en cours') {
+            return redirect(route('phase.show', $phaseId))->with('successStatus', 'Phase lancée avec succès');
+        } else {
+            return redirect(route('phase.show', $phaseId))->with('successStatus', 'Phase fermée avec succès');
+        }
+
     }
 
 
@@ -348,5 +487,19 @@ class PhaseController extends Controller
             ->get();
 
         return view('phases.edit', compact('phaseEdit'));
+    }
+
+    public function passation(Request $request)
+    {
+        $phaseId = $request->phase;
+        $passNumber = $request->nombre_candidat;
+        $passPourcent = $request->pourcent_candidat;
+
+        $phaseStart = Phase::findOrFail($phaseId);
+
+        $phaseStart->passation_nombre = $passNumber;
+        $phaseStart->update();
+
+        return redirect(route('phase.show', $phaseId))->with('successCand', 'La passation à la phase suivante enregistrée avec succès');
     }
 }

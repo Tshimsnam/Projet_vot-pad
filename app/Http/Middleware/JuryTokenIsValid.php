@@ -19,11 +19,16 @@ class JuryTokenIsValid
     public function handle(Request $request, Closure $next): Response
     {
         $authorizationHeader = $request->header('Authorization');
-        if (empty($authorizationHeader) || !preg_match('/^Bearer (.+)$/', $authorizationHeader, $matches)) {
-            return response()->json(['Erreur' => 'Non autorisé : Token Bearer manquant ou invalide'], 401);
+        
+        if (empty($authorizationHeader) || !preg_match('/^Bearer\s+(.+)$/', $authorizationHeader, $matches)) {
+            $token = $request->cookie('jury_token');
+            
+            if (empty($token)) {
+                return response()->json(['Erreur' => 'Non autorisé : Token Bearer manquant ou invalide'], 401);
+            }
+        } else {
+            $token = $matches[1];
         }
-
-        $token = $matches[1];
 
         $validToken = DB::table('juries')
             ->where('token', $token)
@@ -32,6 +37,7 @@ class JuryTokenIsValid
         if (!$validToken) {
             return response()->json(['Erreur' => 'Non autorisé : Token de Jury invalide'], 401);
         }
+        
         return $next($request);
     }
 }

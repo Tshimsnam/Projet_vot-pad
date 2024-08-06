@@ -8,6 +8,7 @@ use App\Http\Controllers\CritereController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\IntervenantController;
+use App\Http\Controllers\VoteController;
 
 Route::middleware('auth')->group(function () {
     Route::resource('evenements', EvenementController::class);
@@ -22,3 +23,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/intervenants-form', [IntervenantController::class, 'form'])->name('form-authenticate');
 Route::post('/intervenants-authenticate', [IntervenantController::class, 'authenticate'])->name('authenticate');
+
+Route::get('/jury-form', [JuryController::class, 'form'])->name('jury-form');
+Route::post('/jury-authenticate', [VoteController::class, 'authenticate'])->name('jury-authenticate');
