@@ -27,13 +27,15 @@ Route::middleware('auth')->group(function () {
     
     Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
 
+    Route::get('resultats_detail/{phase_id}/{interv_id}',[ResultatController::class,"resultatDetail"])->name("restultatDetatil");
+
     Route::resource('phases', PhaseController::class);
     Route::resource('questions', QuestionController::class);
     Route::resource('assertions', AssertionController::class);
-    Route::resource('reponses', ReponseController::class);
     Route::resource('questionPhases', QuestionPhaseController::class);
     Route::resource('resultats', ResultatController::class);
    
 });
+Route::resource('reponses', ReponseController::class);
 
 require __DIR__.'/auth.php';
