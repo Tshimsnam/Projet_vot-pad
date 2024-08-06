@@ -138,11 +138,16 @@ class VoteController extends Controller
             $phase_id = Phase::where('slug', $phaseSlug)->first()->id;
             $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
             $candidats = $phaseAndSpeaker->intervenants->pluck('id');
-            return view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres'));
+
+            $response = response()->view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres'));
+            $response->withCookie(cookie('jury_token', $jury->token, 60)); // Durée de 60 minutes
+
+            return $response;
         } else {
             return redirect(route('jury-form'))->with('unsuccess', 'Le coupon inséré est invalide.');
         }
     }
+
     public function results($phase_id)
     {
         $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);

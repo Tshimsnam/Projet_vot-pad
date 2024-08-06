@@ -588,14 +588,25 @@
                     <div class="bg-white dark:bg-gray-800 shadow">
                         <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                             <div class="flex justify-between items-center">
-                                <a href="{{ route('results', $phase_id) }}"
+                                <a href="#"
+                                    onclick="passation(event, '{{ route('passation') }}', '{{ $phase_id }}')"
+                                    data-modal-target="pass-modal" data-modal-toggle="pass-modal"
                                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
-                                    Resultat des votes
+                                    Regle de passation
+                                </a>
+                                <a href="{{ route('results', $phase_id) }}"
+                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                        class="size-4 mr-2">
+                                        <path
+                                            d="M2.995 1a.625.625 0 1 0 0 1.25h.38v2.125a.625.625 0 1 0 1.25 0v-2.75A.625.625 0 0 0 4 1H2.995ZM3.208 7.385a2.37 2.37 0 0 1 1.027-.124L2.573 8.923a.625.625 0 0 0 .439 1.067l1.987.011a.625.625 0 0 0 .006-1.25l-.49-.003.777-.776c.215-.215.335-.506.335-.809 0-.465-.297-.957-.842-1.078a3.636 3.636 0 0 0-1.993.121.625.625 0 1 0 .416 1.179ZM2.625 11a.625.625 0 1 0 0 1.25H4.25a.125.125 0 0 1 0 .25H3.5a.625.625 0 1 0 0 1.25h.75a.125.125 0 0 1 0 .25H2.625a.625.625 0 1 0 0 1.25H4.25a1.375 1.375 0 0 0 1.153-2.125A1.375 1.375 0 0 0 4.25 11H2.625ZM7.25 2a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6ZM7.25 7.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6ZM6.5 13.25a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z" />
+                                    </svg>
+                                    Résultats des votes
                                 </a>
                             </div>
                         </div>
@@ -744,6 +755,8 @@
     <x-jurys.create />
     <x-criteres.edit />
     <x-qrcodes.printcode />
+    <x-passations.pass />
+
 
     <script>
         window.onload = function() {
@@ -760,6 +773,7 @@
             } else if (status_phase == 'Fermer' || status_phase == 'fermer') {
                 document.getElementById('enCours').hidden = false;
                 document.getElementById('fermer').hidden = true;
+                document.getElementById('closeVote').style.display = 'none';
             } else {
                 document.getElementById('closeVote').style.display = 'none';
                 document.getElementById('dropdownLeftButtonStatus').style.display = 'none';
@@ -786,6 +800,15 @@
 
             const messageH3 = document.querySelector('#status-modal h3')
             messageH3.textContent = message
+        }
+
+        function passation(event, url, phaseId) {
+            event.preventDefault();
+            const form = document.querySelector('#pass-modal form')
+            form.setAttribute('action', url);
+
+            const inputPhaseId = document.querySelector('#pass-modal form #phaseId')
+            inputPhaseId.setAttribute('value', phaseId);
         }
 
         function modifier(event, url, libelle, description, ponderation) {
