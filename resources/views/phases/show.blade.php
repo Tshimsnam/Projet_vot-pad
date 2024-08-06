@@ -34,6 +34,24 @@
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
                                     <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
+                                        {{ __('Détails des Resultats') }}
+                                    </h3>
+                                    @foreach ($phaseShow as $key => $item) 
+                                        
+                                        <a href="{{route('resultats.show',  $item->id )}}" class="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/>
+                                        </svg>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+                        <div class="bg-white dark:bg-gray-800 shadow">
+                            <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
                                         {{ __('Détails des candidats') }}
                                     </h3>
                                     <a onclick="inserer(event, '{{ route('intervenants.store') }}', @foreach ($phaseShow as $key => $item) 
@@ -251,8 +269,7 @@
                                         <input type="text" value="{{ $item->id }}" name="phase_id"
                                             class="hidden">
                                     @endforeach
-                                    <button type="submit"
-                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enregistrer</button>
+                                    
                                     <div class="mb-5">
                                         <label for="email"
                                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Question</label>
@@ -271,14 +288,18 @@
                                     <div class="mb-5">
                                         <label
                                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
-                                            d'assertion:</label>
+                                            d'assertion et cochez la bonne :</label>
                                         <input type="number" id="N" min="2" max="10"
                                             step="1" style="width:4em"
                                             class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             onchange="Chbx();return false;" required>
                                         <div id="InputFields"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></div>
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        </div>
                                     </div>
+                                    <button type="submit"
+                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enregistrer
+                                    </button>
                                 </form>
                                 <form id="globalform" class="max-w-sm mx-auto hidden"
                                     action="{{ route('questionPhases.store') }}" method="post">
@@ -357,22 +378,40 @@
                 var inputPonderation = document.createElement("input");
                 inputPonderation.type = "number";
                 inputPonderation.name = `assertions[${i}][ponderation]`;
-                inputPonderation.required = true;
+                // inputPonderation.required = true;
                 inputPonderation.placeholder = "Ponderation de l'assertion";
-                inputPonderation.min = 1;
-                inputPonderation.max = 100;
+                inputPonderation.value = 0; //valeur par defaut
+                inputPonderation.min = 0;
+                inputPonderation.max = 1;
                 inputPonderation.step = 1;
                 inputPonderation.className =
-                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+                    "hidden bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
                 inputPonderation.id = "k" + i;
 
-                Fields.appendChild(inputAssertion);
-                Fields.appendChild(inputPonderation);
+                var radioPonderationcheck = document.createElement("input");
+                radioPonderationcheck.type = "radio";
+                radioPonderationcheck.name = `bonneReponse`;
+                radioPonderationcheck.className ="m-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                radioPonderationcheck.value =  `${i}`;
+
+                var divAssetionPonde = document.createElement("div");
+                    divAssetionPonde.className="flex items-center rounded dark:border-gray-700";
+                divAssetionPonde.appendChild(inputAssertion)
+                divAssetionPonde.appendChild(radioPonderationcheck)
+                divAssetionPonde.appendChild(inputPonderation)
+
+                Fields.appendChild(divAssetionPonde);
+
+                // Fields.appendChild(inputAssertion);
+                // Fields.appendChild(radioPonderationcheck);
+                // Fields.appendChild(inputPonderation);
                 document.getElementById("k" + i).value = "";
                 Fields.appendChild(document.createElement("br"));
+
             }
         }
         Chbx();
+
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

@@ -37,7 +37,7 @@ class QuestionController extends Controller
      */
     public function store(StoreQuestionRequest $request)
     {
-    
+        // dd($request->all());
         $verifQuestion=Question::orderBy('id','desc')->where("question",$request->question)->count();
         if($verifQuestion> 0){
             return back()->with("echec","Cette question existe déjà");
@@ -50,16 +50,28 @@ class QuestionController extends Controller
           $question_id= $value->id;
         }
        $enregistrment=['question_id' => $question_id, 'phase_id'=> $request->phase_id, 'ponderation'=> $request->ponderation];
-        
+        $bonneAssertion = 0;
+        // $autreAssertion = [];
+        // dd($request->all());
             foreach ($request->assertions as $key => $value) {
+                // dd($key, $request->bonneReponse);
+                if($key==$request->bonneReponse){
+                    $bonneAssertion = $value['ponderation'] = 1;
+                    // $nameAsse = $key;
+                    // dd("ponderation bonne assertion ".$bonneAssertion, "clé ".$key,"value ".$value["name"]);
+                }
+                // else{
+                //     array_push($autreAssertion,$bonneAssertion);
+                // }
                 $assertion = Assertion::firstOrCreate([
                     'question_id'=>$enregistrment['question_id'],
                     'assertion'=> $value["name"],
-                    'ponderation'=>$value["ponderation"],
+                    'ponderation'=>$bonneAssertion,
                     'statut'=>"ok"
                 ]);
+                $bonneAssertion = 0;
             }
-        
+        // dd($bonneAssertion, $nameAsse, "autres assertion",$autreAssertion);
         $verif=QuestionPhase::all()->where("phase_id", $request->phase_id);//on recupere tout dans question phase et on verifie si l'enregistrement existe deja
         $tabQuestion=array();
         foreach ($verif as $key => $value) {
