@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Intervenant;
 use App\Models\IntervenantPhase;
 use App\Models\Phase;
+use App\Models\Question;
 use App\Models\QuestionPhase;
 use App\Models\Reponse;
 use Illuminate\Http\Request;
@@ -57,12 +59,12 @@ class ResultatController extends Controller
         if($phase){
 
             $question = QuestionPhase::where('phase_id','=',$phase[0]->id)->get();
-            $somme_ponderation_phasae = 0;
+            $somme_ponderation_phase = 0;
             foreach($question as $cle => $valeur){
                     $ponde = $valeur->ponderation;
-                    $somme_ponderation_phasae+=$ponde;
+                    $somme_ponderation_phase+=$ponde;
             }
-            $somme_ponderation_phasae;
+            $somme_ponderation_phase;
 
             $intervenant_resultat = array();
             $tableau=array();
@@ -72,7 +74,7 @@ class ResultatController extends Controller
                             'intervenants.id as id',
                             'intervenants.email as email',
                         )
-                        ->where("intervenant_phases.id", "=", $phase[0]->id)
+                        ->where("intervenant_phases.phase_id", "=", $phase[0]->id)
                         ->get();
             
                 foreach($intervants as $key => $value){
@@ -82,7 +84,7 @@ class ResultatController extends Controller
                         $point_inter += $v->cote;
                     }
                     
-                    $pourcentage_interv = ( $point_inter/$somme_ponderation_phasae)*100;
+                    $pourcentage_interv = ( $point_inter/$somme_ponderation_phase)*100;
                     
                     $pourcentage = round($pourcentage_interv,2);
 
@@ -93,7 +95,10 @@ class ResultatController extends Controller
                     
                 }
                 // dd($intervenant_resultat);
-            return view('resultats.index', compact('intervenant_resultat'));
+                usort($intervenant_resultat, function ($a, $b) {
+                    return $b['pourcentage'] - $a['pourcentage'];
+                });
+            return view('resultats.index', compact('intervenant_resultat','phase'));
             
         }else{
             return Redirect::back();
@@ -123,5 +128,58 @@ class ResultatController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    public function resultatDetail($phase_id,$interv_id){
+
+        $phase = Phase::where('id','=',$phase_id)->get();//recuper phase
+        if($phase){
+
+            $question = QuestionPhase::where('phase_id','=',$phase[0]->id)->get(); //recupere les question de la phase
+
+            $somme_ponderation_phase = 0;
+            $tab_question_detail = [];
+            foreach($question as $cle => $valeur){
+
+                $ponde = $valeur->ponderation;
+                $somme_ponderation_phase += $ponde;
+
+                $cote = Reponse::where('phase_id','=',$phase[0]->id)->where('intervenant_id','=',$interv_id)->get();
+                $point = 0;
+                foreach($cote as $ky => $val){
+                    if($val->question_phase->question_id == $valeur->question->id){
+                        $point = $val->cote;
+                        break;
+                    }
+                }
+                array_push($tab_question_detail, 
+                [
+                    "libele" => $valeur->question->question,
+                    "cote" => $point,
+                    "ponderation" => $ponde
+                ]);
+            }
+          
+            $somme_ponderation_phase;
+
+            $cote = Reponse::where('phase_id','=',$phase[0]->id)->where('intervenant_id','=', $interv_id)->get();
+            $point_inter = 0;
+            foreach($cote as $k => $v){
+                $point_inter += $v->cote;
+            }
+            
+            $pourcentage_interv = ( $point_inter/$somme_ponderation_phase)*100;
+            
+            $pourcentage = round($pourcentage_interv,2);
+
+            $tab_synthese =[
+                "total_obtenu"=>$point_inter,
+                "total_phase"=>$somme_ponderation_phase,
+                "pourcentage"=>$pourcentage,
+                "intervenant"=>$cote[0]->intervenant->email
+            ] ;
+                
+            return view('resultats.show', compact('tab_question_detail','phase','tab_synthese'));
+            
+        }else{}
     }
 }

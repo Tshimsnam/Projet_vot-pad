@@ -116,7 +116,9 @@ class ReponseController extends Controller
                 }
                 session(['phase' => $request->phase_id,
                         'intervenant'=>$request->intervenant_id]);
-                return Redirect::back()->with('success',"Merci d'avoir répondu et Felicitation!");
+                $request->session()->flush();
+                return redirect()->route('form-authenticate');
+                // return Redirect::back()->with('success',"Merci d'avoir répondu et Felicitation!");
             }else{
                 session(['phase' => $request->phase_id,
                         'intervenant'=>$request->intervenant_id]);
