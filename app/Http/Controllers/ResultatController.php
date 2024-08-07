@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assertion;
 use App\Models\Intervenant;
 use App\Models\IntervenantPhase;
 use App\Models\Phase;
@@ -134,32 +135,54 @@ class ResultatController extends Controller
         $phase = Phase::where('id','=',$phase_id)->get();//recuper phase
         if($phase){
 
-            $question = QuestionPhase::where('phase_id','=',$phase[0]->id)->get(); //recupere les question de la phase
+            $question_phases = QuestionPhase::where('phase_id','=',$phase[0]->id)->get(); //recupere les question de la phase
+            $questions = $question_phases;
 
             $somme_ponderation_phase = 0;
             $tab_question_detail = [];
-            foreach($question as $cle => $valeur){
+            foreach($question_phases as $cle => $valeur){
 
                 $ponde = $valeur->ponderation;
                 $somme_ponderation_phase += $ponde;
 
-                $cote = Reponse::where('phase_id','=',$phase[0]->id)->where('intervenant_id','=',$interv_id)->get();
-                $point = 0;
-                foreach($cote as $ky => $val){
-                    if($val->question_phase->question_id == $valeur->question->id){
-                        $point = $val->cote;
-                        break;
-                    }
+                $reponse = Reponse::where('question_phase_id','=',$valeur->id)->where('intervenant_id','=',$interv_id)->first();
+                if($reponse != null){
+                    $questions[$cle]->assertion =(!empty($reponse->assertion->assertion))?$reponse->assertion->assertion: "assertion inexistante";
+                    $questions[$cle]->cote = $reponse->cote;
+                    $questions[$cle]->assertion_id = $reponse->assertion_id;
+                    
+                }else{
+                    $questions[$cle]->assertion = "N'a pas repondu " ;
+                    $questions[$cle]->cote = 0;
                 }
-                array_push($tab_question_detail, 
-                [
-                    "libele" => $valeur->question->question,
-                    "cote" => $point,
-                    "ponderation" => $ponde
-                ]);
+                $questions[$cle]->question = $valeur->question->question;
+
+               
+
+                // $point = 0;
+                // $assertion = "N'a pas repondu ";
+                // foreach($cote as $ky => $val){
+                //     if($val->question_phase->question_id == $valeur->question->id){
+                //         $point = $val->cote;
+                //         // $verif_ass = Assertion::findOrFail($val->assertion_id);
+                //         // dd($verif_ass->assertion);
+                //         // if($verif_ass){
+                //             $assertion = $val->assertion->assertion;
+                //         // }
+                //         break;
+                //     }
+                // }
+              
+                // array_push($tab_question_detail, 
+                // [
+                //     "libele" => $valeur->question->question,
+                //     "assertion"=>$assertion,
+                //     "cote" => $point,
+                //     "ponderation" => $ponde
+                // ]);
             }
-          
-            $somme_ponderation_phase;
+            // dd($somme_ponderation_phase,$questions);
+            
 
             $cote = Reponse::where('phase_id','=',$phase[0]->id)->where('intervenant_id','=', $interv_id)->get();
             $point_inter = 0;
@@ -178,7 +201,7 @@ class ResultatController extends Controller
                 "intervenant"=>$cote[0]->intervenant->email
             ] ;
                 
-            return view('resultats.show', compact('tab_question_detail','phase','tab_synthese'));
+            return view('resultats.show', compact('questions','phase','tab_synthese'));
             
         }else{}
     }

@@ -4,14 +4,6 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __("Resultats detaillés de l'intervenant ") }}[ {{$tab_synthese['intervenant']}} ] de la phase [ {{$phase[0]->nom}}]
             </h2>
-            <!-- <a href=""
-                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            </a> -->
         </div>
     </x-slot>
 
@@ -47,22 +39,24 @@
                 <tr>
                     <th scope="col" class="px-6 py-3">N°</th>
                     <th scope="col" class="px-6 py-3">Question</th>
+                    <th scope="col" class="px-6 py-3">Assertion</th>
                     <th scope="col" class="px-6 py-3">Cote obtenue</th>
                     <th scope="col" class="px-6 py-3">Ponderation</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($tab_question_detail as $i => $item)
+                @foreach ($questions as $i => $item)
                     <tr
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                         <td class="px-6 py-4">{{$i+1}}</td>
                         <th scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{$item["libele"]}}
+                            {{$item->question}}
                         </th>
                        
-                        <td class="px-4"> {{$item["cote"]}}</td>
-                        <td class="px-6 py-4">{{$item["ponderation"]}}</td>
+                        <td class="px-4"> {{$item->assertion}}</td>
+                        <td class="px-4"> {{$item->cote}}</td>
+                        <td class="px-6 py-4">{{$item->ponderation}}</td>
                     </tr>
                 @endforeach
                 <tr>
