@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AssertionController;
+use App\Http\Controllers\ImportQuestionController;
 use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuestionPhaseController;
@@ -27,6 +28,7 @@ Route::middleware('auth')->group(function () {
     
     Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
 
+    Route::post('import_question',[ImportQuestionController::class,"import"])->name("importQuestion");
     Route::get('resultats_detail/{phase_id}/{interv_id}',[ResultatController::class,"resultatDetail"])->name("restultatDetatil");
 
     Route::resource('phases', PhaseController::class);
