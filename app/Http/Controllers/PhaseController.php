@@ -196,6 +196,8 @@ class PhaseController extends Controller
         $question = Question::latest()->get();
 
         $questionPhase0 = QuestionPhase::orderBy('id')->where("phase_id", $id)->get();
+        $questionPhasePagnation = QuestionPhase::orderBy('id')->where("phase_id", $id)->paginate(10);
+        // dd($questionPhase0[0]->question->question);
 
         $tabAssertion = array();
         $questionPhase = array();
@@ -208,6 +210,7 @@ class PhaseController extends Controller
             array_push($questionPhase, $tabAssertion);
         }
         $questionAssert = $questionPhase;
+
 
         if ($phase_type === 'Vote' || $phase_type === 'vote') {
             // module phase vote
@@ -299,7 +302,7 @@ class PhaseController extends Controller
                 $intervenant->intervenantPhaseId = $intervenantPhase->id;
                 $intervenants[] = $intervenant;
             }
-            return view('phases.show', compact('phaseShow', 'question', 'questionAssert', 'intervenants', 'intervenantPhases'));
+            return view('phases.show', compact('phaseShow', 'question','questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases'));
         }
     }
 
