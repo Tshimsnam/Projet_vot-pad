@@ -39,9 +39,9 @@ class ReponseController extends Controller
 
         $veri_phase = QuestionPhase::where('phase_id',$phase)->first();
         if($veri_phase){
-            $verif_interv_affectation = IntervenantPhase::where('phase_id',$veri_phase->id)->where('intervenant_id',$intervenant)->first();
+            $verif_interv_affectation = IntervenantPhase::where('phase_id',$veri_phase->phase_id)->where('intervenant_id',$intervenant)->first();
             if($verif_interv_affectation){ 
-                return response()->json(['message'=>$verif_interv_affectation->id],400);
+                // return response()->json(['message'=>$verif_interv_affectation],400);
                 // $verif_deja_repondu = Reponse::where('phase_id',$veri_phase->id)->where('intervenant_id',$verif_interv_affectation->id);
                 foreach($cote as  $value){
                     $question = $value['question_id'];

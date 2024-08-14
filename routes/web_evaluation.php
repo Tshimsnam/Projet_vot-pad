@@ -26,11 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::get('phase/pause', [PhaseController::class,'pause'])->name('phase.pause');
     Route::get('phase/terminer', [PhaseController::class,'terminer'])->name('phase.terminer');
     
-    Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
+    
 
     Route::post('import_question',[ImportQuestionController::class,"import"])->name("importQuestion");
     Route::get('resultats_detail/{phase_id}/{interv_id}',[ResultatController::class,"resultatDetail"])->name("restultatDetatil");
-
+   
     Route::resource('phases', PhaseController::class);
     Route::resource('questions', QuestionController::class);
     Route::resource('assertions', AssertionController::class);
@@ -38,6 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('resultats', ResultatController::class);
    
 });
+Route::get('response-test', function (){
+    return view('reponses.response');
+});
 Route::resource('reponses', ReponseController::class);
+Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
 
 require __DIR__.'/auth.php';
