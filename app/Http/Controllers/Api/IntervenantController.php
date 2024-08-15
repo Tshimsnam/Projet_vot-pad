@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\IntervenantPhase;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IntervenantPhaseResource;
+use Illuminate\Support\Facades\Log;
 
 class IntervenantController extends Controller
 {
@@ -125,12 +126,14 @@ class IntervenantController extends Controller
         $coupon = $request->coupon;
         $intervenant = Intervenant::where('email', $email)->first();
 
-        if (!$intervenant) {
-            return response()->json('L\'adresse email insérée est invalide.', 400);
+        Log::info('email '.$email.'--'.!$intervenant);
+
+       if ($intervenant==null) {
+            return response()->json('L\'adresse email inseree est invalide.', 400);
         } else {
             $intervenantId = $intervenant->id;
             $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('coupon', $coupon)->first();
-            if (!$intervenantPhase) {
+            if ($intervenantPhase==null) {
                 return response()->json('Le coupon inséré est invalide.', 400);
             } else {
                 $intervenantToken = $intervenantPhase->token;
