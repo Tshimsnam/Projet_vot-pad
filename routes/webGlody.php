@@ -1,14 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\JuryController;
-use App\Http\Controllers\PhaseController;
-use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\CritereController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\IntervenantController;
+use App\Http\Controllers\JuryController;
+use App\Http\Controllers\PhaseController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\VoteController;
+use App\Http\Middleware\JuryTokenIsValid;
+use Illuminate\Support\Facades\Route;
+
 
 Route::middleware('auth')->group(function () {
     Route::resource('evenements', EvenementController::class);
@@ -21,8 +23,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/qrcodes/{jurys}/{nombre}', [QRCodeController::class, 'index'])->name('qrcodes');
 });
 
-Route::get('/intervenants-form', [IntervenantController::class, 'form'])->name('form-authenticate');
-Route::post('/intervenants-authenticate', [IntervenantController::class, 'authenticate'])->name('authenticate');
+Route::get('/votePad-form', [IntervenantController::class, 'form'])->name('form-authenticate');
+Route::post('/votePad/evaluation', [IntervenantController::class, 'authenticate'])->name('authenticate');
 
-Route::get('/jury-form', [JuryController::class, 'form'])->name('jury-form');
-Route::post('/jury-authenticate', [VoteController::class, 'authenticate'])->name('jury-authenticate');
+Route::get('/votePad', [JuryController::class, 'form'])->name('jury-form');
+Route::post('/votePad/voting', [VoteController::class, 'authenticate'])->name('jury-authenticate');
+Route::get('/votePad/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}', [VoteController::class, 'show'])->name('jury.success')->middleware(JuryTokenIsValid::class);;
+
+
+

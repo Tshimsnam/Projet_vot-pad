@@ -589,7 +589,7 @@
                         <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                             <div class="flex justify-between items-center">
                                 <a href="#"
-                                    onclick="passation(event, '{{ route('passation') }}', '{{ $phase_id }}')"
+                                    onclick="passation(event, '{{ route('passation') }}', '{{ $phase_id }}', {{ $passNumber }})"
                                     data-modal-target="pass-modal" data-modal-toggle="pass-modal"
                                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -765,18 +765,28 @@
         };
 
         function initial(status_phase) {
+            const enCoursStatut = document.getElementById('enCours');
+            const fermerStatut = document.getElementById('fermer');
+            const closeVote = document.getElementById('closeVote');
+            const dropdownLeftButtonStatus = document.getElementById('dropdownLeftButtonStatus');
             if (status_phase == 'En cours' || status_phase == 'en cours') {
-                document.getElementById('enCours').hidden = true;
-                document.getElementById('fermer').hidden = false;
-                document.getElementById('closeVote').style.display = 'flex';
-                document.getElementById('dropdownLeftButtonStatus').style.display = 'none';
+                enCoursStatut.hidden = true;
+                fermerStatut.hidden = false;
+                closeVote.style.display = 'flex';
+                dropdownLeftButtonStatus.style.display = 'none';
             } else if (status_phase == 'Fermer' || status_phase == 'fermer') {
-                document.getElementById('enCours').hidden = false;
-                document.getElementById('fermer').hidden = true;
-                document.getElementById('closeVote').style.display = 'none';
+                enCoursStatut.hidden = false;
+                fermerStatut.hidden = true;
+                closeVote.style.display = 'none';
+                dropdownLeftButtonStatus.style.display = 'none';
+            } else if (status_phase == 'en attente') {
+                enCoursStatut.hidden = false;
+                fermerStatut.hidden = false;
+                closeVote.style.display = 'none';
+                dropdownLeftButtonStatus.style.display = 'flex';
             } else {
-                document.getElementById('closeVote').style.display = 'none';
-                document.getElementById('dropdownLeftButtonStatus').style.display = 'none';
+                closeVote.style.display = 'none';
+                dropdownLeftButtonStatus.style.display = 'none';
             }
         }
 
@@ -802,13 +812,47 @@
             messageH3.textContent = message
         }
 
-        function passation(event, url, phaseId) {
+        function passation(event, url, phaseId, passNombre) {
             event.preventDefault();
             const form = document.querySelector('#pass-modal form')
             form.setAttribute('action', url);
 
             const inputPhaseId = document.querySelector('#pass-modal form #phaseId')
             inputPhaseId.setAttribute('value', phaseId);
+
+            const passNombreCheck = document.querySelector('#pass-modal form #passNombre')
+            const getNombPass = document.querySelector('#pass-modal form #getNombPass');
+            const buttonValider = document.querySelector('#pass-modal form #validPass');
+            const annulerValider = document.querySelector('#pass-modal form #annuler');
+            const modifierValider = document.querySelector('#pass-modal form #modifier');
+            const nombre_candidat = document.querySelector('#pass-modal form #nombre_candidat');
+            const nombreDiv = document.querySelector('#pass-modal form #nombreDiv');
+            const insertPass = document.querySelector('#pass-modal #insertPass');
+            const editPass = document.querySelector('#pass-modal #editPass');
+            passNombreCheck.checked = false;
+            if (passNombre != null) {
+                passNombreCheck.style.display = 'none';
+                nombre_candidat.style.display = 'none';
+                nombre_candidat.setAttribute('value', passNombre);
+                getNombPass.textContent = passNombre;
+                buttonValider.style.display = 'none';
+                nombreDiv.style.display = 'none';
+                modifierValider.style.display = 'flex';
+                annulerValider.style.display = 'none';
+                insertPass.style.display = 'flex';
+                editPass.style.display = 'none';
+            }else {
+                passNombreCheck.checked = true;
+                passNombreCheck.style.display = 'flex';
+                nombre_candidat.style.display = 'flex';
+                nombre_candidat.setAttribute('value', 1);
+                nombreDiv.style.display = 'block';
+                buttonValider.style.display = 'flex';
+                modifierValider.style.display = 'none';
+                annulerValider.style.display = 'none';
+                insertPass.style.display = 'flex';
+                editPass.style.display = 'none';
+            }
         }
 
         function modifier(event, url, libelle, description, ponderation) {

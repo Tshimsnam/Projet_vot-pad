@@ -3,8 +3,11 @@
     <div class="relative p-4 w-full max-w-md max-h-full sm:rounded-lg bg-white rounded-lg shadow dark:bg-gray-800"
         style="width: 90%;">
         <div class="flex items-center justify-between p-2 md:p-5 border-b rounded-t dark:border-gray-600">
-            <h3 id="" class="px-4 text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 id="insertPass" class="px-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Règle de passation</h3>
+            </h3>
+            <h3 id="editPass" class="px-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Modification de règle de passation</h3>
             </h3>
             <button type="button"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -31,11 +34,12 @@
                                 <label for="passNombre"
                                     class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                     Nombre des candidats maximum
-                                    <h2 class="px-3 float-right"><strong id="getPondprive"></strong></h2>
+                                    <h2 class="px-3 float-right"><strong id="getNombPass"></strong></h2>
                                 </label>
                             </div>
                         </li>
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600"
+                            hidden>
                             <div class="flex items-center ps-3">
                                 <input id="passPourcent" type="checkbox" value="" name="passPourcent"
                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
@@ -71,9 +75,18 @@
                     </div>
                 </div>
                 <div class="flex justify-between items-center mt-4 sm:mt-6">
-                    <button id="valider" type="button" data-modal-target="passValid" onclick="validatePass(this)"
+                    <button id="validPass" type="button" data-modal-target="passValid" onclick="validatePass(this)"
                         class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                         Valider
+                    </button>
+                    <button id="modifier" type="button" onclick="modif()"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"">
+                        Modifier
+                    </button>
+                    <button id="annuler" type="button" onclick="annul()"
+                        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                        style="display:none">
+                        Annuler
                     </button>
                 </div>
                 <div id="passValid" tabindex="-1"
@@ -112,7 +125,6 @@
 
 <script>
     const nombre_div = document.getElementById('nombreDiv');
-    nombre_div.style.display = 'none';
     const nombre_candidat = document.getElementById('nombre_candidat');
 
     const pourcent_div = document.getElementById('pourcentDiv');
@@ -164,4 +176,31 @@
             pourcent_candidat.setAttribute('value', 0)
         }
     });
+    const modifierButton = document.getElementById('modifier');
+    const annulerButton = document.getElementById('annuler');
+    const validerButton = document.getElementById('validPass');
+    const editPass = document.getElementById('editPass');
+    const insertPass = document.getElementById('insertPass');
+
+    function modif() {
+        modifierButton.style.display = 'none';
+        annulerButton.style.display = 'inline-block';
+        validerButton.style.display = 'block';
+        nombre_div.style.display = 'block';
+        nombre_candidat.style.display = 'block';
+        insertPass.style.display = 'none';
+        editPass.style.display = 'flex';
+        passNombreCheckbox.checked = true;  
+    }
+
+    function annul() {
+        modifierButton.style.display = 'inline-block';
+        annulerButton.style.display = 'none';
+        validerButton.style.display = 'none';
+        nombre_div.style.display = 'none';
+        nombre_candidat.style.display = 'none';
+        insertPass.style.display = 'flex';
+        editPass.style.display = 'none';    
+        passNombreCheckbox.checked = false;
+    }
 </script>
