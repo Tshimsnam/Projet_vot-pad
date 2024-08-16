@@ -86,7 +86,7 @@
                         <div class="rounded-full relative  bg-blue-500 w-96 h-96 border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700 flex justify-center items-center">
                             
                             <div class=" rounded-full w-full bg-white border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
-                                <img src="{{asset("img/img/qst2.jpg")}}" alt="" class="p-1 rounded-full w-96 h-96 animate-rotate-cw" >
+                                <img src="{{asset("img/qst2.jpg")}}" alt="" class="p-1 rounded-full w-96 h-96 animate-rotate-cw" >
                             </div>
                             <form action="{{route('phasequestion')}}" method="get" class="absolute  bg-transparent text-white px-4 py-2 rounded-md">
                                 @csrf
