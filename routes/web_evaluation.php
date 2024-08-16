@@ -14,6 +14,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('phase/create/{evenement_id}', [PhaseController::class, 'create'])->name('phase.create');
     Route::get('phase/{id}', [PhaseController::class,'evenementPhase'])->name('phase.show');
+    Route::get('phase_question_detatil/{id}', [PhaseController::class,'phaseQuestionDetail'])->name('phase_question_detatil');
     
 
     Route::post('auto-question-get', [QuestionController::class,'getQuestionAuto'])->name('auto-question-get');
