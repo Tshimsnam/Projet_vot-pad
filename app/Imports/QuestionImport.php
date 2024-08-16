@@ -18,30 +18,43 @@ class QuestionImport implements ToArray, WithHeadingRow
     public function array(array $data)
     {
         // dd(request()->all());
+        // dd($data);
         foreach($data as $questions){
-        //   dd ( $questions['ponderation']);
+            //dd ( $questions['ponderation']);
             // dd($questions['reponse']);
-            // dd($questions["assertions"]);
-            $assertions = explode( ', ',$questions["assertions"]);
-            $ponde_asser = 0;
-            // dd($assertions);
+            // dd($questions, $key);
+            // $assertions = explode( ', ',$questions["assertions"]);
             $question = Question::firstOrCreate([
                 'question' => $questions["question"]
             ]);
+
+            $assertions=[
+                 $questions['assertion1'],
+                $questions['assertion2'],
+                $questions['assertion3'],
+                $questions['assertion4'],
+                $questions['assertion5'] 
+            ];
+            // dd($assertions_tab);
+            $ponde_asser = 0;
             foreach($assertions as $assertion){
                 if($assertion==$questions['reponse'])
                 {
                     $ponde_asser = 1;
                 }
-                $assertion = Assertion::firstOrCreate([
-                    'question_id' => $question->id,
-                    'assertion' => $assertion,
-                    'ponderation' => $ponde_asser,
-                    'statut' => "ok"
-                ]);
+                // dd($assertion, $ponde_asser);
+                if($assertion!=""){
+                    $assertion = Assertion::firstOrCreate([
+                        'question_id' => $question->id,
+                        'assertion' => $assertion,
+                        'ponderation' => $ponde_asser,
+                        'statut' => "ok"
+                    ]);
+                }
                 $ponde_asser = 0;
                 //dd($assertion, $questions['reponse'],$ponde_asser);
-                $verif = QuestionPhase::all()->where("phase_id", request()->phase)->where('question_id',$question->id)->count();
+            }
+            $verif = QuestionPhase::all()->where("phase_id", request()->phase)->where('question_id',$question->id)->count();
                 if($verif>0){
 
                 }else{
@@ -51,8 +64,6 @@ class QuestionImport implements ToArray, WithHeadingRow
                         "ponderation" =>  $questions['ponderation']
                     ]);
                 }
-            }
-            
         }
     }
 }
