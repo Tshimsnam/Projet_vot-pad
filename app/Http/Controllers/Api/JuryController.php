@@ -6,6 +6,8 @@ use App\Models\Jury;
 use App\Models\Phase;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
+
 
 class JuryController extends Controller
 {
@@ -58,7 +60,7 @@ class JuryController extends Controller
         if (!$jury) {
             return response()->json([
                 "error" => "le coupon est invalide"
-            ]);
+            ],400);
         } else {
 
             $type = $jury->type;
@@ -74,11 +76,20 @@ class JuryController extends Controller
     private function publicAuthenticate(Jury $jury, $identifiant)
     {
         $juryCoupon = $jury->coupon;
+        if($identifiant == null)
+        {
+            return response()->json([
+                "error" => "Desole, votre identifiant est invalide ou null",
+            ],400
+        );
+        }
         $juryExistant = Jury::where('coupon', $juryCoupon)->where('identifiant', $identifiant)->first();
         if ($juryExistant) {
             return response()->json([
-                "error" => "Desolé, vous ne pouvez plus acceder à ce vote"
-            ]);
+                "error" => "Desole, vous ne pouvez plus acceder a ce vote!!!",
+            ],400
+        );
+
         }
         $phaseSlug = substr($juryCoupon, 0, 3);
         $phase = Phase::where('slug', $phaseSlug)->first();

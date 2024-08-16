@@ -198,7 +198,7 @@ class PhaseController extends Controller
         $questionPhase0 = QuestionPhase::orderBy('id')->where("phase_id", $id)->get();
         $questionPhasePagnation = QuestionPhase::orderBy('id')->where("phase_id", $id)->paginate(10);
         // dd($questionPhase0[0]->question->question);
-
+        
         $tabAssertion = array();
         $questionPhase = array();
         foreach ($questionPhase0 as $key => $valeur) {
@@ -304,6 +304,14 @@ class PhaseController extends Controller
             }
             return view('phases.show', compact('phaseShow', 'question','questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases'));
         }
+    }
+    public function phaseQuestionDetail(Request $request, $id)
+    {
+        $phaseShow = Phase::select("id")->latest()->where('id', $id)->first();
+        
+        $questionPhasePagnation = QuestionPhase::orderBy('id')->where("phase_id", $phaseShow->id)->paginate(25);
+        // dd($questionPhasePagnation);
+        return view('phases.question_phase', compact('questionPhasePagnation'));
     }
 
     //changer le status de la phase	

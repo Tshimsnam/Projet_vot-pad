@@ -186,12 +186,13 @@ class QuestionPhaseController extends Controller
                             }                 
                         }else{
 
+                            $dateNow = Carbon::now();
                             $dateA = Carbon::create($interv_phase[0]->fin_evaluation); //heure de fin en format date
-                            $dateB = Carbon::create($debut_evaluation->format('Y-m-d H:i:s')); // heure de reconnexion en format date
+                            $dateB = Carbon::create($dateNow->format('Y-m-d H:i:s')); // heure de reconnexion en format date
 
                             // Calculer la différence entre les deux dates
                             $reste = $dateA->diff($dateB);
-
+                            // dd($dateA,$dateB,$reste->invert);
                             if($reste->invert <= 0){
                                 session(['phaseId' => $request->phase_id,
                                 'intervenantId'=>$request->intervenant_id]);
