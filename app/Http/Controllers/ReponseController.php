@@ -100,7 +100,8 @@ class ReponseController extends Controller
                     $Pdq=$ponderationQuestion[0]->ponderation;
                     $Pda=$ponderationAssertionChoisie[0]->ponderation;
                     // dd($maxAssertion, $ponderationAssertionChoisie, $Pdq);
-                    $cote=round($Pdq*$Pda/$maxAssertion,2);//on prend 2 rangs apres la virgule
+                    //$cote=round($Pdq*$Pda/$maxAssertion,2); prend 2 rangs apres la virgule
+                    $cote=($Pda>0)?$Pdq:0;//la cote est egal au ponderation de la question si la ponderation de l'assertion est 1 ou >0
 
                     $assertion_id = $ponderationAssertionChoisie[0]->ponderation;
                     $question_phase_id=$ponderationQuestion[0]->id;
