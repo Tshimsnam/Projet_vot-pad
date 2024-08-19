@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Phase;
-use App\Models\Intervenant;
-use Illuminate\Http\Request;
-use App\Models\IntervenantPhase;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IntervenantPhaseResource;
+use App\Models\Evenement;
+use App\Models\Intervenant;
+use App\Models\IntervenantPhase;
+use App\Models\Phase;
+use Carbon\Carbon;
+use DateTime;
+use DateTimeZone;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class IntervenantController extends Controller
@@ -126,14 +130,14 @@ class IntervenantController extends Controller
         $coupon = $request->coupon;
         $intervenant = Intervenant::where('email', $email)->first();
 
-        Log::info('email '.$email.'--'.!$intervenant);
+        Log::info('email ' . $email . '--' . !$intervenant);
 
-       if ($intervenant==null) {
+        if ($intervenant == null) {
             return response()->json('L\'adresse email inseree est invalide.', 400);
         } else {
             $intervenantId = $intervenant->id;
             $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('coupon', $coupon)->first();
-            if ($intervenantPhase==null) {
+            if ($intervenantPhase == null) {
                 return response()->json('Le coupon inséré est invalide.', 400);
             } else {
                 $intervenantToken = $intervenantPhase->token;
@@ -141,11 +145,28 @@ class IntervenantController extends Controller
 
                     $intervenantPhase = IntervenantPhase::where('token', $intervenantToken)->first();
                     $phase = Phase::find($intervenantPhase->phase_id);
+                    $evenement = Evenement::find($phase->evenement_id);
                     $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
                     $intervenant->intervenantPhaseId = $intervenantPhase->id;
                     $intervenant->phaseId = $intervenantPhase->phase_id;
                     $intervenant->phase_nom = $phase->nom;
+                    $intervenant->evenement_nom = $evenement->nom;
                     $intervenant->intervenantToken = $intervenantPhase->token;
+                    $intervenant->finEvaluation = $intervenantPhase->fin_evaluation;
+
+                    $now = Carbon::now();
+                    $finEvaluation = Carbon::create($intervenantPhase->fin_evaluation); 
+                    $dateActuelle = Carbon::create($now->format('Y-m-d H:i:s')); 
+
+                    if ($dateActuelle >= $finEvaluation) {
+                        $dureeRestante = 0;
+                    } else {
+                        $reste = $dateActuelle->diff($finEvaluation);
+                        $dureeRestante = ($reste->days * 24 * 60 * 60) + ($reste->h * 60 * 60) + ($reste->i * 60) + $reste->s;
+                    }
+
+                    $intervenant->dureeRestante = $dureeRestante;
+
                     return new IntervenantPhaseResource($intervenant);
                 } else {
                     $intervenantPhaseCoupon = $intervenantPhase->coupon;
@@ -155,6 +176,7 @@ class IntervenantController extends Controller
                     $intervenantToken = $intervenantPhase->token;
                     $phaseSlug = substr($intervenantPhaseCoupon, 0, 3);
                     $phase = Phase::where('slug', $phaseSlug)->first();
+                    $evenement = Evenement::find($phase->evenement_id);
                     $phase->token = $intervenantToken;
                     $intervenantPhase = IntervenantPhase::where('token', $intervenantToken)->first();
                     $phase = Phase::find($intervenantPhase->phase_id);
@@ -162,7 +184,24 @@ class IntervenantController extends Controller
                     $intervenant->intervenantPhaseId = $intervenantPhase->id;
                     $intervenant->phaseId = $intervenantPhase->phase_id;
                     $intervenant->phase_nom = $phase->nom;
+                    $intervenant->evenement_nom = $evenement->nom;
                     $intervenant->intervenantToken = $intervenantPhase->token;
+                    $intervenant->finEvaluation = $intervenantPhase->fin_evaluation;
+
+                    $now = Carbon::now();
+                    $finEvaluation = Carbon::create($intervenantPhase->fin_evaluation); 
+                    $dateActuelle = Carbon::create($now->format('Y-m-d H:i:s')); 
+
+                    if ($dateActuelle >= $finEvaluation) {
+                        $dureeRestante = 0;
+                    } else {
+                        $reste = $dateActuelle->diff($finEvaluation);
+                        $dureeRestante = ($reste->days * 24 * 60 * 60) + ($reste->h * 60 * 60) + ($reste->i * 60) + $reste->s;
+                    }
+
+                    $intervenant->dureeRestante = $dureeRestante;
+
+
                     return new IntervenantPhaseResource($intervenant);
                 }
             }

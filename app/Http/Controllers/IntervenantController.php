@@ -223,7 +223,7 @@ class IntervenantController extends Controller
     {
         $email = $request->email;
         $coupon = $request->coupon;
-        $intervenant = Intervenant::select('id','email')->where('email', $email)->first();
+        $intervenant = Intervenant::select('id', 'email')->where('email', $email)->first();
 
         if (!$intervenant) {
             return redirect(route('form-authenticate'))->with('unsuccess', 'L\'adresse email insérée est invalide.');
@@ -235,7 +235,16 @@ class IntervenantController extends Controller
             } else {
                 $intervenantToken = $intervenantPhase->token;
                 if ($intervenantToken != 0) {
-                    return redirect(route('form-authenticate'))->with('unsuccess', 'ce coupon a été déjà utilisé.');
+                    $intervenantPhaseCoupon = $intervenantPhase->coupon;
+                    $phaseSlug = substr($intervenantPhaseCoupon, 0, 3);
+                    $phase = Phase::select('id')->where('slug', $phaseSlug)->first();
+                    $IdPhase = $phase->id;
+                    $IdIntervenant = $intervenant->id;
+
+                    Session::put('phase_id', $IdPhase);
+                    Session::put('intervenant_id', $IdIntervenant);
+
+                    return to_route('reponses.index')->with(compact('phase', 'intervenant'));
                 } else {
                     $intervenantPhaseCoupon = $intervenantPhase->coupon;
                     $token = $intervenantPhase->createToken($intervenantPhaseCoupon)->plainTextToken;
@@ -245,10 +254,10 @@ class IntervenantController extends Controller
                     $phase = Phase::select('id')->where('slug', $phaseSlug)->first();
                     $IdPhase = $phase->id;
                     $IdIntervenant = $intervenant->id;
-                    
+
                     Session::put('phase_id', $IdPhase);
-                    Session::put( 'intervenant_id',$IdIntervenant);
-                  
+                    Session::put('intervenant_id', $IdIntervenant);
+
                     return to_route('reponses.index')->with(compact('phase', 'intervenant'));
                 }
             }
