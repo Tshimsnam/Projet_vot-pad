@@ -52,8 +52,8 @@
                     </div>
                 </div>
             @endforeach
-            <div class="flex justify-between px-5">
-                <button type="button" id="submit-btn"
+            <div id="divButton" class="flex justify-between px-5">
+                <button type="button" data-modal-target="valid-modal" data-modal-toggle="valid-modal"
                     class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Valider</button>
             </div>
 
@@ -62,25 +62,30 @@
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-md max-h-full">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <button type="button"
+                        class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="valid-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
                     <div class="p-4 md:p-5 text-center">
                         <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
-                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Votre vote a été validé avec
-                            succès</h3>
-                        <button data-modal-hide="valid-modal" type="button"
-                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">OK</button>
-                        <button type="button"
-                            class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-hide="valid-modal">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                            </svg>
+                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Voulez-vous confirmer votre
+                            vote</h3>
+                        <button data-modal-hide="valid-modal" type="button" id="submit-btn"
+                            class="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                            Confirmer
                         </button>
+                        <button data-modal-hide="valid-modal" type="button"
+                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Annuler</button>
                     </div>
                 </div>
             </div>
@@ -109,63 +114,69 @@
             ];
 
             const nombreCriteres = {{ count($criteres) }};
-
+            let sommeCand = [];
+            sommeCand[{{ $candidat->id }}] = 0;
             for (let i = 0; i < nombreCriteres; i++) {
                 localStorage.setItem(
                     `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}`,
                     inputCotes[i].value
                 );
+                sommeCand[{{ $candidat->id }}] += parseInt(inputCotes[i].value);
             }
 
             let voteData = {
-                phaseId: {{ $phase_id }},
-                juryId: {{ $jury_id }},
-                candidatId: {{ $candidat->id }},
-                cotes: []
+                phase_id: {{ $phase_id }},
+                intervenant_id: {{ $candidat->id }},
+                cote: []
             };
 
             let nombreCritere = critereIds.length;
 
             for (let i = 0; i < nombreCritere; i++) {
-                let cote = localStorage.getItem(
+                let coteUnique = localStorage.getItem(
                     `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}`);
-                if (cote !== null) {
-                    let coteInt = parseInt(cote);
-                    voteData.cotes.push({
-                        critereId: critereIds[i],
+                if (coteUnique !== null) {
+                    let coteInt = parseInt(coteUnique);
+                    voteData.cote.push({
+                        critere_id: critereIds[i],
                         valeur: coteInt
                     });
                 }
             }
-            let data = {
-                voteData
-            };
-
+            let data = voteData;
+            const token = '{{ $juryToken }}';
             fetch('{{ route('sendUniqueVote') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(data)
                 })
                 .then(response => {
                     if (response.ok) {
-                        const validModal = document.getElementById('valid-modal');
-                        validModal.classList.remove('hidden');
-                        validModal.classList.add('flex');
+                        return response.json();
                     } else {
                         throw new Error(`HTTP error ${response.status}`);
                     }
-                    return response.json();
                 })
                 .then(data => {
-                    console.log(data);
+                    localStorage.setItem(
+                        `sum-{{ $phase_id }}{{ $jury_id }}{{ $candidat->id }}`, sommeCand[
+                            {{ $candidat->id }}]
+                    );
+                    // Retourner à la page précédente après une réponse réussie
+                    window.history.back();
                 })
                 .catch(error => {
                     console.error('Error:', error.message);
                 });
 
+            for (let i = 0; i < nombreCriteres; i++) {
+                localStorage.removeItem(
+                    `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}`
+                );
+            }
             console.log(voteData);
 
         });
@@ -201,17 +212,32 @@
             ];
             const savedData = getDataFromLocalStorage({{ $phase_id }}, {{ $candidat->id }}, jury_id,
                 critereIds);
+
+            const dataCand = localStorage.getItem(
+                `sum-{{ $phase_id }}{{ $jury_id }}{{ $candidat->id }}`);
+
+
             const taille = savedData.length;
-            for (let i = 0; i < taille; i++) {
-                const scoreSpan = document.getElementById(`score-${critereIds[i]}`);
-                const labelsRangeInput = document.querySelectorAll(`#labels-range-input`)[i];
+            let sommeCand = [];
+            sommeCand[{{ $candidat->id }}] = 0;
 
-                if (scoreSpan) {
-                    scoreSpan.textContent = `Score : ${savedData[i]}`;
-                }
+            const divButton = document.getElementById('divButton');
+            if (dataCand && dataCand.length != 0) {
+                divButton.style.display = 'none';
+            } else {
+                divButton.style.display = 'flex';
+                for (let i = 0; i < taille; i++) {
+                    const scoreSpan = document.getElementById(`score-${critereIds[i]}`);
+                    const labelsRangeInput = document.querySelectorAll(`#labels-range-input`)[i];
 
-                if (labelsRangeInput) {
-                    labelsRangeInput.value = savedData[i];
+                    if (scoreSpan) {
+                        scoreSpan.textContent = `Score : ${savedData[i]}`;
+                        sommeCand[{{ $candidat->id }}] += parseInt(savedData[i]);
+                    }
+
+                    if (labelsRangeInput) {
+                        labelsRangeInput.value = savedData[i];
+                    }
                 }
             }
         });

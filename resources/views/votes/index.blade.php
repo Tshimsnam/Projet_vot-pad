@@ -1,59 +1,31 @@
 @extends('layouts.template')
 @section('content')
-<div class="p-0 m-0">
-    <h1 class="mt-2 text-3xl font-bold dark:text-white">Toutes les phases</h1>
-    <p class="mb-5 font-extralight text-gray-500  text-justify dark:text-white sm:w-3/4">Bienvenue sur la page dédiée aux différentes phases de nos compétitions. Ici, vous pouvez explorer chaque étape du concours, de la présélection initiale aux finales palpitantes. Chaque phase est décrite en détail pour vous permettre de comprendre les critères, les objectifs et les dates clés. Suivez l'évolution des participants à travers les différentes étapes et découvrez les moments forts de la compétition.</p>
-    @foreach ($phases as $phase)
-    <section class="sm:mx-auto md:w-3/4 space-y-5">
-        <div id="phase-container-{{ $phase->id }}" data-status="{{ $phase->statut }}">
-            <a
-                id="phase-link-{{ $phase->id }}"
-                href=""
-                class="block mb-4 border-0 hover:border border-orange-400 rounded"
-            >
-                <section class="border rounded p-2 bg-neutral-200 flex gap-6 items-center dark:bg-white">
-                    <div class="text-gray-600 ">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8 mx-2">
-                        <path d="M11.644 1.59a.75.75 0 0 1 .712 0l9.75 5.25a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l9.75-5.25Z" />
-                        <path d="m3.265 10.602 7.668 4.129a2.25 2.25 0 0 0 2.134 0l7.668-4.13 1.37.739a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.71 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.37-.738Z" />
-                        <path d="m10.933 19.231-7.668-4.13-1.37.739a.75.75 0 0 0 0 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 0 0 0-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 0 1-2.134-.001Z" />
-                        </svg>
-                    </div>
-                    <div class="flex w-full flex-col xs:flex-col xs:gap-0 sm:flex-row sm:gap-4 sm:justify-between">
-                        <div class="">
-                            <h2 class="font-semibold text-lg capitalize sm:text-2xl">
-                                {{ $phase->nom }}
-                            </h2>
-                            <p>{{ $phase->description }}</p>
-                        </div>
-                        <div class="">
-                            <span class="text-gray-600 text-xs">
-                                {{ date('d-m-y', strtotime($phase->date_debut)) }} - {{ date('d-m-y', strtotime($phase->date_fin)) }}
-                            </span>
-                        </div>
-                    </div>
-                </section>
+    <section class="dark:bg-gray-900">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+            <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+                <img class="w-8 h-8 mr-2"
+                    src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg" alt="logo">
+                VotePad2
             </a>
+            <div
+                class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        Sign in to your account
+                    </h1>
+                    <form class="space-y-4 md:space-y-6" action="#">
+                        <div>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                                email</label>
+                            <input type="email" name="email" id="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="name@company.com" required="">
+                        </div>
+                        <button type="submit"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Valider</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
-    @endforeach
-</div>
-<script>
-     document.addEventListener('DOMContentLoaded', function () {
-        @foreach ($phases as $phase)
-            (function() {
-                var phaseContainer = document.getElementById('phase-container-{{ $phase->id }}');
-                var phaseLink = document.getElementById('phase-link-{{ $phase->id }}');
-                var status = phaseContainer.getAttribute('data-status');
-                
-                if (status !== 'active') {
-                    phaseLink.classList.add('bg-gray-500', 'text-gray-300', 'cursor-not-allowed');
-                    phaseLink.href = 'javascript:void(0);';
-                } else {
-                    phaseLink.href = "{{ route('show', $phase->slug) }}";
-                }
-            })();
-        @endforeach
-    });
-</script>
 @endsection

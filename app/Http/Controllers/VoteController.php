@@ -14,21 +14,20 @@ use Illuminate\Http\Request;
 use App\Models\IntervenantPhase;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
+use App\Models\JuryPhase;
 
 class VoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index($event)
+    public function index()
     {
-        $phases = null;
-        $eventId = $event;
-        $event = Evenement::where('id', $eventId)->first();
-        if ($event) {
-            $phases = $event->phases;
+        if (isset($_COOKIE['juryToken'])) {
+            setcookie('juryToken', '', time() - 3600, '/');
         }
-        return view("votes.index", compact('phases'));
+
+        return view("votes.index");
     }
 
     /**
@@ -50,10 +49,24 @@ class VoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
+    public function show($phase_id, $jury_id, $candidats, $criteres)
     {
-        //
+        $phaseAndSpeaker = Phase::with('intervenants')->find($phase_id);
+        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+        $intervenants = [];
+        foreach ($intervenantPhases as $intervenantPhase) {
+            $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+            $groupe = Groupe::find($intervenant->groupe_id);
+            $intervenant->intervenantPhaseId = $intervenantPhase->id;
+            $intervenant->nom_groupe = $groupe->nom;
+            $intervenant->image = $groupe->image;
+            $intervenants[] = $intervenant;
+        }
+
+        //return response()->json($phaseAndSpeaker);
+        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants'));
     }
+
 
     public function showIntervenant($slugPhase, $candidat_id, $jury_id)
     {
@@ -72,7 +85,9 @@ class VoteController extends Controller
             return $a->id - $b->id;
         });
         $candidat = Intervenant::findOrFail($candidat_id);
-        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id'));
+        $jury = Jury::findOrFail($jury_id);
+        $juryToken = $jury->token;
+        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken'));
     }
 
     /**
@@ -101,6 +116,15 @@ class VoteController extends Controller
 
     public function authenticate(Request $request)
     {
+
+        if (!$request->has('coupon') && !$request->hasCookie('juryToken')) {
+            return redirect(route('form-authenticate'))->with('unsuccessJury', 'Veuillez vous authentifier.');
+        }
+
+        $request->validate([
+            'coupon' => 'required|string',
+        ]);
+
         $coupon = $request->coupon;
         $jury = Jury::where('coupon', $coupon)->first();
 
@@ -108,13 +132,22 @@ class VoteController extends Controller
             $juryCoupon = $jury->coupon;
             $phaseSlug = substr($juryCoupon, 0, 3);
             $phase = Phase::where('slug', $phaseSlug)->first();
+    
+            $statutPhase = $phase->statut;
+            if ($statutPhase != "En cours") {
+                return redirect(route('form-authenticate'))->with('unsuccessJury', 'Desolé, vous ne pouvez pas accéder au vote maintenant.');
+            }
+            
             $phase_id = $phase->id;
             $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
             $criteres = $criterePhases->pluck('critere_id')->sort()->values();
-
-            $jury_id = $jury->id;
             $jury_type = $jury->type;
             $jury_use = $jury->is_use;
+
+            if ($jury_type == 'prive' && $jury_use != 0) {
+                return redirect(route('form-authenticate'))->with('unsuccessJury', 'Desolé, vous ne pouvez plus accéder au vote.');
+            }
+            $jury_id = $jury->id;
             $jury_token = $jury->token;
             if ($jury_type == "prive") {
                 if ($jury_token == "0") {
@@ -139,21 +172,37 @@ class VoteController extends Controller
             $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
             $candidats = $phaseAndSpeaker->intervenants->pluck('id');
 
-            $response = response()->view("votes.show", compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres'));
-            $response->withCookie(cookie('jury_token', $jury->token, 60)); // Durée de 60 minutes
-
-            return $response;
+            return redirect()->route('jury.success', [
+                'phase_id' => $phase_id,
+                'jury_id' => $jury_id,
+                'candidats' => $candidats,
+                'criteres' => $criteres,
+            ])->withCookie(cookie('juryToken', $jury->token, 240));
         } else {
-            return redirect(route('jury-form'))->with('unsuccess', 'Le coupon inséré est invalide.');
+            return redirect(route('form-authenticate'))->with('unsuccessJury', 'Le coupon inséré est invalide.');
         }
     }
 
     public function results($phase_id)
     {
         $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+        $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
+        $numberCritere = $criterePhases->count();
+        $ponderationTotale = 0;
+        foreach ($criterePhases as $key => $criterePhase) {
+            $critere = Critere::findOrFail($criterePhase->critere_id);
+            $ponderationTotale += $critere->ponderation;
+        }
+
+        $juryPhase = JuryPhase::where('phase_id', $phase_id)->first();
+        $ponderationJuryPublic = $juryPhase->ponderation_public;
+        $ponderationJuryPrive = $juryPhase->ponderation_prive;
+        $typeVote = $juryPhase->type;
+
         $intervenants = [];
-        $voteByCandidat = [];
-        $coteMoyenne = [];
+        $totalVoteByCandidat = 0;
+        $totalVote = 0;
+        $nombreMaxJury = 0;
         foreach ($intervenantPhases as $intervenantPhase) {
             $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
             $groupe = Groupe::find($intervenant->groupe_id);
@@ -161,22 +210,80 @@ class VoteController extends Controller
             $intervenant->nom_groupe = $groupe->nom;
             $intervenant->image = $groupe->image;
 
-            $voteByCandidat[$intervenantPhase->id] = Vote::where('intervenant_phase_id', $intervenantPhase->id)->get();
-            $coteMoyenne = [];
-            foreach ($voteByCandidat as $intervenantPhaseId => $votes) {
-                $totalCote = 0;
-                foreach ($votes as $vote) {
-                    $totalCote += $vote->cote;
-                }
-                $coteMoyenne[$intervenantPhaseId] = $totalCote;
+            $JuryByCandidat = Vote::where('intervenant_phase_id', $intervenantPhase->id)
+                ->distinct('phase_jury_id')
+                ->pluck('phase_jury_id');
+
+            $votes = Vote::whereIn('phase_jury_id', $JuryByCandidat)
+                ->where('intervenant_phase_id', $intervenantPhase->id)
+                ->get();
+
+            $jurys = Jury::whereIn('id', $JuryByCandidat)->get()->keyBy('id');
+
+            foreach ($votes as $vote) {
+                $jury = $jurys->get($vote->phase_jury_id);
+                $vote->jury_type = $jury ? $jury->type : null;
             }
 
-            $intervenant->cote = $coteMoyenne[$intervenantPhase->id];
+            $sommeByType = $votes->groupBy('jury_type')->map(function ($group) {
+                return $group->sum('cote');
+            });
+
+            $moyenne = 0;
+            foreach ($votes as $vote) {
+                $moyenne += $vote->cote;
+            }
+            $numberVoteByInter = $votes->count();
+
+            $totalVoteByCandidat = $moyenne;
+
+            $nombreJuryIntervenant = $JuryByCandidat->count();
+            if ($nombreJuryIntervenant > $nombreMaxJury) {
+                $nombreMaxJury = $nombreJuryIntervenant;
+            }
+
+            if ($numberVoteByInter != 0) {
+                $JuryByCandidat = $numberVoteByInter / $numberCritere;
+            } else {
+                $JuryByCandidat = 0;
+            }
+            $sommeByTypePrive = $sommeByType->get('prive', 0);
+            $sommeByTypePublic = $sommeByType->get('public', 0);
+
+            if ($typeVote == 'prive et public') {
+                $sommeByTypePrive = round(($sommeByTypePrive) * ($ponderationJuryPrive / 100), 2);
+                $sommeByTypePublic = round(($sommeByTypePublic) * ($ponderationJuryPublic / 100), 2);
+                $cote = $sommeByTypePublic + $sommeByTypePrive;
+                $totalVote += $cote;
+            } else {
+                $totalVote += $totalVoteByCandidat;
+                $cote = $sommeByTypePublic + $sommeByTypePrive;
+            }
+
+
+            $intervenant->cote = $cote;
+            $intervenant->nombreJury = $JuryByCandidat;
+            $intervenant->votePublic = $sommeByTypePublic;
+            $intervenant->votePrive = $sommeByTypePrive;
+
             $intervenants[] = $intervenant;
         }
+        foreach ($intervenants as $intervenant) {
+            if ($totalVote != 0) {
+                $pourcentage = ($intervenant->cote * 100) / $totalVote;
+                $intervenant->pourcentage = round($pourcentage, 2);
+                $intervenant->ponderation = ($ponderationTotale * $JuryByCandidat);
+            } else {
+                $intervenant->pourcentage = 0;
+                $intervenant->ponderation = 0;
+            }
+        }
+
+
         usort($intervenants, function ($a, $b) {
             return $b->cote - $a->cote;
         });
-        return view('votes.showResultat', compact('intervenants'));
+        //return response()->json($intervenants);
+        return view('votes.showResultat', compact('intervenants', 'totalVote', 'ponderationJuryPublic', 'ponderationJuryPrive', 'typeVote'));
     }
 }
