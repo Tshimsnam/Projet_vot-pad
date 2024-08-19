@@ -1,111 +1,118 @@
 @extends('layouts.template')
 @section('content')
-    <section>
-        <h1 class="mt-2  text-3xl font-bold">{{ $phaseAndSpeaker->nom }}</h1>
-        <p class="mb-5 font-extralight text-gray-500  text-justify sm:w-3/4"></p>
-        <div class="">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">N°</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Groupe</th>
-                        <th scope="col" class="px-6 py-3">Cotes</th>
-                        <th scope="col" class="px-6 py-3">action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($phaseAndSpeaker->intervenants as $i => $item)
-                        <tr
-                            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                            <td class="px-6 py-4">{{ $item->id }}</td>
-                            <td class="px-6 py-4">{{ $item->email }}</td>
-                            <td class="px-6 py-4">
-                                @if ($item->groupe_id == 0)
-                                    <span
-                                        class="inline-flex items-center rounded-md bg-pink-50 px-2 py-1 text-xs font-medium text-pink-700 ring-1 ring-inset ring-pink-700/10">Seul(e)</span>
-                                @else
-                                    <span
-                                        class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Team</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 cote" id="cote-{{ $item->id }}">{{ $item->id }}</td>
-                            <td class="px-4">
-                                <a href="{{ route('showIntervenant', [$phaseAndSpeaker->slug, 'candidat' => $item->id, 'jury' => $jury_id]) }}"
-                                    class="px-3 text-sm gap-3 font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 focus:font-medium rounded-lg focus:text-sm focus:px-5 py-2.5 me-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
-                                    <span class="text-md">Voter</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="size-4">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h4.59l-2.1 1.95a.75.75 0 0 0 1.02 1.1l3.5-3.25a.75.75 0 0 0 0-1.1l-3.5-3.25a.75.75 0 1 0-1.02 1.1l2.1 1.95H6.75Z"
-                                            clip-rule="evenodd" />
+    <section class="px-8 mt-8">
+        <div class="flex justify-center">
+            <a href="#" class="flex items-center text-2xl font-semibold text-gray-900 dark:text-white">
+                <img class="w-8 h-8 mr-2"
+                    src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg" alt="logo">
+                VotePad2
+            </a>
+        </div>
+        <h2 class="mb-5 text-4xl font-extrabold dark:text-white">{{ $phaseAndSpeaker->nom }}</h2>
+        <p class="mb-4 text-lg font-normal text-gray-500 dark:text-gray-400">{{ $phaseAndSpeaker->description }}</p>
+        <div class="mb-5">
+            <div class="flex items-center justify-between mb-4">
+                <h5 class="text-2xl font-bold leading-none text-gray-900 dark:text-white">Les candidats</h5>
+            </div>
+            @foreach ($intervenants as $i => $item)
+                <ul
+                    class="mb-3 bg-white border border-gray-200 rounded-lg shadow sm:p-1 max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                    <li class="py-2 px-2">
+                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                            <div class="flex-shrink-0">
+                                <img class="w-8 h-8 rounded-full"
+                                    src="{{ $item->image ? asset($item->image) : asset('images/profil.jpg') }}"
+                                    alt="">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                    {{ $item->nom_groupe }}
+                                </p>
+                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                    {{ $item->email }}
+                                </p>
+                            </div>
+                            <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                <h3 id="cote-{{ $item->id }}"
+                                    class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                </h3>
+                                <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+                                    style="padding-left: 10px">
+                                    <a id="vote-{{ $item->id }}"
+                                        href="{{ route('showIntervenant', [$phaseAndSpeaker->slug, 'candidat' => $item->id, 'jury' => $jury_id]) }}"
+                                        class="px-3 text-sm gap-3 font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 focus:font-medium rounded-lg focus:text-sm focus: py-2.5 me-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                        <span class="text-md">Voter</span>
+                                    </a>
+                                    <svg id="icon-{{ $item->id }}" xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="w-6"
+                                        viewBox="0 0 256 256" xml:space="preserve" hidden>
+                                        <defs>
+                                        </defs>
+                                        <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                                            transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                                            <path
+                                                d="M 43.077 63.077 c -0.046 0 -0.093 -0.001 -0.14 -0.002 c -1.375 -0.039 -2.672 -0.642 -3.588 -1.666 L 23.195 43.332 c -1.84 -2.059 -1.663 -5.22 0.396 -7.06 c 2.059 -1.841 5.22 -1.664 7.06 0.396 l 12.63 14.133 l 38.184 -38.184 c 1.951 -1.952 5.119 -1.952 7.07 0 c 1.953 1.953 1.953 5.119 0 7.071 L 46.612 61.612 C 45.674 62.552 44.401 63.077 43.077 63.077 z"
+                                                style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
+                                                transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                            <path
+                                                d="M 45 90 C 20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238 5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0 -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
+                                                style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
+                                                transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                        </g>
                                     </svg>
-                                </a>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="pt-5">
-                <a href="#" id="submit-btn" data-modal-target="valid-modal" data-modal-toggle="valid-modal"
-                    class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                    Envoyer
-                </a>
-            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            @endforeach
         </div>
 
-        <div id="valid-modal" tabindex="-1"
+        <button data-modal-target="check-modal" data-modal-toggle="check-modal"
+            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button" style="display: none">
+        </button>
+
+        <div id="check-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative p-4 w-full max-w-2xl max-h-full">
+                <!-- Modal content -->
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <button type="button"
-                        class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        data-modal-hide="valid-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                    <div class="p-4 md:p-5 text-center">
-                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Voulez-vous confirmer votre
-                            vote</h3>
-                        <button data-modal-hide="valid-modal" type="button" onclick="sauvegarder()"
-                            class="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                            Confirmer
-                        </button>
-                        <button data-modal-hide="valid-modal" type="button"
-                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Annuler</button>
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            Résumé du vote
+                        </h3>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="p-4 md:p-5 space-y-4">
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Email</th>
+                                    <th scope="col" class="px-6 py-3">Cotes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sortable-tbody">
+                                @foreach ($phaseAndSpeaker->intervenants as $i => $item)
+                                    <tr
+                                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                        <td class="px-6 py-4">{{ $item->email }}</td>
+                                        <td class="px-6 py-4 cote" id="sum-{{ $item->id }}">{{ $item->id }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                        <button data-modal-hide="check-modal" type="button"
+                            onclick="finVote('{{ $phase_id }}', '{{ $candidats }}', '{{ $jury_id }}')"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">OK</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div id="success-modal" tabindex="-1"
-            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-md max-h-full">
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <div class="p-4 md:p-5 text-center">
-                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Votre vote a été validé avec
-                            succès</h3>
-                        <button data-modal-hide="success-modal" type="button"
-                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">OK</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </section>
 
     <script>
@@ -117,12 +124,12 @@
                 let i = 0;
                 let nombreCritere = criteresIds.length;
                 while (i < nombreCritere) {
-                    let cote = localStorage.getItem(`cote-${phaseId}${criteresIds[i]}${ jury_id }${candidats_id[j]}`);
+                    let cote = localStorage.getItem(`sum-${phaseId}${ jury_id }${candidats_id[j]}`);
                     if (cote === null) {
                         break;
                     }
                     coteValue[j] = parseInt(cote);
-                    somme[j] += coteValue[j];
+                    somme[j] = coteValue[j];
                     i++;
                 }
             }
@@ -144,107 +151,63 @@
             let criteresIds = {{ $criteres }}
 
             getLocalStorage(phase_id, candidats, jury_id, criteresIds);
+
+            let tbody = document.getElementById('sortable-tbody');
+            let rows = Array.from(tbody.getElementsByTagName('tr'));
+            rows.sort(function(a, b) {
+                let coteA = parseFloat(a.querySelector('.cote').textContent);
+                let coteB = parseFloat(b.querySelector('.cote').textContent);
+
+                return coteB - coteA;
+            });
+            rows.forEach(function(row) {
+                tbody.appendChild(row);
+            });
         });
 
         function getLocalStorage(phase_id, candidats, jury_id, criteresIds) {
-
             const savedData = getDataFromLocalStorage(phase_id, candidats, jury_id, criteresIds);
             const taille = savedData.length;
+            let check = taille;
             const coteCandidat = [];
+            const voteCandidat = [];
+            const iconCandidat = [];
+            const sumCandidat = [];
             for (let i = 0; i < taille; i++) {
                 coteCandidat[i] = document.getElementById(`cote-${candidats[i]}`);
-
                 if (coteCandidat[i]) {
-                    coteCandidat[i].textContent = savedData[i];
+                    if (savedData[i] != 0) {
+                        voteCandidat[i] = document.getElementById(`vote-${candidats[i]}`);
+                        iconCandidat[i] = document.getElementById(`icon-${candidats[i]}`);
+                        voteCandidat[i].style.display = 'none';
+                        iconCandidat[i].removeAttribute('hidden');
+                        check--;
+                    }
+                    coteCandidat[i].textContent = "COTE : " + savedData[i];
                 }
+            }
+            if (check === 0) {
+
+                console.log('check ok');
+                for (let i = 0; i < taille; i++) {
+                    sumCandidat[i] = document.getElementById(`sum-${candidats[i]}`);
+                    if (sumCandidat[i]) {
+                        sumCandidat[i].textContent = savedData[i];
+                    }
+                }
+                const checkModal = document.getElementById('check-modal');
+                checkModal.classList.remove('hidden');
+                checkModal.classList.add('flex');
             }
         }
 
-        function sauvegarder() {
-            let candidats = {{ $candidats }};
-            let jury_id = {{ $jury_id }}
-            let phase_id = {{ $phase_id }}
-            let criteresIds = {{ $criteres }}
-
-            sendVote(phase_id, candidats, jury_id, criteresIds);
-        }
-
-        function sendVote(phase_id, candidats, jury_id, criteresIds) {
-            const voteData = getCoteData(phase_id, candidats, jury_id, criteresIds);
-
-            let data = {
-                voteData
-            };
-
-            fetch('{{ route('sendVote') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Ouvrir le modal
-                        const modal = document.getElementById('success-modal');
-                        modal.classList.remove('hidden');
-                        modal.classList.add('flex');
-                    } else {
-                        throw new Error(`HTTP error ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error('Error:', error.message);
-                });
-        }
-
-        const closeModalButton = document.querySelector('[data-modal-hide="success-modal"]');
-
-        closeModalButton.addEventListener('click', () => {
-            const modal = document.getElementById('success-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        });
-
-        function getCoteData(phaseId, candidats_id, jury_id, criteresIds) {
-            let voteData = {
-                phaseId: phaseId,
-                juryId: jury_id,
-                candidats: []
-            };
-
-            let nombreCritere = criteresIds.length;
-
+        function finVote(phaseId, candidats_id, jury_id) {
             for (let j = 0; j < candidats_id.length; j++) {
-                let coteValues = [];
-                let candidatData = {
-                    candidatId: candidats_id[j],
-                    cote: []
-                };
-
-                for (let i = 0; i < nombreCritere; i++) {
-                    let cote = localStorage.getItem(`cote-${phaseId}${criteresIds[i]}${jury_id}${candidats_id[j]}`);
-                    if (cote !== null) {
-                        let coteInt = parseInt(cote);
-                        candidatData.cote.push({
-                            critereId: criteresIds[i],
-                            valeur: coteInt
-                        });
-                        coteValues.push(coteInt);
-                    }
-                }
-
-                if (coteValues.length > 0) {
-                    voteData.candidats.push(candidatData);
-                }
+                localStorage.removeItem(`sum-${phaseId}${jury_id}${candidats_id[j]}`);
             }
-            return voteData;
 
+            console.log('test ok');
+            window.location.href = "{{ route('voteIndex') }}";
         }
     </script>
 @endsection

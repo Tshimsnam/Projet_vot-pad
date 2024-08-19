@@ -6,25 +6,19 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class JuryTokenIsValid
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param Response
-     * @param Request $request
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $authorizationHeader = $request->header('Authorization');
         
         if (empty($authorizationHeader) || !preg_match('/^Bearer\s+(.+)$/', $authorizationHeader, $matches)) {
-            $token = $request->cookie('jury_token');
+            $token = $request->cookie('juryToken');
             
             if (empty($token)) {
-                return response()->json(['Erreur' => 'Non autorisé : Token Bearer manquant ou invalide'], 401);
+                throw new AuthorizationException('Acces non autorisé');
             }
         } else {
             $token = $matches[1];
@@ -35,7 +29,7 @@ class JuryTokenIsValid
             ->exists();
 
         if (!$validToken) {
-            return response()->json(['Erreur' => 'Non autorisé : Token de Jury invalide'], 401);
+            throw new AuthorizationException('Acces non autorisé');
         }
         
         return $next($request);

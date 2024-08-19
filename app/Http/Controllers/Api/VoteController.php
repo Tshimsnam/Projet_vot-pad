@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Jury;
 use App\Models\Vote;
 use App\Models\PhaseCritere;
 use Illuminate\Http\Request;
@@ -74,41 +75,32 @@ class VoteController extends Controller
                 $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
                 $criterePhaseId = $criterePhase->id;
 
-                $vote = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('phase_critere_id', $criterePhaseId)->first();
-
-                if ($vote) {
-                    $vote->update([
-                        'intervenant_phase_id' => $intervenantPhaseIds,
-                        'phase_jury_id' => $juryId,
-                        'phase_critere_id' => $criterePhaseId,
-                        'cote' => $coteValue,
-                        'isVerified' => 1
-                    ]);
-                } else {
-
-                    Vote::create([
-                        'intervenant_phase_id' => $intervenantPhaseIds,
-                        'phase_jury_id' => $juryId,
-                        'phase_critere_id' => $criterePhaseId,
-                        'cote' => $coteValue,
-                        'isVerified' => 1
-                    ]);
+                $votes = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('phase_critere_id', $criterePhaseId)->get();
+                if ($votes) {
+                    foreach ($votes as $vote) {
+                        $vote->update([
+                            'isVerified' => 1
+                        ]);
+                    }
                 }
             }
         }
+
         return response()->json(['status' => 'success'], 200);
     }
 
     public function sendVoteByCandidat(Request $request)
     {
-        $voteData = $request->input('voteData');
-
-        $phaseId = $voteData['phaseId'];
-        $juryId = $voteData['juryId'];
-        $candidatId = $voteData['candidatId'];
-        $cotes = $voteData['cotes'];
+        $voteData = $request->all();
+        $authorization = str_replace('Bearer ', '', $request->header('Authorization'));
+        $jury = Jury::where('token', $authorization)->first();
+        
+        $phaseId = $voteData['phase_id'];
+        $juryId = $jury->id;
+        $candidatId = $voteData['intervenant_id'];
+        $cotes = $voteData['cote'];
         foreach ($cotes as $cote) {
-            $critereId = $cote['critereId'];
+            $critereId = $cote['critere_id'];
             $coteValue = $cote['valeur'];
 
             $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
@@ -120,14 +112,18 @@ class VoteController extends Controller
             $vote = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('phase_critere_id', $criterePhaseId)->first();
 
             if ($vote) {
-                $vote->update([
-                    'intervenant_phase_id' => $intervenantPhaseIds,
-                    'phase_jury_id' => $juryId,
-                    'phase_critere_id' => $criterePhaseId,
-                    'cote' => $coteValue,
-                ]);
-            } else {
+                $jury = Jury::where('id', $juryId)->first();
+                $typeJury = $jury->type;
 
+                if ($typeJury == 'public') {
+                    $addVote = new Vote();
+                    $addVote->intervenant_phase_id = $intervenantPhaseIds;
+                    $addVote->phase_jury_id = $juryId;
+                    $addVote->phase_critere_id = $criterePhaseId;
+                    $addVote->cote = $coteValue;
+                    $addVote->save();
+                }
+            } else {
                 Vote::create([
                     'intervenant_phase_id' => $intervenantPhaseIds,
                     'phase_jury_id' => $juryId,

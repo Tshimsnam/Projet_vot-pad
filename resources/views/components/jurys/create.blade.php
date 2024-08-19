@@ -236,12 +236,13 @@
             ponderationPrive.style.display = 'none';
             ponderationPublic.style.display = 'none';
             ponderationPriveInput.required = false;
+            ponderationPriveInput.setAttribute('value',100);
             ponderationPublicInput.required = false;
 
             //prive checked,public no
             ponderationPrive.style.display = 'block';
             ponderationPriveInput.style.display = 'none';
-            labelPrive.style.display = 'block';
+            labelPrive.style.display = 'none';
             numberPrive.style.display = 'block';
             numberPriveInput.setAttribute('value', 1);
 
@@ -253,6 +254,7 @@
             ponderationPublic.style.display = 'none';
             ponderationPriveInput.required = false;
             ponderationPublicInput.required = false;
+            ponderationPublicInput.setAttribute('value',100);
 
             //public checked,prive no
             ponderationPublic.style.display = 'none';
