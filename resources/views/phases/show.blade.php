@@ -49,7 +49,7 @@
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
                                     <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
-                                        {{ __('Détails des candidats') }}
+                                        {{ __('Importer des candidats') }}
                                     </h3>
                                     <a onclick="inserer(event, '{{ route('intervenants.store') }}', @foreach ($phaseShow as $key => $item) 
                                     {{ $item->id }} @endforeach)"
