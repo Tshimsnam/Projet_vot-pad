@@ -11,4 +11,4 @@ use Illuminate\Support\Facades\Route;
  Route::apiResource('/questions', QuestionController::class, ['as'=> 'api'])->middleware('auth:sanctum');
  Route::apiResource('/question_phase', QuestionController::class, ['as'=> 'api']);
  Route::apiResource('/reponses', ReponseController::class, ['as'=> 'api']);
- Route::get('question_phases/{id}', [QuestionPhaseController::class,'shows'])->name('question_phases');
+ Route::get('question_phases/{phase_id}/{intervenant_id}', [QuestionPhaseController::class,'shows'])->name('question_phases');
