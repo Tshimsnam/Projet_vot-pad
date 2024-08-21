@@ -86,12 +86,17 @@ class QuestionPhaseController extends Controller
                         $dateB = Carbon::create($dateNow->format('Y-m-d H:i:s')); // heure de reconnexion en format date
                         
                         $reste = $dateA->diff($dateB);
+                       
+
+                        // dd($reste->format('%h:%i:%S'));
 
                         if($reste->invert <= 0){
                             return response()->json(['message'=>'votre evaluation a pris fin'],400);
                         }else{
 
                             $duree_evaluation = $reste->format('%H:%I:%S');
+                            list($hours, $minutes, $seconds) = explode(':', $duree_evaluation);
+                            $duree_evaluation =  ($hours * 3600) + ($minutes * 60) + $seconds;
                             $data = ['duree'=>$duree_evaluation,'questionaire'=> QuestionPhaseResource::collection(QuestionPhase::where('phase_id','=',$phase)->get())];
                             return  $data;
                         }
