@@ -26,7 +26,7 @@
             </h2>
             <div id="accordion-open-interv-body-1" class="hidden" aria-labelledby="accordion-open-interv-heading-1">
                 <div class="p-2 border border-b border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-                    <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+                    <!-- <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
                         <div class="bg-white dark:bg-gray-800 shadow">
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
@@ -43,13 +43,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
                         <div class="bg-white dark:bg-gray-800 shadow">
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
                                     <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
-                                        {{ __('Détails des candidats') }}
+                                        {{ __('Importer des candidats') }}
                                     </h3>
                                     <a onclick="inserer(event, '{{ route('intervenants.store') }}', @foreach ($phaseShow as $key => $item) 
                                     {{ $item->id }} @endforeach)"
@@ -116,6 +116,28 @@
                         </table>
                         <div class="p-2">
                             {{ $intervenantPhases->withPath(request()->url())->links() }}
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 shadow">
+                            <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
+                                <div class="flex justify-between items-center">
+                                            <h3 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40"">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                    stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                </svg>
+                                               regle de passage
+                                            </h3>
+                                            @foreach ($phaseShow as $key => $item) 
+                                            
+                                                <a href="{{route('resultats.show',  $item->id )}}" class="gap-1 text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/>
+                                                    </svg>
+                                                    Voir le resultats
+                                                </a>
+                                            @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -218,14 +240,14 @@
                             <a href="{{ route('phase_question_detatil', $phase_id) }}"
                                             class="inline-flex items-center text-lg text-blue-600 dark:text-blue-500 hover:underline">
                                             Voir toutes les questions
-                                            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true"
+                                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true"
                                                 xmlns="http://www.w3.org/2000/svg" fill="none"
                                                 viewBox="0 0 14 10">
-                                                <path stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="M1 5h12m0 0L9 1m4 4L9 9" />
-                                            </svg>
-                                        </a>
+                                    <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
+                                                d="M1 5h12m0 0L9 1m4 4L9 9" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -346,9 +368,9 @@
                     </div>
 
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 p-4">
-                        <div class="md:grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
+                        <div class="md:grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1">
                             <ul id="sortable"
-                                class="flex-column space-y space-y-4 text-sm font-medium text-gray-500 dark:text-gray-400 md:me-4 mb-4 md:mb-0">
+                                class="hidden flex-column space-y space-y-4 text-sm font-medium text-gray-500 dark:text-gray-400 md:me-4 mb-4 md:mb-0">
                                 @foreach ($questionAssert as $key => $item)
                                     <li>
                                         <span
@@ -365,9 +387,10 @@
                                 @endforeach
                             </ul>
                             <div
-                                class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full grid gap-6 grid-cols-1 lg:grid-cols-2">
-                                <form id="globalform" class="max-w-sm mx-auto col-span-2"
+                                class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full grid gap-6 grid-cols-1 lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1">
+                                <form id="globalform" class="w-full mx-auto grid grid-cols-1 gap-5 sm:grid-cols-1 lg:grid-cols-2 md:grid-cols-2"
                                     action="{{ route('questions.store') }}" method="post">
+                                    <div class ="grid">
                                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Ajouter une
                                         nouvelle question</h3>
                                     <p class="mb-2">Une question a au minimum 2 asserions et chaque assertion doit
@@ -397,18 +420,28 @@
                                     <div class="mb-5">
                                         <label
                                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
-                                            d'assertion et cochez la bonne :</label>
+                                            d'assertion et COCHEZ LA BONNE REPONSE :</label>
                                         <input type="number" id="N" min="2" max="10"
                                             step="1" style="width:4em"
                                             class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             onchange="Chbx();return false;" required>
-                                        <div id="InputFields"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        </div>
                                     </div>
                                     <button type="submit"
                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enregistrer
                                     </button>
+
+                                    </div>
+
+
+
+                                    <div id="InputFields"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    </div>
+
+
+                                    
+
+
                                 </form>
                                 <form id="globalform" class="max-w-sm mx-auto hidden"
                                     action="{{ route('questionPhases.store') }}" method="post">

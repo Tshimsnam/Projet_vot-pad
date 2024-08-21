@@ -299,10 +299,13 @@ class PhaseController extends Controller
             $intervenants = [];
             foreach ($intervenantPhases as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
-                $intervenant->intervenantPhaseId = $intervenantPhase->id;
-                $intervenants[] = $intervenant;
+                if($intervenant){
+                    $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                    $intervenants[] = $intervenant;  
+                }
+                
             }
-            return view('phases.show', compact('phaseShow', 'question','questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases'));
+            return view('phases.show', compact('phaseShow','phase_id', 'question','questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases'));
         }
     }
     public function phaseQuestionDetail(Request $request, $id)
