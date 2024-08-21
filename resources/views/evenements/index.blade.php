@@ -87,5 +87,16 @@
             {{ $evenements->withPath(request()->url())->links() }}
         </div>
     </div>
-
+    <script>
+        setTimeout(function() {
+            let alerts = document.querySelectorAll('[role="alert"]');
+            alerts.forEach(function(alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            });
+        }, 5000);
+    </script>
 </x-app-layout>

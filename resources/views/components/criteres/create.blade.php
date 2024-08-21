@@ -17,7 +17,7 @@
             </button>
         </div>
 
-        <form class="" action="{{ route('criteres.store') }}" method="post" style="padding-top:30px">
+        <form class="" action="{{ route('criteres.store') }}" autocomplete="off" method="post" style="padding-top:30px">
 
             @csrf
             <div class=" mr-5" style="padding-left: 20px">

@@ -11,7 +11,7 @@
     </div>
     </x-slot>
     <div class="relative overflow-x-auto sm:rounded-lg" style="padding-top: 30px;">
-        <form  action="{{route('evenements.update', $evenement->id)}}" method="post">
+        <form  action="{{route('evenements.update', $evenement->id)}}" autocomplete="off" method="post">
             @csrf
             @method("PUT")
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
