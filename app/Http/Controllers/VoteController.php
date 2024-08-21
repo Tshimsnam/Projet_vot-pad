@@ -49,9 +49,10 @@ class VoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($phase_id, $jury_id, $candidats, $criteres)
+    public function show($phase_id, $jury_id, $candidats, $criteres, $nombreUser, $evenement_id)
     {
         $phaseAndSpeaker = Phase::with('intervenants')->find($phase_id);
+        $evenement = Evenement::find($evenement_id);
         $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
         $intervenants = [];
         foreach ($intervenantPhases as $intervenantPhase) {
@@ -63,12 +64,14 @@ class VoteController extends Controller
             $intervenants[] = $intervenant;
         }
 
-        //return response()->json($phaseAndSpeaker);
-        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants'));
+        usort($intervenants, function ($a, $b) {
+            return strcmp($a->nom_groupe, $b->nom_groupe);
+        });
+        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement'));
     }
 
 
-    public function showIntervenant($slugPhase, $candidat_id, $jury_id)
+    public function showIntervenant($slugPhase, $candidat_id, $jury_id, $nombreUser, $evenement)
     {
         $phase = Phase::where('slug', $slugPhase)->first();
         $phase_id = $phase->id;
@@ -85,9 +88,12 @@ class VoteController extends Controller
             return $a->id - $b->id;
         });
         $candidat = Intervenant::findOrFail($candidat_id);
+        $groupe = Groupe::find($candidat->groupe_id);
+        $candidat->nom_groupe = $groupe->nom;
+        $candidat->image = $groupe->image;
         $jury = Jury::findOrFail($jury_id);
         $juryToken = $jury->token;
-        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken'));
+        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken', 'nombreUser', 'evenement'));
     }
 
     /**
@@ -132,12 +138,12 @@ class VoteController extends Controller
             $juryCoupon = $jury->coupon;
             $phaseSlug = substr($juryCoupon, 0, 3);
             $phase = Phase::where('slug', $phaseSlug)->first();
-    
+
             $statutPhase = $phase->statut;
             if ($statutPhase != "En cours") {
                 return redirect(route('form-authenticate'))->with('unsuccessJury', 'Desolé, vous ne pouvez pas accéder au vote maintenant.');
             }
-            
+
             $phase_id = $phase->id;
             $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
             $criteres = $criterePhases->pluck('critere_id')->sort()->values();
@@ -171,13 +177,16 @@ class VoteController extends Controller
             $phase_id = Phase::where('slug', $phaseSlug)->first()->id;
             $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
             $candidats = $phaseAndSpeaker->intervenants->pluck('id');
+            $evenement = Evenement::findOrFail($phase->evenement_id);
 
             return redirect()->route('jury.success', [
                 'phase_id' => $phase_id,
                 'jury_id' => $jury_id,
                 'candidats' => $candidats,
                 'criteres' => $criteres,
-            ])->withCookie(cookie('juryToken', $jury->token, 240));
+                'nombreUser' => $jury->is_use,
+                'evenement' => $evenement
+            ])->withCookie(cookie('juryToken', $jury->token, 720));
         } else {
             return redirect(route('form-authenticate'))->with('unsuccessJury', 'Le coupon inséré est invalide.');
         }

@@ -544,8 +544,9 @@
                                             {{ $item->email }}</th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <img src="{{ $item->image ? asset($item->image) : asset('images/profil.jpg') }}"
-                                                width="40" height="40" class="img img-responsive" />
+                                            <img width="40" height="40" class="img img-responsive"
+                                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
+                                                alt="">
                                         </th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -841,7 +842,7 @@
                 annulerValider.style.display = 'none';
                 insertPass.style.display = 'flex';
                 editPass.style.display = 'none';
-            }else {
+            } else {
                 passNombreCheck.checked = true;
                 passNombreCheck.style.display = 'flex';
                 nombre_candidat.style.display = 'flex';

@@ -60,7 +60,7 @@ class JuryController extends Controller
         if (!$jury) {
             return response()->json([
                 "error" => "le coupon est invalide"
-            ],400);
+            ], 400);
         } else {
 
             $type = $jury->type;
@@ -76,20 +76,22 @@ class JuryController extends Controller
     private function publicAuthenticate(Jury $jury, $identifiant)
     {
         $juryCoupon = $jury->coupon;
-        if($identifiant == null)
-        {
-            return response()->json([
-                "error" => "Desole, votre identifiant est invalide ou null",
-            ],400
-        );
+        if ($identifiant == null) {
+            return response()->json(
+                [
+                    "error" => "Desole, votre identifiant est invalide ou null",
+                ],
+                400
+            );
         }
         $juryExistant = Jury::where('coupon', $juryCoupon)->where('identifiant', $identifiant)->first();
         if ($juryExistant) {
-            return response()->json([
-                "error" => "Desole, vous ne pouvez plus acceder a ce vote!!!",
-            ],400
-        );
-
+            return response()->json(
+                [
+                    "error" => "Desole, vous ne pouvez plus acceder a ce vote!!!",
+                ],
+                400
+            );
         }
         $phaseSlug = substr($juryCoupon, 0, 3);
         $phase = Phase::where('slug', $phaseSlug)->first();
@@ -102,7 +104,7 @@ class JuryController extends Controller
             $jury->is_use = $getNumber + 1;
             $jury->save();
             $newJury->save();
-            return response()->json(["phase" => $phase, "token" => $token]);;
+            return response()->json(["phase" => $phase, "token" => $token, 'nombre_user' => $jury->is_use]);;
         } else {
             $message = 'Desolé, cette phase est ' . $phase->statut;
             return $message;
@@ -125,7 +127,7 @@ class JuryController extends Controller
                 $jury->token = $token;
                 $jury->is_use = 1;
                 $jury->save();
-                return response()->json(["phase" => $phase, "token" => $token]);;
+                return response()->json(["phase" => $phase, "token" => $token, 'nombre_user' => $jury->is_use]);;
             } else {
                 $message = 'Desolée, cette phase est ' . $phase->statut;
                 return $message;
