@@ -2,10 +2,31 @@
     background-image: url('/img/bg_auth.png');
 }
 
-/* Requête media pour les écrans plus petits */
+#voteUser {
+    background-image: url('/img/bg_vote.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
 @media (max-width: 870px) {
     #loginUser {
         background-image: url('/img/bg_auth_mobile.png');
+    }
+
+    #voteUser {
+        background-image: url('/img/bg_vote_mobile.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        width: 100%;
+        min-height: 100vh;
+        box-sizing: border-box;
     }
 }
 
@@ -193,7 +214,7 @@ form.sign-in-form {
         width: 100%;
         padding: 0;
     }
-    
+
     form {
         padding: 0;
     }

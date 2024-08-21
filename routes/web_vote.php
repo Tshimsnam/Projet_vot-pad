@@ -14,7 +14,7 @@ use App\Http\Middleware\JuryTokenIsValid;
 Route::prefix('vote')->group(function () {
     Route::get('/events', [VoteController::class,'index'])->name('voteIndex');
     Route::get('/event/{phase}', [VoteController::class,'show'])->name('show')->middleware(JuryTokenIsValid::class);
-    Route::get('event/{phase}/{candidat}/{jury}', [VoteController::class,'showIntervenant'])->name('showIntervenant')->middleware(JuryTokenIsValid::class);
+    Route::get('event/{phase}/{candidat}/{jury}/{nombreUser}/{evenement}', [VoteController::class,'showIntervenant'])->name('showIntervenant')->middleware(JuryTokenIsValid::class);
 });
 
 Route::get('/results/{phase}', [VoteController::class,'results'])->name('results');

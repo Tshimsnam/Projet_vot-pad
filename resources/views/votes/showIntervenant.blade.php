@@ -1,28 +1,41 @@
 @extends('layouts.template')
 @section('content')
-    <section class="sm:mx-auto md:w-3/3 space-y-5">
-        <div>
-
-            <h1
-                class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-                {{ $candidat->email }}</h1>
+    <section id="voteUser" class="px-2 md:px-8">
+        <div class="mb-5 pt-8 flex justify-center">
+            <h2
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold text-white">
+                <img class="w-12 h-12" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
+                    alt="logo">
+                otePad2
+            </h2>
+        </div>
+        <div class="flex inline-block px-4 md:px-4">
+            <img class="w-16 h-16 rounded-full border border-gray-300"
+                src="{{ $candidat->image && file_exists(public_path($candidat->image)) ? asset($candidat->image) : asset('images/profil.jpg') }}"
+                alt="">
+            <div class="px-5">
+                <h2 class="text-white text-4xl uppercase font-extrabold dark:text-white">{{ $candidat->nom_groupe }}</h2>
+                <p class="text-sm text-white truncate dark:text-white">
+                    {{ $candidat->email }}
+                </p>
+            </div>
         </div>
         <form action="" method="post" class="space-y-4">
             @csrf
             @foreach ($criteres as $key => $item)
-                <div class="px-5 w-full space-y-2">
-                    <div class="px-5 py-3 rounded-xl border bg-white space-y-3 drop-shadow-xl">
+                <div class="px-3 w-full space-y-2">
+                    <div class="px-5 py-3 rounded-xl border bg-white bg-opacity-90 space-y-3 drop-shadow-xl">
                         <div class="">
                             <h1 class="text-xl font-bold">{{ $item->libelle }}</h1>
-                            <p class="text-sm font-thin pb-2">{{ $item->description }}
+                            <p class="text-sm font-thin">{{ $item->description }}
                             </p>
                         </div>
                         <div class="relative">
                             <label for="labels-range-input" class="sr-only">Labels range</label>
                             <input id="labels-range-input" type="range" value="0" min="0" name="cote"
                                 max="{{ $item->ponderation }}"
-                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                            @if ($item->echelle == 5)
+                                class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                            <div class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 <span
                                     class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
                                 <span
@@ -35,19 +48,24 @@
                                     Bien</span>
                                 <span
                                     class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
-                            @else
+                            </div>
+                            <div class="flex md:hidden flex-col items-center text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 <span
-                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">M(0)</span>
                                 <span
-                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/2 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
-                                    bien</span>
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">AB</span>
                                 <span
-                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
-                            @endif
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">B</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">TB</span>
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">E({{ $item->ponderation }})</span>
+                            </div>
+
 
                         </div>
                         <div class="flex justify-between items-center">
-                            <span id="score-{{ $item->id }}" class="text-sm font-thin pt-5">Score : 0</span>
+                            <span id="score-{{ $item->id }}" class="text-xl font-extrabold pt-5">COTE : 0</span>
                         </div>
                     </div>
                 </div>
@@ -118,7 +136,7 @@
             sommeCand[{{ $candidat->id }}] = 0;
             for (let i = 0; i < nombreCriteres; i++) {
                 localStorage.setItem(
-                    `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}`,
+                    `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}{{ $nombreUser }}`,
                     inputCotes[i].value
                 );
                 sommeCand[{{ $candidat->id }}] += parseInt(inputCotes[i].value);
@@ -127,6 +145,7 @@
             let voteData = {
                 phase_id: {{ $phase_id }},
                 intervenant_id: {{ $candidat->id }},
+                nombre_user: {{ $nombreUser }},
                 cote: []
             };
 
@@ -134,7 +153,8 @@
 
             for (let i = 0; i < nombreCritere; i++) {
                 let coteUnique = localStorage.getItem(
-                    `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}`);
+                    `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}{{ $nombreUser }}`
+                );
                 if (coteUnique !== null) {
                     let coteInt = parseInt(coteUnique);
                     voteData.cote.push({
@@ -156,13 +176,16 @@
                 .then(response => {
                     if (response.ok) {
                         return response.json();
+                        console.log(response.body);
+
                     } else {
                         throw new Error(`HTTP error ${response.status}`);
                     }
                 })
                 .then(data => {
                     localStorage.setItem(
-                        `sum-{{ $phase_id }}{{ $jury_id }}{{ $candidat->id }}`, sommeCand[
+                        `sum-{{ $phase_id }}{{ $jury_id }}{{ $candidat->id }}{{ $nombreUser }}`,
+                        sommeCand[
                             {{ $candidat->id }}]
                     );
                     // Retourner à la page précédente après une réponse réussie
@@ -172,11 +195,6 @@
                     console.error('Error:', error.message);
                 });
 
-            for (let i = 0; i < nombreCriteres; i++) {
-                localStorage.removeItem(
-                    `cote-{{ $phase_id }}${critereIds[i]}{{ $jury_id }}{{ $candidat->id }}`
-                );
-            }
             console.log(voteData);
 
         });
@@ -187,13 +205,14 @@
             validModal.classList.add('hidden');
         });
 
-        function getDataFromLocalStorage(phase_id, candidat, jury_id, criteres_id) {
+        function getDataFromLocalStorage(phase_id, candidat, jury_id, criteres_id, nombreUser) {
             const data = [];
             let somme = 0;
             let i = 0;
             let nombreCritere = criteres_id.length;
             while (i < nombreCritere) {
-                const coteValue = localStorage.getItem(`cote-${phase_id}${criteres_id[i]}${ jury_id }${ candidat }`);
+                const coteValue = localStorage.getItem(
+                    `cote-${phase_id}${criteres_id[i]}${ jury_id }${ candidat }${ nombreUser }`);
                 if (coteValue === null) {
                     break;
                 }
@@ -210,36 +229,31 @@
                     {{ $critere->id }},
                 @endforeach
             ];
+            let nombreUser = {{ $nombreUser }};
             const savedData = getDataFromLocalStorage({{ $phase_id }}, {{ $candidat->id }}, jury_id,
-                critereIds);
+                critereIds, nombreUser);
 
             const dataCand = localStorage.getItem(
                 `sum-{{ $phase_id }}{{ $jury_id }}{{ $candidat->id }}`);
-
-
             const taille = savedData.length;
             let sommeCand = [];
             sommeCand[{{ $candidat->id }}] = 0;
+            console.log(savedData);
 
-            const divButton = document.getElementById('divButton');
-            if (dataCand && dataCand.length != 0) {
-                divButton.style.display = 'none';
-            } else {
-                divButton.style.display = 'flex';
-                for (let i = 0; i < taille; i++) {
-                    const scoreSpan = document.getElementById(`score-${critereIds[i]}`);
-                    const labelsRangeInput = document.querySelectorAll(`#labels-range-input`)[i];
+            for (let i = 0; i < taille; i++) {
+                const scoreSpan = document.getElementById(`score-${critereIds[i]}`);
+                const labelsRangeInput = document.querySelectorAll(`#labels-range-input`)[i];
 
-                    if (scoreSpan) {
-                        scoreSpan.textContent = `Score : ${savedData[i]}`;
-                        sommeCand[{{ $candidat->id }}] += parseInt(savedData[i]);
-                    }
+                if (scoreSpan) {
+                    scoreSpan.textContent = `COTE : ${savedData[i]}`;
+                    sommeCand[{{ $candidat->id }}] += parseInt(savedData[i]);
+                }
 
-                    if (labelsRangeInput) {
-                        labelsRangeInput.value = savedData[i];
-                    }
+                if (labelsRangeInput) {
+                    labelsRangeInput.value = savedData[i];
                 }
             }
+
         });
     </script>
 @endsection

@@ -28,7 +28,7 @@ Route::post('/votePad/evaluation', [IntervenantController::class, 'authenticate'
 
 Route::get('/votePad', [JuryController::class, 'form'])->name('jury-form');
 Route::post('/votePad/voting', [VoteController::class, 'authenticate'])->name('jury-authenticate');
-Route::get('/votePad/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}', [VoteController::class, 'show'])->name('jury.success')->middleware(JuryTokenIsValid::class);;
+Route::get('/votePad/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}/{nombreUser}/{evenement}', [VoteController::class, 'show'])->name('jury.success')->middleware(JuryTokenIsValid::class);;
 
 
 

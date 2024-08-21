@@ -94,17 +94,26 @@ class VoteController extends Controller
         $voteData = $request->all();
         $authorization = str_replace('Bearer ', '', $request->header('Authorization'));
         $jury = Jury::where('token', $authorization)->first();
-        
+
         $phaseId = $voteData['phase_id'];
         $juryId = $jury->id;
         $candidatId = $voteData['intervenant_id'];
         $cotes = $voteData['cote'];
+        $nombreUser = $voteData['nombre_user'];
+
+        $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
+        $intervenantPhaseIds = $intervenantPhase->id;
+
+        $votes = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('nombre', $nombreUser)->get();
+        if ($votes) {
+            foreach ($votes as $vote) {
+                $vote->delete();
+            }
+        }
+
         foreach ($cotes as $cote) {
             $critereId = $cote['critere_id'];
             $coteValue = $cote['valeur'];
-
-            $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
-            $intervenantPhaseIds = $intervenantPhase->id;
 
             $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
             $criterePhaseId = $criterePhase->id;
@@ -121,6 +130,7 @@ class VoteController extends Controller
                     $addVote->phase_jury_id = $juryId;
                     $addVote->phase_critere_id = $criterePhaseId;
                     $addVote->cote = $coteValue;
+                    $addVote->nombre = $nombreUser;
                     $addVote->save();
                 }
             } else {
@@ -129,6 +139,7 @@ class VoteController extends Controller
                     'phase_jury_id' => $juryId,
                     'phase_critere_id' => $criterePhaseId,
                     'cote' => $coteValue,
+                    'nombre' => $nombreUser,
                 ]);
             }
         }
