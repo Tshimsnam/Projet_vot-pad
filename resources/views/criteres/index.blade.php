@@ -14,22 +14,24 @@
                 <div id="dropdownLeft"
                     class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-15 dark:bg-gray-700 dark:divide-gray-600">
                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLeftButton">
-                        <li style="margin-right: 0.2rem; margin-left: 0.2rem;">
+                        <li class="hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md" style="margin-right: 0.2rem; margin-left: 0.2rem;">
                             <a href="{{ route('phases.edit', $phase_id) }}"
-                                class="block px-3 py-2 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md ">
+                                class="inline-flex items-center px-3 py-2 ">
+                                Editer
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-5">
+                                    stroke-width="1.5" stroke="currentColor" class="size-6 pl-2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                 </svg>
                             </a>
                         </li>
                         <li style="margin-right: 0.2rem; margin-left: 0.2rem;">
-                            <a onclick="supprimer(event, '{{ route('phases.destroy', $phase_id) }}')"
+                            <a onclick="supprimer(event, '{{ route('phases.destroy', $phase_id) }}');"
                                 data-modal-target="delete-modal" data-modal-toggle="delete-modal" href="#"
-                                class="block px-3 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md ">
+                                class="inline-flex items-center px-3 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md ">
+                                Supprimer
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-5">
+                                    stroke-width="1.5" stroke="currentColor" class="size-6 pl-2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
@@ -226,8 +228,9 @@
                                     <a onclick="ajouter(event, '{{ route('jurys.store') }}', '{{ $phase_id }}', '{{ $ponderation_public }}', '{{ $ponderation_prive }}', '{{ $type_vote }}')"
                                         data-modal-target="create-modal-jury" data-modal-toggle="create-modal-jury"
                                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                        Ajouter le jury
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -338,14 +341,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    usort($jurys, function ($a, $b) {
-                                        if ($a->type == $b->type) {
-                                            return 0;
-                                        }
-                                        return $a->type == 'prive' ? -1 : 1;
-                                    });
-                                @endphp
                                 @foreach ($jurys as $i => $item)
                                     <tr
                                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -484,8 +479,9 @@
                                         data-modal-target="create-modal-candidat"
                                         data-modal-toggle="create-modal-candidat"
                                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                        Ajouter un candidat
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -627,8 +623,9 @@
                     <a onclick="creer(event, {{ $phase_id }})" data-modal-target="create-modal"
                         data-modal-toggle="create-modal"
                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                        Ajouter un critère
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
@@ -700,24 +697,13 @@
                                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                                     aria-labelledby="dropdownMenuIconButton">
                                     <li>
-                                        <a href=""
-                                            class="block px-4 py-2 hover:bg-yellow-100 dark:hover:bg-yellow-300 dark:hover:text-white border-2 rounded-md border-gray-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="size-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                                            </svg>
-                                        </a>
-                                    </li>
-                                    <li>
                                         <a onclick="modifier(event, '{{ route('criteres.update', $item->id) }}', '{{ $item->libelle }}', '{{ $item->description }}', '{{ $item->ponderation }}')"
                                             data-modal-target="edit-modal" data-modal-toggle="edit-modal"
                                             href="#"
-                                            class="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white border-2 rounded-md border-gray-700">
+                                            class="block px-3 py-2 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white border-2 rounded-md border-gray-700">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="size-6">
+                                                class="size-5">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                             </svg>
@@ -727,10 +713,10 @@
                                         <a onclick="supprimer(event, '{{ route('criteres.destroy', $item->id) }}');"
                                             data-modal-target="delete-modal" data-modal-toggle="delete-modal"
                                             href="#"
-                                            class="block px-4 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white border-2 rounded-md border-gray-700">
+                                            class="block px-3 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white border-2 rounded-md border-gray-700">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="size-6">
+                                                class="size-5">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                             </svg>

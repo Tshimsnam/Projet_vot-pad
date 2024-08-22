@@ -106,6 +106,8 @@ class CritereController extends Controller
      */
     public function destroy(Critere $critere)
     {
+        $criterePhase = PhaseCritere::where('critere_id', $critere->id);
+        $criterePhase->delete();
         $critere->delete();
         return back()->with('success', 'Critère supprimé avec succès');
     }
