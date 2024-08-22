@@ -66,6 +66,7 @@ class ResultatController extends Controller
                     $somme_ponderation_phase+=$ponde;
             }
             $somme_ponderation_phase;
+            if($somme_ponderation_phase>0){
 
             $intervenant_resultat = array();
             $tableau=array();
@@ -100,6 +101,9 @@ class ResultatController extends Controller
                     return $b['pourcentage'] - $a['pourcentage'];
                 });
             return view('resultats.index', compact('intervenant_resultat','phase'));
+        }else{
+           return back()->with('success',"Il n'y a pas de question pour cette phase");
+        }
             
         }else{
             return Redirect::back();
