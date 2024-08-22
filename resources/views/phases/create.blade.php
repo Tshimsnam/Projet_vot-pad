@@ -12,6 +12,31 @@
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div class="py-4">
+            @if (session('success'))
+                <div id="alert-3"
+                    class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                    role="alert">
+                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div class="ms-3 text-sm font-medium">
+                        {{ session('success') }}
+                    </div>
+                    <button type="button"
+                        class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                        data-dismiss-target="#alert-3" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+            @endif
             <form action="{{ route('phases.store') }}" autocomplete="off" method="post">
                 @csrf
                 @method('post')
@@ -32,7 +57,7 @@
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="La description de la phase" required style="height: 132px;"></textarea>
                 </div>
-                <div class="relative z-0 w-full mb-5 group" style="padding-top: 20px">
+                <div id="divSelect" class="relative z-0 w-full mb-5 group" style="padding-top: 20px">
                     <label for="type"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
                     <select id="type" name="type" required
@@ -41,7 +66,7 @@
                         <option value="Vote">Vote</option>
                     </select>
                 </div>
-                <div class="w-full">
+                <div class="w-full mt-5">
                     <div style="display: flex; align-items: center;">
                         <div>
                             <label for="datedebut" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -56,7 +81,7 @@
                                     </svg>
                                 </div>
                                 <input id="dateDebut" datepicker datepicker-autohide datepicker-orientation="top"
-                                    type="text"
+                                    datepicker-format="dd/mm/yyyy" type="text"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Select date" autocomplete="off" name="date_debut" required
                                     value="">
@@ -75,13 +100,14 @@
                                     </svg>
                                 </div>
                                 <input id="dateFin" datepicker datepicker-autohide datepicker-orientation="top"
-                                    type="text" name="date_fin"
+                                    datepicker-format="dd/mm/yyyy" type="text" name="date_fin"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Select date" autocomplete="off">
                             </div>
                         </div>
                         <div class=" duree px-6">
-                            <label for="duree" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            <label for="duree"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                 Durée
                             </label>
                             <div class="relative">
@@ -96,7 +122,7 @@
                                 </div>
                                 <input type="time" id="duree" name="duree"
                                     class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    min="00:00" max="24:00" value="00:00" required />
+                                    min="00:00" max="24:00" value="00:00" />
                             </div>
                         </div>
                     </div>
@@ -117,6 +143,10 @@
     <x-checkdate />
 
     <script>
+        window.onload = function() {
+            autoCreate({{ $evenement->auto_create }}, '{{ $evenement->type }}')
+        };
+
         const typeSelect = document.getElementById('type');
         const dureeDiv = document.querySelector('.duree');
         typeSelect.addEventListener('change', function() {
@@ -130,28 +160,44 @@
             }
         });
 
+
+        function autoCreate(eventCreate, eventType) {
+            const divSelect = document.getElementById('divSelect');
+            if (eventCreate == 1) {
+                if (eventType === 'Compétition') {
+                    dureeDiv.style.display = 'none';
+                    duree.setAttribute('value', 'null');
+                    divSelect.style.display = 'none';
+                    typeSelect.value = 'Vote';
+                } else {
+                    dureeDiv.style.display = 'block';
+                    typeSelect.value = 'Evaluation';
+                }
+            } else {
+
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const dateDebutInput = document.getElementById('dateDebut');
             const dateFinInput = document.getElementById('dateFin');
 
+            function parseDate(dateString) {
+                const [day, month, year] = dateString.split('/').map(Number);
+                return new Date(year, month - 1, day);
+            }
+
             dateDebutInput.addEventListener('blur', function() {
                 const dateDebut = this.value;
-
+                const dateDebutDate = parseDate(dateDebut);
                 const currentDate = new Date();
-                const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-                const currentDay = String(currentDate.getDate()).padStart(2, '0');
-                const currentYear = currentDate.getFullYear();
-                const currentFormattedDate = `${currentMonth}/${currentDay}/${currentYear}`;
 
-                const dateDebutDate = new Date(dateDebut);
-                const currentDateDate = new Date(currentFormattedDate);
-
-                if (dateDebutDate < currentDateDate) {
+                if (dateDebutDate.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
                     console.log('La date de début est antérieure à la date actuelle.');
 
                     const checkdate = document.getElementById('checkdate-modal');
                     const message = document.querySelector('#checkdate-modal #message');
-                    message.textContent = 'La date de début doit être supérieur à la date actuelle.';
+                    message.textContent = 'La date de début doit être supérieure à la date actuelle.';
                     checkdate.classList.remove('hidden');
                     checkdate.classList.add('flex');
                     this.value = '';
@@ -160,16 +206,17 @@
 
             dateFinInput.addEventListener('blur', function() {
                 const dateFin = this.value;
+                const dateDebut = dateDebutInput.value;
 
-                const dateFinDate = new Date(dateFin);
-                const currentDateDate = new Date(dateDebut);
+                const dateFinDate = parseDate(dateFin);
+                const dateDebutDate = parseDate(dateDebut);
 
-                if (dateFinDate < currentDateDate) {
-                    console.log('La date du début est antérieure à la date actuelle.');
+                if (dateFinDate.setHours(0, 0, 0, 0) < dateDebutDate.setHours(0, 0, 0, 0)) {
+                    console.log('La date de fin est antérieure à la date de début.');
 
                     const checkdate = document.getElementById('checkdate-modal');
                     const message = document.querySelector('#checkdate-modal #message');
-                    message.textContent = 'La date de fin ne doit pas être inférieur à la date de début.';
+                    message.textContent = 'La date de fin ne doit pas être inférieure à la date de début.';
                     checkdate.classList.remove('hidden');
                     checkdate.classList.add('flex');
                     this.value = '';

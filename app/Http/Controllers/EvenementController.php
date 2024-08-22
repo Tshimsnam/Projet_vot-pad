@@ -40,77 +40,81 @@ class EvenementController extends Controller
             ]
         );
 
-        $datedebut = $request->datedebut;
-        $heuredebut = $request->heuredebut;
-        $dateTimeD = DateTime::createFromFormat('m/d/Y', $datedebut);
-        $formatDateDebut = $dateTimeD->format('Y-m-d');
-        $dateTimeDebut = ($formatDateDebut . ' ' . $heuredebut . ':00');
+        //$datedebut = $request->datedebut;
+        //$heuredebut = $request->heuredebut;
+        //$dateTimeD = DateTime::createFromFormat('m/d/Y', $datedebut);
+        //$formatDateDebut = $dateTimeD->format('Y-m-d');
+        //$dateTimeDebut = ($formatDateDebut . ' ' . $heuredebut . ':00');
 
-        $datefin = $request->datefin;
-        $heurefin = $request->heurefin;
-        $dateTimeF = DateTime::createFromFormat('m/d/Y', $datefin);
-        $formatDateFin = $dateTimeF->format('Y-m-d');
-        $dateTimeFin = ($formatDateFin . ' ' . $heurefin . ':00');
+        //$datefin = $request->datefin;
+        //$heurefin = $request->heurefin;
+        //$dateTimeF = DateTime::createFromFormat('m/d/Y', $datefin);
+        //$formatDateFin = $dateTimeF->format('Y-m-d');
+        //$dateTimeFin = ($formatDateFin . ' ' . $heurefin . ':00');
 
 
-        $evenement = Evenement::create(
+        $evenements = Evenement::create(
             [
                 'nom' => $request->name,
                 'description' => $request->description,
                 'type' => $request->type,
-                'date_debut' => $dateTimeDebut,
-                'date_fin' => $dateTimeFin,
+                //'date_debut' => $dateTimeDebut,
+                //'date_fin' => $dateTimeFin,
                 'status' => 'en attente',
             ]
         );
 
-
-        $evenement_id = $evenement->id;
-        $type_event = $evenement->type;
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersNumber = strlen($characters);
-        $codeLength = 3;
-        $slug = null;
-
-        do {
-            $slug = '';
-            for ($i = 0; $i < $codeLength; $i++) {
-                $position = mt_rand(0, $charactersNumber - 1);
-                $slug .= $characters[$position];
-            }
-        } while (Phase::where('slug', $slug)->exists());
-
-        if ($type_event == 'Compétition') {
-            $phase = Phase::create(
-                [
-                    'nom' => $request->name,
-                    'description' => $request->description,
-                    'statut' => 'en attente',
-                    'slug' => $slug,
-                    'type' => 'Vote',
-                    'date_debut' => $dateTimeDebut,
-                    'date_fin' => $dateTimeFin,
-                    'evenement_id' => $evenement_id
-                ]
-            );
-        } else {
-            $phase = Phase::create(
-                [
-                    'nom' => $request->name,
-                    'description' => $request->description,
-                    'statut' => 'en attente',
-                    'slug' => $slug,
-                    'type' => 'Evaluation',
-                    'duree' => '01:00:00',
-                    'date_debut' => $dateTimeDebut,
-                    'date_fin' => $dateTimeFin,
-                    'evenement_id' => $evenement_id
-                ]
-            );
-        }
+        $autoCreate = 1;
+        $evenements->auto_create = $autoCreate;
+        $evenements->save();
 
 
-        return redirect(route('evenements.index'))->with('success', 'Enregistrement reussi');
+        //$evenement_id = $evenement->id;
+        //$type_event = $evenement->type;
+        // $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // $charactersNumber = strlen($characters);
+        // $codeLength = 3;
+        // $slug = null;
+
+        // do {
+        //     $slug = '';
+        //     for ($i = 0; $i < $codeLength; $i++) {
+        //         $position = mt_rand(0, $charactersNumber - 1);
+        //         $slug .= $characters[$position];
+        //     }
+        // } while (Phase::where('slug', $slug)->exists());
+
+        // if ($type_event == 'Compétition') {
+        //     $phase = Phase::create(
+        //         [
+        //             'nom' => $request->name,
+        //             'description' => $request->description,
+        //             'statut' => 'en attente',
+        //             'slug' => $slug,
+        //             'type' => 'Vote',
+        //             'date_debut' => $dateTimeDebut,
+        //             'date_fin' => $dateTimeFin,
+        //             'evenement_id' => $evenement_id
+        //         ]
+        //     );
+        // } else {
+        //     $phase = Phase::create(
+        //         [
+        //             'nom' => $request->name,
+        //             'description' => $request->description,
+        //             'statut' => 'en attente',
+        //             'slug' => $slug,
+        //             'type' => 'Evaluation',
+        //             'duree' => '01:00:00',
+        //             'date_debut' => $dateTimeDebut,
+        //             'date_fin' => $dateTimeFin,
+        //             'evenement_id' => $evenement_id
+        //         ]
+        //     );
+        // }
+
+
+        return redirect(route('phase.create', $evenements))->with('success', 'Evénement enregistré et ajout les details de la première phase');
     }
 
     /**
