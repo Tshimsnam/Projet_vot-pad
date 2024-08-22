@@ -78,6 +78,8 @@ class QuestionPhaseController extends Controller
                                             ->update(['debut_evaluation' =>  $heure0, 'fin_evaluation' =>$heurefin->format('Y-m-d H:i:s')]);
 
                         $duree_evaluation = $timing;
+                        list($hours, $minutes, $seconds) = explode(':', $duree_evaluation);
+                        $duree_evaluation =  ($hours * 3600) + ($minutes * 60) + $seconds;
                         $data = ['duree'=>$duree_evaluation,'questionaire'=> QuestionPhaseResource::collection(QuestionPhase::where('phase_id','=',$phase)->get())];
                         return  $data;
                     }else{
