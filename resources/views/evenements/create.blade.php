@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <div class="flex items-center">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {{ __("Création d'un événemnt") }}
+                    {{ __("Création d'un événement") }}
                 </h2>
             </div>
 
@@ -11,7 +11,7 @@
     </x-slot>
 
     <div class="relative overflow-x-auto sm:rounded-lg" style="padding-top: 30px;">
-        <form action="{{ route('evenements.store') }}" method="post">
+        <form action="{{ route('evenements.store') }}" autocomplete="off" method="post">
             @csrf
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 <div class="sm:col-span-2">

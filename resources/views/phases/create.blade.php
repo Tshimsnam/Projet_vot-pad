@@ -12,7 +12,7 @@
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div class="py-4">
-            <form action="{{ route('phases.store') }}" method="post">
+            <form action="{{ route('phases.store') }}" autocomplete="off" method="post">
                 @csrf
                 @method('post')
                 <div class="relative z-0 w-full mb-5 group">

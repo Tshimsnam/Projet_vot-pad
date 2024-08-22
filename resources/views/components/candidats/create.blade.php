@@ -20,7 +20,7 @@
                 <span class="sr-only">Close modal</span>
             </button>
         </div>
-        <form method="POST" action="" enctype="multipart/form-data" style="padding: 20px 0 20px 0">
+        <form method="POST" action="" enctype="multipart/form-data" autocomplete="off" style="padding: 20px 0 20px 0">
             <div class=" mr-5" style="padding-left: 20px">
                 @csrf
                 <input type="hidden" name="phase" id="phaseId" value="">

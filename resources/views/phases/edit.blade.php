@@ -10,7 +10,7 @@
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div class="py-4">
-            <form action="{{ route('phases.update', $phaseEdit->id) }}" method="post">
+            <form action="{{ route('phases.update', $phaseEdit->id) }}" autocomplete="off" method="post">
                 @csrf
                 @method('put')
                 <div class="relative z-0 w-full mb-5 group">
