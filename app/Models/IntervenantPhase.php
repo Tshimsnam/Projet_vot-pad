@@ -10,6 +10,12 @@ use Laravel\Sanctum\HasApiTokens;
 class IntervenantPhase extends Model
 {
     use HasFactory, HasApiTokens;
+    protected $fillable = [
+        'intervenant_id',
+        'coupon',
+        'phase_id',
+        'statut'
+    ];
     public function intervenant(): BelongsTo
     {
         return $this->belongsTo(Intervenant::class);

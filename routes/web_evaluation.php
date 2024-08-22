@@ -44,5 +44,6 @@ Route::get('response-test', function (){
 });
 Route::resource('reponses', ReponseController::class);
 Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
+Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('close.phase');
 
 require __DIR__.'/auth.php';
