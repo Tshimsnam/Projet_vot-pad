@@ -198,7 +198,7 @@ class PhaseController extends Controller
         $questionPhase0 = QuestionPhase::orderBy('id')->where("phase_id", $id)->get();
         $questionPhasePagnation = QuestionPhase::orderBy('id')->where("phase_id", $id)->paginate(10);
         // dd($questionPhase0[0]->question->question);
-        
+
         $tabAssertion = array();
         $questionPhase = array();
         foreach ($questionPhase0 as $key => $valeur) {
@@ -292,6 +292,12 @@ class PhaseController extends Controller
                     }
                 }
             }
+            usort($jurys, function ($a, $b) {
+                if ($a->type == $b->type) {
+                    return 0;
+                }
+                return $a->type == 'prive' ? -1 : 1;
+            });
             return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber'));
         } else {
             // module phase evaluation
@@ -299,19 +305,18 @@ class PhaseController extends Controller
             $intervenants = [];
             foreach ($intervenantPhases as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
-                if($intervenant){
+                if ($intervenant) {
                     $intervenant->intervenantPhaseId = $intervenantPhase->id;
-                    $intervenants[] = $intervenant;  
+                    $intervenants[] = $intervenant;
                 }
-                
             }
-            return view('phases.show', compact('phaseShow','phase_id', 'question','questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases'));
+            return view('phases.show', compact('phaseShow', 'phase_id', 'question', 'questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases'));
         }
     }
     public function phaseQuestionDetail(Request $request, $id)
     {
         $phaseShow = Phase::select("id")->latest()->where('id', $id)->first();
-        
+
         $questionPhasePagnation = QuestionPhase::orderBy('id')->where("phase_id", $phaseShow->id)->paginate(25);
         // dd($questionPhasePagnation);
         return view('phases.question_phase', compact('questionPhasePagnation'));
@@ -470,7 +475,6 @@ class PhaseController extends Controller
         } else {
             return redirect(route('phase.show', $phaseId))->with('successStatus', 'Phase fermée avec succès');
         }
-
     }
 
 

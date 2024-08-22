@@ -140,7 +140,7 @@
                         <span class="ms-3">Formulaire</span>
                     </a>
                 </li>
-                -->
+
                 <li>
                     <a href="{{ route('jury-form') }}"
                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -152,6 +152,7 @@
                         <span class="ms-3">Jury Formulaire</span>
                     </a>
                 </li>
+                -->
             </ul>
         </div>
     </aside>
