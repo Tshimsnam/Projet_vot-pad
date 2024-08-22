@@ -1,18 +1,18 @@
 @extends('layouts.template')
 @section('content')
-    <section class="dark:bg-gray-900">
-        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-                <img class="w-8 h-8 mr-2"
-                    src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg" alt="logo">
-                VotePad2
-            </a>
-            <div
-                class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                <p class="mb-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Merci pour votre participation
-                </p>
-            </div>
+    <section id="voteUser" class="px-4 md:px-8">
+        <div class="mb-5 pt-16 flex justify-center">
+            <h2
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold text-white">
+                <img class="w-12 h-12" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
+                    alt="logo">
+                otePad2
+            </h2>
         </div>
+        <p class="text-center md:m-16 text-xl text-white">
+            Je tiens à vous exprimer toute ma gratitude pour votre participation en tant que membre du jury lors de notre
+            récent événement.<br> Votre expertise et votre engagement ont été essentiels pour garantir l'intégrité et le succès
+            de cette compétition.
+        </p>
     </section>
 @endsection
