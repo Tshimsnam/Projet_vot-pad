@@ -18,17 +18,19 @@ class CandidatMail extends Mailable
     public $date;
     public $noms;
     public $heure;
+    public $isVote;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($subject, $coupon, $date, $noms, $heure)
+    public function __construct($subject, $coupon, $date, $noms, $heure, $isVote)
     {
         $this->subject = $subject;
         $this->coupon = $coupon;
         $this->date = $date;
         $this->noms = $noms;
         $this->heure = $heure;
+        $this->isVote = $isVote;
     }
 
     /**
@@ -46,15 +48,26 @@ class CandidatMail extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'mails.coupon',
-            with: [
-                'coupon' => $this->coupon,
-                'date' => $this->date,
-                'email' => $this->noms,
-                'heure' => $this->heure,
-            ],
-        );
+        if ($this->isVote == 1) {
+            return new Content(
+                view: 'mails.vote',
+                with: [
+                    'date' => $this->date,
+                    'email' => $this->noms,
+                    'heure' => $this->heure,
+                ],
+            );
+        } else {
+            return new Content(
+                view: 'mails.coupon',
+                with: [
+                    'coupon' => $this->coupon,
+                    'date' => $this->date,
+                    'email' => $this->noms,
+                    'heure' => $this->heure,
+                ],
+            );
+        }
     }
 
     /**

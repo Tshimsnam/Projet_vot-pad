@@ -490,6 +490,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+                        <div class="bg-white dark:bg-gray-800 shadow">
+                            <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
+                                        {{ __('Send mails des candidats') }}
+                                    </h3>
+                                    <a href="#" onclick="sendMail(event, '{{ $phase_id }}')"
+                                        data-modal-target="mail-modal-candidat"
+                                        data-modal-toggle="mail-modal-candidat"
+                                        class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                        Envoyer les mails
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                            fill="currentColor" class="size-6 pl-2">
+                                            <path
+                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                            <path
+                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
                         @if (session('successCand'))
                             <div id="alert-3-cand"
@@ -525,6 +549,7 @@
                                     <th scope="col" class="py-2">Email</th>
                                     <th scope="col" class="py-2">Téléphone</th>
                                     <th scope="col" class="py-2">Genre</th>
+                                    <th scope="col" class="py-2">Mail envoyé</th>
                                     <th scope="col" class="py-2">Image</th>
                                     <th scope="col" class="py-2">Action</th>
                                 </tr>
@@ -539,13 +564,16 @@
                                             {{ $item->noms }}</th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->email }}</th>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white uppercase">
                                             {{ $item->telephone }}</th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white uppercase">
                                             {{ $item->genre }}</th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->email }}</th>
+                                            {{ $item->mail_send }}</th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             <img width="40" height="40" class="img img-responsive"
@@ -751,7 +779,7 @@
     <x-criteres.edit />
     <x-qrcodes.printcode />
     <x-passations.pass />
-
+    <x-mails.send />
 
     <script>
         window.onload = function() {
@@ -1101,5 +1129,51 @@
                 }, 500);
             });
         }, 5000);
+
+        function sendMail(event, phaseId) {
+            event.preventDefault();
+            const form = document.querySelector('#mail-modal-candidat form')
+            form.setAttribute('action', `{{ route('sendMailMany') }}`);
+
+            const phase = document.querySelector('#mail-modal-candidat form div #phaseId')
+            phase.setAttribute('value', phaseId);
+
+            const isVote = document.querySelector('#mail-modal-candidat form div #isVote')
+            isVote.setAttribute('value', 1);
+
+            const candFirstSelect = document.querySelector('#mail-modal-candidat form div #candFirst')
+            const candLastSelect = document.querySelector('#mail-modal-candidat form div #candLast')
+
+            candFirstSelect.innerHTML = '';
+            candLastSelect.innerHTML = '';
+
+            const intervenants = @json($intervenantsMails);
+
+            function populateCandLastSelect(intervenants, selectedId) {
+                candLastSelect.innerHTML = '';
+
+                const firstIndex = intervenants.findIndex(intervenant => intervenant.id === selectedId);
+                const lastIntervenants = intervenants.slice(firstIndex);
+
+                lastIntervenants.forEach(intervenant => {
+                    const option = document.createElement('option');
+                    option.value = intervenant.id;
+                    option.text = intervenant.noms;
+                    candLastSelect.appendChild(option);
+                });
+            }
+
+            intervenants.forEach(intervenant => {
+                const option = document.createElement('option');
+                option.value = intervenant.id;
+                option.text = intervenant.noms;
+                candFirstSelect.appendChild(option);
+            });
+
+            candFirstSelect.addEventListener('change', (event) => {
+                const selectedId = parseInt(event.target.value, 10);
+                populateCandLastSelect(intervenants, selectedId);
+            });
+        }
     </script>
 </x-app-layout>

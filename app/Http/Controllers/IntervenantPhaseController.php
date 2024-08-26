@@ -90,6 +90,7 @@ class IntervenantPhaseController extends Controller
         $objetTest = $request->objet;
         $firstCandidat = $request->candFirst;
         $lastCandidat = $request->candLast;
+        $isVote = $request->isVote;
 
         $firstIntervenat = Intervenant::where('id', $firstCandidat)->pluck('noms')->first();
         $lastIntervenat = Intervenant::where('id', $lastCandidat)->pluck('noms')->first();
@@ -110,7 +111,7 @@ class IntervenantPhaseController extends Controller
                     $noms = $intervenant->noms;
                     $email = $intervenant->email;
 
-                    Mail::to($email)->send(new CandidatMail($objet, $coupon, $date, $noms, $heureTest));
+                    Mail::to($email)->send(new CandidatMail($objet, $coupon, $date, $noms, $heureTest, $isVote));
                     $mailEnvoye = $intervenantPhase->mail_send;
                     $intervenantPhase->mail_send = $mailEnvoye + 1;
                     $intervenantPhase->save();
