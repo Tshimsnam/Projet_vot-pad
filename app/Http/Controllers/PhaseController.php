@@ -307,15 +307,33 @@ class PhaseController extends Controller
             // module phase evaluation
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
             $intervenants = [];
+            $intervenantsMails = [];
             foreach ($intervenantPhases as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
                 if ($intervenant) {
                     $intervenant->intervenantPhaseId = $intervenantPhase->id;
                     $intervenant->coupon = $intervenantPhase->coupon;
+                    $intervenant->mail_send = $intervenantPhase->mail_send;
+                    if ($intervenantPhase->token == 0) {
+                        $intervenant->is_use = 0;
+                    } else {
+                        $intervenant->is_use = 1;
+                    }
                     $intervenants[] = $intervenant;
                 }
             }
-            return view('phases.show', compact('phaseShow', 'phase_id', 'question', 'questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases'));
+            usort($intervenants, function ($a, $b) {
+                return strcmp($a->noms, $b->noms);
+            });
+
+            foreach ($intervenants as $intervenant) {
+                $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
+                if ($intervenantPhaseMail->token == 0) {
+                    $intervenantsMails[] = $intervenant;
+                }
+            }
+
+            return view('phases.show', compact('phaseShow', 'phase_id', 'question', 'questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases', 'intervenantsMails'));
         }
     }
     public function phaseQuestionDetail(Request $request, $id)

@@ -3,12 +3,15 @@
 use App\Http\Controllers\CritereController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\IntervenantController;
+use App\Http\Controllers\IntervenantPhaseController;
 use App\Http\Controllers\JuryController;
 use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\VoteController;
 use App\Http\Middleware\JuryTokenIsValid;
+use App\Mail\CandidatMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,5 +33,6 @@ Route::get('/votePad', [JuryController::class, 'form'])->name('jury-form');
 Route::post('/votePad/voting', [VoteController::class, 'authenticate'])->name('jury-authenticate');
 Route::get('/votePad/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}/{nombreUser}/{evenement}', [VoteController::class, 'show'])->name('jury.success')->middleware(JuryTokenIsValid::class);;
 
-
-
+Route::post('/sendmail',  [IntervenantPhaseController::class, 'sendMail'])->name('sendMail');
+Route::post('/sendsmails',  [IntervenantPhaseController::class, 'sendMailMany'])->name('sendMailMany');
+Route::get('/intro', [IntervenantPhaseController::class, 'intro']);
