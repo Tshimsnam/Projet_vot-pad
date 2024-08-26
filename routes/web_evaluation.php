@@ -8,6 +8,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuestionPhaseController;
 use App\Http\Controllers\ReponseController;
 use App\Http\Controllers\ResultatController;
+use App\Http\Middleware\IntervenantMiddleware;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,8 +44,8 @@ Route::middleware('auth')->group(function () {
 Route::get('response-test', function (){
     return view('reponses.response');
 });
-Route::get('intervenant-logout',[IntervenantController::class, 'logout'])->name('inter.logout');
-Route::resource('reponses', ReponseController::class);
+Route::get('intervenant-logout',[IntervenantController::class, 'logout'])->name('inter.logout')->middleware('is_login');
+Route::resource('reponses', ReponseController::class)->middleware("is_login");
 Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
 Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('close.phase');
 

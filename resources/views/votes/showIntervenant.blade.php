@@ -14,7 +14,7 @@
                 src="{{ $candidat->image && file_exists(public_path($candidat->image)) ? asset($candidat->image) : asset('images/profil.jpg') }}"
                 alt="">
             <div class="px-5">
-                <h2 class="text-white text-4xl uppercase font-extrabold dark:text-white">{{ $candidat->nom_groupe }}</h2>
+                <h2 class="text-white text-4xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}</h2>
                 <p class="text-sm text-white truncate dark:text-white">
                     {{ $candidat->email }}
                 </p>

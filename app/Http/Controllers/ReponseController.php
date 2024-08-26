@@ -56,6 +56,7 @@ class ReponseController extends Controller
     {
         $message ="Merci d'avoir répondu et Felicitation!";
         // dd($request->all());
+        return view('intervenants.logout', compact('message'));
         $reponse = $request->id_collection_keyQuestion_valAssertion;
         $intervenant = $request->intervenant_id;
         $phase = $request->phase_id;

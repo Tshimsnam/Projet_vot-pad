@@ -276,6 +276,9 @@ class IntervenantController extends Controller
                     Session::put('phase_id', $IdPhase);
                     Session::put('intervenant_id', $IdIntervenant);
 
+                    $phase41 = session()->get('IdPhase');
+                    $interv0 = session()->get('intervenantId');
+                    dd("ici");
                     return to_route('reponses.index')->with(compact('phase', 'intervenant'));
                 }
             }

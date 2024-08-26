@@ -27,7 +27,7 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-xl font-medium uppercase text-gray-900 truncate dark:text-black">
-                                    {{ $item->nom_groupe }}
+                                    {{ $item->noms }}
                                 </p>
                                 <p class="text-sm text-gray-500 truncate dark:text-gray-400">
                                     {{ $item->email }}
@@ -100,7 +100,7 @@
                                 @foreach ($intervenants as $i => $item)
                                     <tr
                                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                        <td class="px-6 py-4 uppercase font-bold">{{ $item->nom_groupe }}</td>
+                                        <td class="px-6 py-4 uppercase font-bold">{{ $item->noms }}</td>
                                         <td class="px-6 py-4 cote" id="sum-{{ $item->id }}">{{ $item->id }}</td>
                                     </tr>
                                 @endforeach
