@@ -59,13 +59,11 @@ class VoteController extends Controller
             $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
             $groupe = Groupe::find($intervenant->groupe_id);
             $intervenant->intervenantPhaseId = $intervenantPhase->id;
-            $intervenant->nom_groupe = $groupe->nom;
-            $intervenant->image = $groupe->image;
             $intervenants[] = $intervenant;
         }
 
         usort($intervenants, function ($a, $b) {
-            return strcmp($a->nom_groupe, $b->nom_groupe);
+            return strcmp($a->noms, $b->noms);
         });
         return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement'));
     }
@@ -89,8 +87,6 @@ class VoteController extends Controller
         });
         $candidat = Intervenant::findOrFail($candidat_id);
         $groupe = Groupe::find($candidat->groupe_id);
-        $candidat->nom_groupe = $groupe->nom;
-        $candidat->image = $groupe->image;
         $jury = Jury::findOrFail($jury_id);
         $juryToken = $jury->token;
         return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken', 'nombreUser', 'evenement'));
@@ -204,9 +200,16 @@ class VoteController extends Controller
         }
 
         $juryPhase = JuryPhase::where('phase_id', $phase_id)->first();
-        $ponderationJuryPublic = $juryPhase->ponderation_public;
-        $ponderationJuryPrive = $juryPhase->ponderation_prive;
-        $typeVote = $juryPhase->type;
+        if ($juryPhase) {
+            $ponderationJuryPublic = $juryPhase->ponderation_public;
+            $ponderationJuryPrive = $juryPhase->ponderation_prive;
+            $typeVote = $juryPhase->type;
+        } else {
+            $ponderationJuryPublic = 0; 
+            $ponderationJuryPrive = 0; 
+            $typeVote = 'prive et public'; 
+
+        }
 
         $intervenants = [];
         $totalVoteByCandidat = 0;
@@ -216,8 +219,6 @@ class VoteController extends Controller
             $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
             $groupe = Groupe::find($intervenant->groupe_id);
             $intervenant->intervenantPhaseId = $intervenantPhase->id;
-            $intervenant->nom_groupe = $groupe->nom;
-            $intervenant->image = $groupe->image;
 
             $JuryByCandidat = Vote::where('intervenant_phase_id', $intervenantPhase->id)
                 ->distinct('phase_jury_id')
@@ -293,6 +294,6 @@ class VoteController extends Controller
             return $b->cote - $a->cote;
         });
         //return response()->json($intervenants);
-        return view('votes.showResultat', compact('intervenants', 'totalVote', 'ponderationJuryPublic', 'ponderationJuryPrive', 'typeVote'));
+        return view('votes.showResultat', compact('intervenants', 'totalVote', 'ponderationJuryPublic', 'ponderationJuryPrive', 'typeVote', 'phase_id'));
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\VoteExcelController;
 use App\Http\Middleware\JuryTokenIsValid;
 use App\Mail\CandidatMail;
 use Illuminate\Support\Facades\Mail;
@@ -36,3 +37,5 @@ Route::get('/votePad/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}/
 Route::post('/sendmail',  [IntervenantPhaseController::class, 'sendMail'])->name('sendMail');
 Route::post('/sendsmails',  [IntervenantPhaseController::class, 'sendMailMany'])->name('sendMailMany');
 Route::get('/intro', [IntervenantPhaseController::class, 'intro']);
+
+Route::get('/vote-excel/{phase_id}', [VoteExcelController::class, 'export_excel'])->name('export_vote');
