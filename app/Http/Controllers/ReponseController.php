@@ -46,7 +46,7 @@ class ReponseController extends Controller
      */
     public function create()
     {
-        //
+        return view('reponses.index');
     }
 
     /**
@@ -56,15 +56,17 @@ class ReponseController extends Controller
     {
         $message ="Merci d'avoir répondu et Felicitation!";
         // dd($request->all());
-        return view('intervenants.logout', compact('message'));
+        // $d=session()->all();
+        // dd($d);
+        // return view('intervenants.logout', compact('message'));
         $reponse = $request->id_collection_keyQuestion_valAssertion;
         $intervenant = $request->intervenant_id;
         $phase = $request->phase_id;
         $user_existe = DB::table('reponses')
                     ->where('intervenant_id',$intervenant)
                     ->where('phase_id',$phase)
-                    ->first();
-        if(count($user_existe)>0){
+                    ->count();
+        if($user_existe>0){
             session(['phase' => $request->phase_id,
                     'intervenant'=>$request->intervenant_id]);
             return Redirect::back()->with('success',"Merci d'avoir participé !");

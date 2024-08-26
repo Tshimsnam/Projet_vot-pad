@@ -45,8 +45,8 @@ Route::get('response-test', function (){
     return view('reponses.response');
 });
 Route::get('intervenant-logout',[IntervenantController::class, 'logout'])->name('inter.logout')->middleware('is_login');
-Route::resource('reponses', ReponseController::class)->middleware("is_login");
-Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
+Route::resource('reponses', ReponseController::class);//->middleware("is_login");
+Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");//->middleware('is_login');
 Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('close.phase');
 
 require __DIR__.'/auth.php';
