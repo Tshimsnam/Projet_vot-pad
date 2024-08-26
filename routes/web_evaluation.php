@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssertionController;
 use App\Http\Controllers\ImportQuestionController;
+use App\Http\Controllers\IntervenantController;
 use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuestionPhaseController;
@@ -42,6 +43,7 @@ Route::middleware('auth')->group(function () {
 Route::get('response-test', function (){
     return view('reponses.response');
 });
+Route::get('intervenant-logout',[IntervenantController::class, 'logout'])->name('inter.logout');
 Route::resource('reponses', ReponseController::class);
 Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");
 Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('close.phase');

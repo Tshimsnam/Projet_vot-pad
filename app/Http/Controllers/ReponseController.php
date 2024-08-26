@@ -9,6 +9,7 @@ use App\Models\Assertion;
 use App\Models\Question;
 use Illuminate\Support\Facades\DB;
 use App\Models\QuestionPhase;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
 
 class ReponseController extends Controller
@@ -53,7 +54,7 @@ class ReponseController extends Controller
      */
     public function store(StoreReponseRequest $request)
     {
-        
+        $message ="Merci d'avoir répondu et Felicitation!";
         // dd($request->all());
         $reponse = $request->id_collection_keyQuestion_valAssertion;
         $intervenant = $request->intervenant_id;
@@ -61,8 +62,8 @@ class ReponseController extends Controller
         $user_existe = DB::table('reponses')
                     ->where('intervenant_id',$intervenant)
                     ->where('phase_id',$phase)
-                    ->count();     
-        if($user_existe>0){
+                    ->first();
+        if(count($user_existe)>0){
             session(['phase' => $request->phase_id,
                     'intervenant'=>$request->intervenant_id]);
             return Redirect::back()->with('success',"Merci d'avoir participé !");
@@ -117,9 +118,7 @@ class ReponseController extends Controller
                 }
                 session(['phase' => $request->phase_id,
                         'intervenant'=>$request->intervenant_id]);
-                $request->session()->flush();
-                return redirect()->route('form-authenticate');
-                // return Redirect::back()->with('success',"Merci d'avoir répondu et Felicitation!");
+                 return view('intervenants.logout', compact('message'));
             }else{
                 session(['phase' => $request->phase_id,
                         'intervenant'=>$request->intervenant_id]);

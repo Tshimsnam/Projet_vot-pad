@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Spatie\SimpleExcel\SimpleExcelReader;
 use App\Http\Requests\StoreIntervenantRequest;
 use App\Http\Requests\UpdateIntervenantRequest;
+use Illuminate\Support\Facades\Cookie;
 
 class IntervenantController extends Controller
 {
@@ -279,5 +280,10 @@ class IntervenantController extends Controller
                 }
             }
         }
+    }
+
+    public function logout(Request $request){
+        $request->session()->flush();
+        return redirect()->route('form-authenticate');
     }
 }
