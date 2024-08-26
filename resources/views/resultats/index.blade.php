@@ -81,11 +81,22 @@
                         <td class="px-6 py-4">{{ $i + 1 }}</td>
                         <th scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item['email'] }} {{ $item['id'] }}</th>
-
-                        <td class="px-6 py-4">{{ $item['pourcentage'] }} %</td>
+                            {{ $item['email'] }} {{$item['id']}}</th>
+                       
+                        <td class="px-6 py-4">
+                            @if ($item['evaluee']==null)
+                                N'a pas passé l'évaluation
+                            @else
+                                {{ $item['pourcentage']}} %
+                            @endif
+                            
+                        </td>
                         <td class="px-4">
-                            <a href="{{ route('restultatDetatil', ['phase_id' => $phase[0]->id, 'interv_id' => $item['id']]) }}"
+
+                        @if ($item['evaluee']==null)
+                                RAS
+                            @else
+                            <a href="{{route('restultatDetatil', ["phase_id"=>$phase[0]->id,"interv_id"=>$item['id']])}}"
                                 class="text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                     class="size-4">
@@ -94,6 +105,7 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
