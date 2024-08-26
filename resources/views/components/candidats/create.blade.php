@@ -20,7 +20,8 @@
                 <span class="sr-only">Close modal</span>
             </button>
         </div>
-        <form method="POST" action="" enctype="multipart/form-data" autocomplete="off" style="padding: 20px 0 20px 0">
+        <form method="POST" action="" enctype="multipart/form-data" autocomplete="off"
+            style="padding: 20px 0 20px 0">
             <div class=" mr-5" style="padding-left: 20px">
                 @csrf
                 <input type="hidden" name="phase" id="phaseId" value="">
@@ -39,9 +40,25 @@
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Email du candidat" value="" required />
                 </div>
+                <div id="">
+                    <label id="telephoneLabel" for="telephone"
+                        class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">Téléphone</label>
+                    <input type="text" id="telephone" name="telephone"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Numéro de téléphone" value="" required />
+                </div>
+                <div id="">
+                    <label id="genreLabel" for="genre"
+                        class="block mb-2 pt-2  text-sm font-medium text-gray-900 dark:text-white">Genre</label>
+                    <select id="genre" name="genre"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="M" selected>Masculin</option>
+                        <option value="F">Féminin</option>
+                    </select>
+                </div>
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload
-                        file</label>
+                    <label class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white"
+                        for="file_input">Image</label>
                     <input
                         class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                         aria-describedby="file_input_help" id="image" name="image" type="file">

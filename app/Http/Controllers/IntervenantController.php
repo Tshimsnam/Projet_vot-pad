@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Phase;
+use App\Models\Groupe;
 use App\Models\Intervenant;
 use Illuminate\Http\Request;
 use App\Models\IntervenantPhase;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Session;
 use Spatie\SimpleExcel\SimpleExcelReader;
 use App\Http\Requests\StoreIntervenantRequest;
 use App\Http\Requests\UpdateIntervenantRequest;
-use App\Models\Groupe;
-use Illuminate\Support\Facades\Session;
 
 class IntervenantController extends Controller
 {
@@ -52,98 +51,123 @@ class IntervenantController extends Controller
         $coupon = null;
         $isVote = $request->isVote;
         $now = date('Y-m-d H:i:s');
+        $data = [];
         if ($isVote == 1) {
-            $groupe = new Groupe();
             if ($request->image === null) {
-                $groupe->nom = $request->name;
+                $intervenant = Intervenant::where('email', $request->email)->first();
+                if (!$intervenant) {
+                    $intervenant = Intervenant::create([
+                        'noms' => $request->name,
+                        'email' => $request->email,
+                        'telephone' => $request->telephone,
+                        'genre' => $request->genre,
+                    ]);
+                }
+                $intervenantId = $intervenant->id;
+                $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('phase_id', $phaseId)->first();
+                if (!$intervenantPhase) {
+                    do {
+                        $coupon = '';
+                        for ($i = 0; $i < $codeLength; $i++) {
+                            $position = mt_rand(0, $charactersNumber - 1);
+                            $coupon .= $characters[$position];
+                        }
+                        $couponPhase = $slug . $coupon;
+                    } while (IntervenantPhase::where('coupon', $couponPhase)->exists());
+
+                    $data[] = [
+                        'intervenant_id' => $intervenantId,
+                        'phase_id' => $phaseId,
+                        'coupon' => $couponPhase,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
             } else {
                 $nom = $request->name;
                 $imageName = time() . $nom . '.' . $request->image->extension();
                 $request->image->move(public_path('images'), $imageName);
-                $groupe->nom = $request->name;
-                $groupe->image = 'images/' . $imageName;
-            }
-            $groupe->save();
-            $groupeId = $groupe->id;
-
-
-            $intervenant = Intervenant::create([
-                'email' => $request->email,
-                'groupe_id' => $groupeId,
-            ]);
-            $intervenantId = $intervenant->id;
-            do {
-                $coupon = '';
-                for ($i = 0; $i < $codeLength; $i++) {
-                    $position = mt_rand(0, $charactersNumber - 1);
-                    $coupon .= $characters[$position];
-                }
-            } while (IntervenantPhase::where('coupon', $coupon)->exists());
-
-            $couponPhase = $slug . $coupon;
-
-            $data[] = [
-                'intervenant_id' => $intervenantId,
-                'phase_id' => $phaseId,
-                'coupon' => $couponPhase,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-        } else {
-            $fichier = $request->fichier->move(public_path(), $request->fichier->hashName());
-            $reader = SimpleExcelReader::create($fichier);
-            $rows = $reader->getRows();
-            $getRows = 0;
-            $data = [];
-            foreach ($rows as $row) {
-                $intervenant = Intervenant::where('email', $row['email'])->first();
-                $getRows += 1;
-                if ($intervenant) {
-                    $intervenantId = $intervenant->id;
-                } else {
+                $intervenant = Intervenant::where('email', $request->email)->first();
+                if (!$intervenant) {
                     $intervenant = Intervenant::create([
-                        'email' => $row['email'],
+                        'noms' => $request->name,
+                        'email' => $request->email,
+                        'telephone' => $request->telephone,
+                        'genre' => $request->genre,
+                        'image' => 'images/' . $imageName,
+                    ]);
+                }
+                $intervenantId = $intervenant->id;
+                $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('phase_id', $phaseId)->first();
+                if (!$intervenantPhase) {
+                    do {
+                        $coupon = '';
+                        for ($i = 0; $i < $codeLength; $i++) {
+                            $position = mt_rand(0, $charactersNumber - 1);
+                            $coupon .= $characters[$position];
+                        }
+                        $couponPhase = $slug . $coupon;
+                    } while (IntervenantPhase::where('coupon', $couponPhase)->exists());
+
+                    $data[] = [
+                        'intervenant_id' => $intervenantId,
+                        'phase_id' => $phaseId,
+                        'coupon' => $couponPhase,
                         'created_at' => $now,
                         'updated_at' => $now,
+                    ];
+                }
+            }
+        } else {
+            $file = $request->file('fichier');
+            $dataExcell = Excel::toArray([], $file)[0];
+
+            $dataExcell = array_slice($dataExcell, 1);
+            foreach ($dataExcell as $row) {
+                $intervenant = Intervenant::where('email', $row['1'])->first();
+                if (!$intervenant) {
+                    $intervenant = Intervenant::create([
+                        'noms' => $row[0],
+                        'email' => $row[1],
+                        'telephone' => $row[2],
+                        'genre' => $row[3]
                     ]);
-                    $intervenantId = $intervenant->id;
                 }
+                $intervenantId = $intervenant->id;
+                $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenantId)->where('phase_id', $phaseId)->first();
+                if (!$intervenantPhase) {
+                    do {
+                        $coupon = '';
+                        for ($i = 0; $i < $codeLength; $i++) {
+                            $position = mt_rand(0, $charactersNumber - 1);
+                            $coupon .= $characters[$position];
+                        }
+                        $couponPhase = $slug . $coupon;
+                    } while (IntervenantPhase::where('coupon', $couponPhase)->exists());
 
-                do {
-                    $coupon = '';
-                    for ($i = 0; $i < $codeLength; $i++) {
-                        $position = mt_rand(0, $charactersNumber - 1);
-                        $coupon .= $characters[$position];
-                    }
-                } while (IntervenantPhase::where('coupon', $coupon)->exists());
-
-                $couponPhase = $slug . $coupon;
-                $getRecord = IntervenantPhase::where('intervenant_id', $intervenantId)->where('phase_id', $phaseId)->first();
-                if ($getRecord) {
-                    continue;
+                    $data[] = [
+                        'intervenant_id' => $intervenantId,
+                        'phase_id' => $phaseId,
+                        'coupon' => $couponPhase,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
                 }
-
-                $data[] = [
-                    'intervenant_id' => $intervenantId,
-                    'phase_id' => $phaseId,
-                    'coupon' => $couponPhase,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
             }
         }
 
-
-        $status = IntervenantPhase::insert($data);
+        if (count($data) > 0) {
+            $status = IntervenantPhase::insert($data);
+        } else {
+            $status = true;
+        }
 
         if ($status) {
             if ($isVote == 1) {
                 return redirect(route('phase.show', $phaseId))->with('successCand', 'Insertion effectuée');
             } else {
-                $reader->close();
-                unlink($fichier);
                 $insertionsCount = count($data);
-                return redirect(route('phase.show', $phaseId))->with('successCand', 'Insertion effectuée : ' . $insertionsCount . ' sur ' . $getRows . ' lignes.');
+                return redirect(route('phase.show', $phaseId))->with('successCand', 'Insertion effectuée :  lignes');
             }
         }
     }
@@ -170,30 +194,25 @@ class IntervenantController extends Controller
     public function update(UpdateIntervenantRequest $request, Intervenant $intervenant)
     {
         $phaseId = (int) $request->phase;
-
-        $groupe_id = $intervenant->groupe_id;
-        $groupe = Groupe::findOrFail($groupe_id);
-
         if ($request->image === null) {
-
-            $groupe->nom = $request->name;
-            $groupe->update();
+            $status = $intervenant->update([
+                'noms' => $request->name,
+                'email' => $request->email,
+                'telephone' => $request->telephone,
+                'genre' => $request->genre,
+            ]);
         } else {
-
             $nom = $request->name;
             $imageName = time() . $nom . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $imageName);
-
-            $groupe->nom = $request->name;
-            $groupe->image = 'images/' . $imageName;
-            $groupe->update();
+            $status = $intervenant->update([
+                'noms' => $request->name,
+                'email' => $request->email,
+                'telephone' => $request->telephone,
+                'genre' => $request->genre,
+                'image' => 'images/' . $imageName,
+            ]);
         }
-
-        $status = $intervenant->update(
-            [
-                'email' => $request->email
-            ],
-        );
 
         if ($status) {
             return redirect(route('phase.show', $phaseId))->with('successCand', 'Mise à jour effectuée');
@@ -206,9 +225,7 @@ class IntervenantController extends Controller
     public function destroy(Intervenant $intervenant, $phaseId)
     {
         $intervenatId = $intervenant->id;
-        $groupe = Groupe::find($intervenant->groupe_id);
         $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenatId)->first();
-        $groupe->delete();
         $intervenantPhase->delete();
         $intervenant->delete();
         return redirect(route('phase.show', $phaseId))->with('successCand', 'Suppression effectuée');
