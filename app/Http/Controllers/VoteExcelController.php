@@ -1,0 +1,135 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Exports\VoteExport;
+use App\Models\Critere;
+use App\Models\Evenement;
+use App\Models\Groupe;
+use App\Models\Intervenant;
+use App\Models\IntervenantPhase;
+use App\Models\Jury;
+use App\Models\JuryPhase;
+use App\Models\Phase;
+use App\Models\PhaseCritere;
+use App\Models\Vote;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+
+class VoteExcelController extends Controller
+{
+    public function export_excel($phase_id)
+    {
+        $phase_nom = Phase::find($phase_id)->nom;
+        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+        $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
+        $numberCritere = $criterePhases->count();
+        $ponderationTotale = 0;
+        foreach ($criterePhases as $key => $criterePhase) {
+            $critere = Critere::findOrFail($criterePhase->critere_id);
+            $ponderationTotale += $critere->ponderation;
+        }
+
+        $juryPhase = JuryPhase::where('phase_id', $phase_id)->first();
+        if ($juryPhase) {
+            $ponderationJuryPublic = $juryPhase->ponderation_public;
+            $ponderationJuryPrive = $juryPhase->ponderation_prive;
+            $typeVote = $juryPhase->type;
+        } else {
+            $ponderationJuryPublic = 0;
+            $ponderationJuryPrive = 0;
+            $typeVote = 'prive et public';
+        }
+
+        $intervenants = [];
+        $totalVoteByCandidat = 0;
+        $totalVote = 0;
+        $nombreMaxJury = 0;
+        foreach ($intervenantPhases as $intervenantPhase) {
+            $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+            $groupe = Groupe::find($intervenant->groupe_id);
+            $intervenant->intervenantPhaseId = $intervenantPhase->id;
+
+            $JuryByCandidat = Vote::where('intervenant_phase_id', $intervenantPhase->id)
+                ->distinct('phase_jury_id')
+                ->pluck('phase_jury_id');
+
+            $votes = Vote::whereIn('phase_jury_id', $JuryByCandidat)
+                ->where('intervenant_phase_id', $intervenantPhase->id)
+                ->get();
+
+            $jurys = Jury::whereIn('id', $JuryByCandidat)->get()->keyBy('id');
+
+            foreach ($votes as $vote) {
+                $jury = $jurys->get($vote->phase_jury_id);
+                $vote->jury_type = $jury ? $jury->type : null;
+            }
+
+            $sommeByType = $votes->groupBy('jury_type')->map(function ($group) {
+                return $group->sum('cote');
+            });
+
+            $moyenne = 0;
+            foreach ($votes as $vote) {
+                $moyenne += $vote->cote;
+            }
+            $numberVoteByInter = $votes->count();
+
+            $totalVoteByCandidat = $moyenne;
+
+            $nombreJuryIntervenant = $JuryByCandidat->count();
+            if ($nombreJuryIntervenant > $nombreMaxJury) {
+                $nombreMaxJury = $nombreJuryIntervenant;
+            }
+
+            if ($numberVoteByInter != 0) {
+                $JuryByCandidat = $numberVoteByInter / $numberCritere;
+            } else {
+                $JuryByCandidat = 0;
+            }
+            $sommeByTypePrive = $sommeByType->get('prive', 0);
+            $sommeByTypePublic = $sommeByType->get('public', 0);
+
+            if ($typeVote == 'prive et public') {
+                $sommeByTypePrive = round(($sommeByTypePrive) * ($ponderationJuryPrive / 100), 2);
+                $sommeByTypePublic = round(($sommeByTypePublic) * ($ponderationJuryPublic / 100), 2);
+                $cote = $sommeByTypePublic + $sommeByTypePrive;
+                $totalVote += $cote;
+            } else {
+                $totalVote += $totalVoteByCandidat;
+                $cote = $sommeByTypePublic + $sommeByTypePrive;
+            }
+
+
+            $intervenant->cote = $cote;
+            $intervenant->nombreJury = $JuryByCandidat;
+            $intervenant->votePublic = $sommeByTypePublic;
+            $intervenant->votePrive = $sommeByTypePrive;
+
+            $intervenants[] = $intervenant;
+        }
+        
+        foreach ($intervenants as $intervenant) {
+            if ($totalVote != 0) {
+                $pourcentage = ($intervenant->cote * 100) / $totalVote;
+                $intervenant->pourcentage = round($pourcentage, 2);
+                $intervenant->ponderation = ($ponderationTotale * $JuryByCandidat);
+            } else {
+                $intervenant->pourcentage = 0;
+                $intervenant->ponderation = 0;
+            }
+        }
+
+
+        usort($intervenants, function ($a, $b) {
+            return $b->cote - $a->cote;
+        });
+        $phase = Phase::findOrFail($phase_id);
+        $evenement = Evenement::findOrFail($phase->evenement_id);
+        $evenement_nom = $evenement->nom;
+
+        //return response()->json($evenement_nom);
+
+        return Excel::download(new VoteExport($intervenants, $phase_nom, $evenement_nom), 'rapportVote.xlsx');
+    }
+}

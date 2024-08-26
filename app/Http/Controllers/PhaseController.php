@@ -302,6 +302,9 @@ class PhaseController extends Controller
                 }
                 return $a->type == 'prive' ? -1 : 1;
             });
+            usort($intervenants, function ($a, $b) {
+                return strcmp($a->noms, $b->noms);
+            });
             return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber'));
         } else {
             // module phase evaluation
