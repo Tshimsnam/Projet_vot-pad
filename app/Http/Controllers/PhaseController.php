@@ -225,9 +225,11 @@ class PhaseController extends Controller
             //recuperer les intervenats liés à une phase
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
             $intervenants = [];
+            $intervenantsMails = [];
             foreach ($intervenantPhases as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
                 $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenant->mail_send = $intervenantPhase->mail_send;
                 $intervenants[] = $intervenant;
             }
 
@@ -305,7 +307,14 @@ class PhaseController extends Controller
             usort($intervenants, function ($a, $b) {
                 return strcmp($a->noms, $b->noms);
             });
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber'));
+
+            foreach ($intervenants as $intervenant) {
+                $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
+                if ($intervenantPhaseMail->token == 0) {
+                    $intervenantsMails[] = $intervenant;
+                }
+            }
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails'));
         } else {
             // module phase evaluation
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
