@@ -227,10 +227,7 @@ class PhaseController extends Controller
             $intervenants = [];
             foreach ($intervenantPhases as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
-                $groupe = Groupe::find($intervenant->groupe_id);
                 $intervenant->intervenantPhaseId = $intervenantPhase->id;
-                $intervenant->nom_groupe = $groupe->nom;
-                $intervenant->image = $groupe->image;
                 $intervenants[] = $intervenant;
             }
 
@@ -314,6 +311,7 @@ class PhaseController extends Controller
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
                 if ($intervenant) {
                     $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                    $intervenant->coupon = $intervenantPhase->coupon;
                     $intervenants[] = $intervenant;
                 }
             }

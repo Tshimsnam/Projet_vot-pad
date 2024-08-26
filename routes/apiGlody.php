@@ -15,9 +15,9 @@ use App\Http\Middleware\JuryTokenIsValid;
 
 Route::post('/login', [SwaggerController::class ,'login']);
 Route::post('/register', [SwaggerController::class ,'register']);
-Route::apiResource('evenements', EvenementController::class, ['as'=>'api'])->middleware('auth:sanctum');
-Route::apiResource('criteres', CritereController::class, ['as'=>'api'])->middleware('auth:sanctum');
-Route::apiResource('intervenants', IntervenantController::class, ['as'=>'api'])->middleware('auth:sanctum');
+Route::apiResource('evenements', EvenementController::class, ['as'=>'api']);
+Route::apiResource('criteres', CritereController::class, ['as'=>'api']);
+Route::apiResource('intervenants', IntervenantController::class, ['as'=>'api']);
 Route::apiResource('phase-criteres', PhaseCritereController::class, ['as'=>'api']);
 Route::apiResource('intervenant-phases', IntervenantPhaseController::class, ['as'=>'api'])->middleware(JuryTokenIsValid::class);
 

@@ -12,7 +12,10 @@ class Intervenant extends Model
     use HasFactory;
     protected $fillable = [
         'email',
-        'coupon',
+        'noms',
+        'telephone',
+        'genre',
+        'image',
         'groupe_id'
     ];
     public function phases(): BelongsToMany

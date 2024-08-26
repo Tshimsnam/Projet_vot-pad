@@ -14,9 +14,9 @@
                 <div id="dropdownLeft"
                     class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-15 dark:bg-gray-700 dark:divide-gray-600">
                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLeftButton">
-                        <li class="hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md" style="margin-right: 0.2rem; margin-left: 0.2rem;">
-                            <a href="{{ route('phases.edit', $phase_id) }}"
-                                class="inline-flex items-center px-3 py-2 ">
+                        <li class="hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md"
+                            style="margin-right: 0.2rem; margin-left: 0.2rem;">
+                            <a href="{{ route('phases.edit', $phase_id) }}" class="inline-flex items-center px-3 py-2 ">
                                 Editer
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 pl-2">
@@ -523,6 +523,8 @@
                                     <th scope="col" class="px-6 py-2">N°</th>
                                     <th scope="col" class="py-2">Nom</th>
                                     <th scope="col" class="py-2">Email</th>
+                                    <th scope="col" class="py-2">Téléphone</th>
+                                    <th scope="col" class="py-2">Genre</th>
                                     <th scope="col" class="py-2">Image</th>
                                     <th scope="col" class="py-2">Action</th>
                                 </tr>
@@ -534,7 +536,13 @@
                                         <td class="px-6 py-2">{{ $intervenantPhases->firstItem() + $i }}</td>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->nom_groupe }}</th>
+                                            {{ $item->noms }}</th>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->telephone }}</th>
+                                        <th scope="row"
+                                            class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white uppercase">
+                                            {{ $item->genre }}</th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ $item->email }}</th>
@@ -557,7 +565,7 @@
                                                         clip-rule="evenodd" />
                                                 </svg>
                                             </a>
-                                            <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->nom_groupe }}', '{{ $item->email }}', '{{ asset($item->image) }}', '{{ $phase_id }}')"
+                                            <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
                                                 data-modal-target="edit-modal-candidat"
                                                 data-modal-toggle="edit-modal-candidat" href="#"
                                                 class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -1014,7 +1022,7 @@
 
         // section candidats
 
-        function editer(event, url, nomGroupe, email, image, phaseId) {
+        function editer(event, url, noms, email, image, phaseId, telephone, genre) {
             event.preventDefault();
             const form = document.querySelector('#edit-modal-candidat div form')
             form.setAttribute('action', url);
@@ -1024,10 +1032,15 @@
 
 
             const inputNom = document.querySelector('#edit-modal-candidat div form div #name')
-            inputNom.setAttribute('value', nomGroupe);
+            inputNom.setAttribute('value', noms);
 
             const inputEmail = document.querySelector('#edit-modal-candidat div form div #email')
             inputEmail.setAttribute('value', email);
+
+            const inputTelephone = document.querySelector('#edit-modal-candidat div form div #telephone')
+            inputTelephone.setAttribute('value', telephone);
+
+            const selectGenre = document.querySelector('#edit-modal-candidat div form div #genre')
 
         }
 
@@ -1077,7 +1090,7 @@
             }
 
         }
-        
+
         setTimeout(function() {
             let alerts = document.querySelectorAll('[role="alert"]');
             alerts.forEach(function(alert) {
@@ -1085,7 +1098,7 @@
                 alert.style.opacity = "0";
                 setTimeout(function() {
                     alert.remove();
-                }, 500); 
+                }, 500);
             });
         }, 5000);
     </script>
