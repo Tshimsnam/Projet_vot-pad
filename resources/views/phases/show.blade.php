@@ -5,7 +5,7 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
                 {{ __('Phase') }}
             </h2>
-            
+
         </div>
     </x-slot>
     <div class=" relative overflow-x-auto shadow-md" style="padding-top: 10px;">
@@ -33,13 +33,12 @@
                                     <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
                                         {{ __('Détails des Resultats') }}
                                     </h3>
-                                    @foreach ($phaseShow as $key => $item) 
-                                        
-                                        <a href="{{route('resultats.show',  $item->id )}}" class="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                    @foreach ($phaseShow as $key => $item)
+<a href="{{ route('resultats.show', $item->id) }}" class="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/>
                                         </svg>
                                         </a>
-                                    @endforeach
+@endforeach
                                 </div>
                             </div>
                         </div>
@@ -55,8 +54,28 @@
                                     {{ $item->id }} @endforeach)"
                                         data-modal-target="create-modal-interv" data-modal-toggle="create-modal-interv"
                                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-5 h-5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+                        <div class="bg-white dark:bg-gray-800 shadow">
+                            <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
+                                        {{ __('Send mails des candidats') }}
+                                    </h3>
+                                    <a href="#" onclick="sendMail(event, '{{ $phase_id }}')"
+                                        data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat"
+                                        class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -96,20 +115,28 @@
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-6 py-2">N°</th>
-                                    <th scope="col" class="py-2">Email</th>
-                                    <th scope="col" class="py-2">Coupon</th>
-
+                                    <th scope="col" class="px-6 py-2">Noms</th>
+                                    <th scope="col" class="px-6 py-2">Email</th>
+                                    <th scope="col" class="px-6 py-2">Télépone</th>
+                                    <th scope="col" class="px-6 py-2">Genre</th>
+                                    <th scope="col" class="px-6 py-2">Coupon</th>
+                                    <th scope="col" class="px-6 py-2">Is_use</th>
+                                    <th scope="col" class="px-6 py-2">Mail envoyé</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
+
                                 @foreach ($intervenants as $i => $item)
                                     <tr
                                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                         <td class="px-6 py-2">{{ $intervenantPhases->firstItem() + $i }}</td>
+                                        <td class="px-6 py-2">{{ $item->noms }}</td>
                                         <td class="px-6 py-2">{{ $item->email }}</td>
+                                        <td class="px-6 py-2">{{ $item->telephone }}</td>
+                                        <td class="px-6 py-2 uppercase">{{ $item->genre }}</td>
                                         <td class="px-6 py-2">{{ $item->coupon }}</td>
-                                        
+                                        <td class="px-6 py-2">{{ $item->is_use }}</td>
+                                        <td class="px-6 py-2">{{ $item->mail_send }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -120,26 +147,31 @@
                         <div class="bg-white dark:bg-gray-800 shadow">
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
-                                            <h3 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40"">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                    stroke="currentColor" class="w-5 h-5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                </svg>
-                                               
-                                                <!-- Modal ouverture regle de passage -->
-                                                <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="mx-1" type="button">
-                                                    Règle de passage
-                                                </button>
-                                            </h3>
-                                            @foreach ($phaseShow as $key => $item) 
-                                            
-                                                <a href="{{route('resultats.show',  $item->id )}}" class="gap-1 text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/>
-                                                    </svg>
-                                                    Voir le resultats
-                                                </a>
-                                            @endforeach
+                                    <h3
+                                        class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40"">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                        <!-- Modal ouverture regle de passage -->
+                                        <button data-modal-target="default-modal" data-modal-toggle="default-modal"
+                                            class="mx-1" type="button">
+                                            Règle de passage
+                                        </button>
+                                    </h3>
+                                    @foreach ($phaseShow as $key => $item)
+                                        <a href="{{ route('resultats.show', $item->id) }}"
+                                            class="gap-1 text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                                                viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                                                <path
+                                                    d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+                                            </svg>
+                                            Voir le resultats
+                                        </a>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -165,7 +197,8 @@
                     </svg>
                 </button>
             </h2>
-            <div id="accordion-open-question-body-1" class="hidden" aria-labelledby="accordion-open-question-heading-1">
+            <div id="accordion-open-question-body-1" class="hidden"
+                aria-labelledby="accordion-open-question-heading-1">
                 <div class="p-2 border border-b border-gray-200 dark:border-gray-700 dark:bg-gray-900">
                     <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
                         <div class="bg-white dark:bg-gray-800 shadow">
@@ -176,10 +209,11 @@
                                     </h3>
                                     <a onclick="insererQuestion(event, '{{ route('importQuestion') }}', @foreach ($phaseShow as $key => $item) 
                                     {{ $item->id }} @endforeach)"
-                                        data-modal-target="create-modal-question" data-modal-toggle="create-modal-question"
+                                        data-modal-target="create-modal-question"
+                                        data-modal-toggle="create-modal-question"
                                         class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-5 h-5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -193,8 +227,8 @@
                             <div id="alert-3"
                                 class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
                                 role="alert">
-                                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                                 </svg>
@@ -228,28 +262,26 @@
                                 @foreach ($questionPhasePagnation as $key => $item)
                                     <tr
                                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                        <td class="px-6 py-2">{{$key+1}}</td>
+                                        <td class="px-6 py-2">{{ $key + 1 }}</td>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ $item->question->question }}
                                         </th>
-                                        <td class="px-6 py-2">{{$item->ponderation}}</td>
-                                        
-                                        
+                                        <td class="px-6 py-2">{{ $item->ponderation }}</td>
+
+
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                         <div class="p-2">
                             <a href="{{ route('phase_question_detatil', $phase_id) }}"
-                                            class="inline-flex items-center text-lg text-blue-600 dark:text-blue-500 hover:underline">
-                                            Voir toutes les questions
-                                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 14 10">
-                                    <path stroke="currentColor" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2"
-                                                d="M1 5h12m0 0L9 1m4 4L9 9" />
+                                class="inline-flex items-center text-lg text-blue-600 dark:text-blue-500 hover:underline">
+                                Voir toutes les questions
+                                <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
                                 </svg>
                             </a>
                         </div>
@@ -392,58 +424,60 @@
                             </ul>
                             <div
                                 class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full grid gap-6 grid-cols-1 lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1">
-                                <form id="globalform" class="w-full mx-auto grid grid-cols-1 gap-5 sm:grid-cols-1 lg:grid-cols-2 md:grid-cols-2"
+                                <form id="globalform"
+                                    class="w-full mx-auto grid grid-cols-1 gap-5 sm:grid-cols-1 lg:grid-cols-2 md:grid-cols-2"
                                     action="{{ route('questions.store') }}" method="post">
                                     <div class ="grid">
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Ajouter une
-                                        nouvelle question</h3>
-                                    <p class="mb-2">Une question a au minimum 2 asserions et chaque assertion doit
-                                        avoir une ponderation</p>
-                                    @csrf
-                                    @method('post')
-                                    @foreach ($phaseShow as $key => $item)
-                                        <input type="text" value="{{ $item->id }}" name="phase_id"
-                                            class="hidden">
-                                    @endforeach
-                                    
-                                    <div class="mb-5">
-                                        <label for="email"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Question</label>
-                                        <input type="text" id="email" name="question"
-                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                            required />
-                                    </div>
-                                    <div class="relative mb-5">
-                                        <label for="account-id"
-                                            class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">Ponderation
-                                            pour cette phase</label>
-                                        <input id="account-id" type="number" min="1" max="100"
-                                            name="ponderation"
-                                            class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    </div>
-                                    <div class="mb-5">
-                                        <label
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
-                                            d'assertion et COCHEZ LA BONNE REPONSE :</label>
-                                        <input type="number" id="N" min="2" max="10"
-                                            step="1" style="width:4em"
-                                            class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            onchange="Chbx();return false;" required>
-                                    </div>
-                                    <button type="submit"
-                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enregistrer
-                                    </button>
+                                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Ajouter une
+                                            nouvelle question</h3>
+                                        <p class="mb-2">Une question a au minimum 2 asserions et chaque assertion
+                                            doit
+                                            avoir une ponderation</p>
+                                        @csrf
+                                        @method('post')
+                                        @foreach ($phaseShow as $key => $item)
+                                            <input type="text" value="{{ $item->id }}" name="phase_id"
+                                                class="hidden">
+                                        @endforeach
+
+                                        <div class="mb-5">
+                                            <label for="email"
+                                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Question</label>
+                                            <input type="text" id="email" name="question"
+                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                                required />
+                                        </div>
+                                        <div class="relative mb-5">
+                                            <label for="account-id"
+                                                class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">Ponderation
+                                                pour cette phase</label>
+                                            <input id="account-id" type="number" min="1" max="100"
+                                                name="ponderation"
+                                                class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        </div>
+                                        <div class="mb-5">
+                                            <label
+                                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
+                                                d'assertion et COCHEZ LA BONNE REPONSE :</label>
+                                            <input type="number" id="N" min="2" max="10"
+                                                step="1" style="width:4em"
+                                                class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                onchange="Chbx();return false;" required>
+                                        </div>
+                                        <button type="submit"
+                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enregistrer
+                                        </button>
 
                                     </div>
 
 
 
                                     <div id="InputFields"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                     </div>
 
 
-                                    
+
 
 
                                 </form>
@@ -494,40 +528,52 @@
         </div>
     </div>
     <!-- Main modal regle de passage-->
-<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <form action="{{route('close.phase')}}" method="post" class="relative p-4 w-full max-w-2xl max-h-full">
-        @csrf
-        @method('post')
-        <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <!-- Modal header -->
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Passage à la phase suivante
-                </h3>
-                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
+    <div id="default-modal" tabindex="-1" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <form action="{{ route('close.phase') }}" method="post" class="relative p-4 w-full max-w-2xl max-h-full">
+            @csrf
+            @method('post')
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        Passage à la phase suivante
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="default-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="mb-5 m-5">
+                    <label for="nbr_max" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
+                        de meilleur à retenir</label>
+                    <input type="number" name="nbr_retenu" id="nbr_max"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="" required />
+                </div>
+                <input type="hidden" name="phase_id" value="{{ $phase_id }}">
+                <!-- Modal footer -->
+                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                    <button data-modal-hide="default-modal" type="submit"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Envoyer
+                        à la phase suivante</button>
+                    <button data-modal-hide="default-modal" type="button"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
+                </div>
             </div>
-            <!-- Modal body -->
-            <div class="mb-5 m-5">
-                <label for="nbr_max" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de meilleur à retenir</label>
-                <input type="number" name="nbr_retenu" id="nbr_max" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required />
-            </div>
-            <input type="hidden" name="phase_id" value="{{$phase_id}}" >
-            <!-- Modal footer -->
-            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                <button data-modal-hide="default-modal" type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Envoyer à la phase suivante</button>
-                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
-            </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
     <x-intervenants.create />
     <x-questions.create />
+    <x-mails.send />
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
     <script>
@@ -571,11 +617,12 @@
                 var radioPonderationcheck = document.createElement("input");
                 radioPonderationcheck.type = "radio";
                 radioPonderationcheck.name = `bonneReponse`;
-                radioPonderationcheck.className ="m-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                radioPonderationcheck.value =  `${i}`;
+                radioPonderationcheck.className =
+                    "m-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                radioPonderationcheck.value = `${i}`;
 
                 var divAssetionPonde = document.createElement("div");
-                    divAssetionPonde.className="flex items-center rounded dark:border-gray-700";
+                divAssetionPonde.className = "flex items-center rounded dark:border-gray-700";
                 divAssetionPonde.appendChild(inputAssertion)
                 divAssetionPonde.appendChild(radioPonderationcheck)
                 divAssetionPonde.appendChild(inputPonderation)
@@ -591,7 +638,6 @@
             }
         }
         Chbx();
-
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -648,6 +694,49 @@
 
             const inputPhaseId = document.querySelector('#create-modal-question form #phaseId')
             inputPhaseId.setAttribute('value', phaseId);
+        }
+
+        function sendMail(event, phaseId) {
+            event.preventDefault();
+            const form = document.querySelector('#mail-modal-candidat form')
+            form.setAttribute('action', `{{ route('sendMailMany') }}`);
+
+            const phase = document.querySelector('#mail-modal-candidat form div #phaseId')
+            phase.setAttribute('value', phaseId);
+
+            const candFirstSelect = document.querySelector('#mail-modal-candidat form div #candFirst')
+            const candLastSelect = document.querySelector('#mail-modal-candidat form div #candLast')
+
+            candFirstSelect.innerHTML = '';
+            candLastSelect.innerHTML = '';
+
+            const intervenants = @json($intervenantsMails);
+
+            function populateCandLastSelect(intervenants, selectedId) {
+                candLastSelect.innerHTML = '';
+
+                const firstIndex = intervenants.findIndex(intervenant => intervenant.id === selectedId);
+                const lastIntervenants = intervenants.slice(firstIndex);
+
+                lastIntervenants.forEach(intervenant => {
+                    const option = document.createElement('option');
+                    option.value = intervenant.id;
+                    option.text = intervenant.noms;
+                    candLastSelect.appendChild(option);
+                });
+            }
+
+            intervenants.forEach(intervenant => {
+                const option = document.createElement('option');
+                option.value = intervenant.id;
+                option.text = intervenant.noms;
+                candFirstSelect.appendChild(option);
+            });
+
+            candFirstSelect.addEventListener('change', (event) => {
+                const selectedId = parseInt(event.target.value, 10);
+                populateCandLastSelect(intervenants, selectedId);
+            });
         }
     </script>
 </x-app-layout>
