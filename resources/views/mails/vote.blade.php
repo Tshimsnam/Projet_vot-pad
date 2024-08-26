@@ -5,12 +5,9 @@
         <h2 class="text-2xl">{{ ucwords($noms) }}</h2>
         <p class="">
             Nous avons le plaisir de vous informer que vous avez été sélectionné(e) pour la prochaine étape de votre
-            candidature qui est une évaluation (test de niveau).
+            candidature qui est une interview.
             <br>
-            Le test de niveau se déroulera le {{ $date }} à {{ $heure }} à l'Orange Digital Center.
-        </p>
-        <p class="pb-3">
-            Pour accéder au test, veuillez présenter votre coupon : <strong>{{ $coupon }}</strong>
+            L'interview se déroulera le {{ $date }} à {{ $heure }} à l'Orange Digital Center.
         </p>
         <p>
             Nous comptons sur votre présence.

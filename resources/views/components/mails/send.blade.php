@@ -21,7 +21,7 @@
             <div class=" mr-5" style="padding-left: 20px">
                 @csrf
                 <input type="hidden" name="phase" id="phaseId" value="">
-                <input type="hidden" name="isVote" id="isVote" value="1">
+                <input type="hidden" name="isVote" id="isVote" value="0">
                 <div class="mb-5">
                     <label for="objet" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Objet du
                         mail</label>

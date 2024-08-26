@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CritereController;
+use App\Http\Controllers\EvaluationExcelController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\IntervenantController;
 use App\Http\Controllers\IntervenantPhaseController;
@@ -39,3 +40,4 @@ Route::post('/sendsmails',  [IntervenantPhaseController::class, 'sendMailMany'])
 Route::get('/intro', [IntervenantPhaseController::class, 'intro']);
 
 Route::get('/vote-excel/{phase_id}', [VoteExcelController::class, 'export_excel'])->name('export_vote');
+Route::get('/evaluation-excel/{phase_id}', [EvaluationExcelController::class, 'export_excel'])->name('export_evaluation');
