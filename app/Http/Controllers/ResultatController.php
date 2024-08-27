@@ -82,6 +82,11 @@ class ResultatController extends Controller
                 foreach($intervants as $key => $value){
                     $point_inter = 0;
                     $cote = Reponse::where('phase_id','=',$phase[0]->id)->where('intervenant_id','=',$value->id)->get();
+                    if(count($cote)>0){
+                        $msg = 1;
+                    }else{
+                        $msg = null;
+                    }
                     foreach($cote as $k => $v){
                         $point_inter += $v->cote;
                     }
@@ -93,6 +98,7 @@ class ResultatController extends Controller
                     $tableau['id'] = $value->id;
                     $tableau['email'] = $value->email;
                     $tableau['pourcentage'] = $pourcentage;
+                    $tableau['evaluee'] = $msg;
                     array_push($intervenant_resultat, $tableau);
                     
                 }

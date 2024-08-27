@@ -9,6 +9,7 @@ use App\Models\Assertion;
 use App\Models\Question;
 use Illuminate\Support\Facades\DB;
 use App\Models\QuestionPhase;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
 
 class ReponseController extends Controller
@@ -45,7 +46,7 @@ class ReponseController extends Controller
      */
     public function create()
     {
-        //
+        return view('reponses.index');
     }
 
     /**
@@ -53,19 +54,20 @@ class ReponseController extends Controller
      */
     public function store(StoreReponseRequest $request)
     {
+        $message ="Merci d'avoir répondu et Felicitation!";
         
-        // dd($request->all());
         $reponse = $request->id_collection_keyQuestion_valAssertion;
         $intervenant = $request->intervenant_id;
         $phase = $request->phase_id;
         $user_existe = DB::table('reponses')
                     ->where('intervenant_id',$intervenant)
                     ->where('phase_id',$phase)
-                    ->count();     
+                    ->count();
         if($user_existe>0){
             session(['phase' => $request->phase_id,
                     'intervenant'=>$request->intervenant_id]);
-            return Redirect::back()->with('success',"Merci d'avoir participé !");
+            $message ="Merci d'avoir participé !";
+            return view('intervenants.logout', compact('message'));
         }else{
                           
             if(!empty($reponse)){
@@ -103,7 +105,7 @@ class ReponseController extends Controller
                     //$cote=round($Pdq*$Pda/$maxAssertion,2); prend 2 rangs apres la virgule
                     $cote=($Pda>0)?$Pdq:0;//la cote est egal au ponderation de la question si la ponderation de l'assertion est 1 ou >0
 
-                    $assertion_id = $ponderationAssertionChoisie[0]->ponderation;
+                    $assertion_id = $ponderationAssertionChoisie[0]->id;
                     $question_phase_id=$ponderationQuestion[0]->id;
                     //sauvegarde dans la base de donnees
                     
@@ -117,13 +119,12 @@ class ReponseController extends Controller
                 }
                 session(['phase' => $request->phase_id,
                         'intervenant'=>$request->intervenant_id]);
-                $request->session()->flush();
-                return redirect()->route('form-authenticate');
-                // return Redirect::back()->with('success',"Merci d'avoir répondu et Felicitation!");
+                 return view('intervenants.logout', compact('message'));
             }else{
                 session(['phase' => $request->phase_id,
                         'intervenant'=>$request->intervenant_id]);
-                return Redirect::back()->with('success',"Merci d'avoir participé !");
+                $message ="Merci d'avoir participé !";
+                return view('intervenants.logout', compact('message'));
             }
         }
     }

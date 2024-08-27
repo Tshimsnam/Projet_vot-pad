@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Spatie\SimpleExcel\SimpleExcelReader;
 use App\Http\Requests\StoreIntervenantRequest;
 use App\Http\Requests\UpdateIntervenantRequest;
+use Illuminate\Support\Facades\Cookie;
 
 class IntervenantController extends Controller
 {
@@ -261,6 +262,8 @@ class IntervenantController extends Controller
                     Session::put('phase_id', $IdPhase);
                     Session::put('intervenant_id', $IdIntervenant);
 
+                    // dd(session('IdPhase'));
+
                     return to_route('reponses.index')->with(compact('phase', 'intervenant'));
                 } else {
                     $intervenantPhaseCoupon = $intervenantPhase->coupon;
@@ -275,9 +278,14 @@ class IntervenantController extends Controller
                     Session::put('phase_id', $IdPhase);
                     Session::put('intervenant_id', $IdIntervenant);
 
-                    return to_route('reponses.index')->with(compact('phase', 'intervenant'));
+                    return to_route('reponses.create')->with(compact('phase', 'intervenant'));
                 }
             }
         }
+    }
+
+    public function logout(Request $request){
+        $request->session()->flush();
+        return redirect()->route('form-authenticate');
     }
 }
