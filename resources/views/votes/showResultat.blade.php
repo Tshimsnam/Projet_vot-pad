@@ -1,6 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
+        <div class="">
+            <h3 class="text-2xl font-extrabold dark:text-white">
+                {{ $evenement->nom }}
+            </h3>
+            <h3 class="text-1xl font-extrabold dark:text-white">
+
+                {{ $phase->nom }}
+            </h3>
+            <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
+                {{ $phase->decription }}
+            </p>
+        </div>
+        <div class="flex justify-between items-center pt-5">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Résultat des votes') }}
             </h2>

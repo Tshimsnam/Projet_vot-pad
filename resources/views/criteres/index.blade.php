@@ -494,8 +494,8 @@
                         <div class="bg-white dark:bg-gray-800 shadow">
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
-                                    <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
-                                        {{ __('Send mails des candidats') }}
+                                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 leading-tight">
+                                        {{ __('Envoyer mails aux candidats') }}
                                     </h3>
                                     <a href="#" onclick="sendMail(event, '{{ $phase_id }}')"
                                         data-modal-target="mail-modal-candidat"
@@ -576,7 +576,7 @@
                                             {{ $item->mail_send }}</th>
                                         <th scope="row"
                                             class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <img width="40" height="40" class="img img-responsive"
+                                            <img width="40" height="40" class="img img-responsive border-2"
                                                 src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
                                                 alt="">
                                         </th>

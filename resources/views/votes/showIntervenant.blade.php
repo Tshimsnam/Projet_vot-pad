@@ -1,10 +1,10 @@
 @extends('layouts.template')
 @section('content')
     <section id="voteUser" class="px-2 md:px-8">
-        <div class="mb-5 pt-8 flex justify-center">
+        <div class="mb-5 pt-5 flex justify-center">
             <h2
-                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold text-white">
-                <img class="w-12 h-12" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
+                class="mb-4 text-2xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
+                <img class="w-8 h-8" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
                     alt="logo">
                 otePad2
             </h2>
@@ -14,8 +14,8 @@
                 src="{{ $candidat->image && file_exists(public_path($candidat->image)) ? asset($candidat->image) : asset('images/profil.jpg') }}"
                 alt="">
             <div class="px-5">
-                <h2 class="text-white text-4xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}</h2>
-                <p class="text-sm text-white truncate dark:text-white">
+                <h2 class="text-4xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}</h2>
+                <p class="text-sm truncate dark:text-white">
                     {{ $candidat->email }}
                 </p>
             </div>
@@ -24,17 +24,17 @@
             @csrf
             @foreach ($criteres as $key => $item)
                 <div class="px-3 w-full space-y-2">
-                    <div class="px-5 py-3 rounded-xl border bg-white bg-opacity-90 space-y-3 drop-shadow-xl">
+                    <div class="px-5 py-3 rounded-xl border bg-white bg-opacity-95 space-y-3 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
                         <div class="">
-                            <h1 class="text-xl font-bold">{{ $item->libelle }}</h1>
-                            <p class="text-sm font-thin">{{ $item->description }}
+                            <h1 class="text-xl font-bold dark:text-white">{{ $item->libelle }}</h1>
+                            <p class="text-sm font-thin dark:text-white">{{ $item->description }}
                             </p>
                         </div>
                         <div class="relative">
                             <label for="labels-range-input" class="sr-only">Labels range</label>
                             <input id="labels-range-input" type="range" value="0" min="0" name="cote"
                                 max="{{ $item->ponderation }}"
-                                class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                                class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer dark:bg-gray-100">
                             <div class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 <span
                                     class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
@@ -65,14 +65,14 @@
 
                         </div>
                         <div class="flex justify-between items-center">
-                            <span id="score-{{ $item->id }}" class="text-xl font-extrabold pt-5">COTE : 0</span>
+                            <span id="score-{{ $item->id }}" class="text-xl font-extrabold pt-5 dark:text-white">COTE : 0</span>
                         </div>
                     </div>
                 </div>
             @endforeach
             <div id="divButton" class="flex justify-between px-5">
                 <button type="button" data-modal-target="valid-modal" data-modal-toggle="valid-modal"
-                    class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Valider</button>
+                    class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-100 dark:hover:bg-gray-300 dark:focus:ring-gray-300 dark:border-gray-100 dark:text-gray-900">Valider</button>
             </div>
 
         </form>
@@ -110,6 +110,25 @@
         </div>
     </section>
     <script>
+        function getDarkMode() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
+        // Applique le style en fonction du mode du navigateur
+        function applyDarkMode() {
+            const voteUser = document.getElementById('voteUser');
+            if (getDarkMode()) {
+                voteUser.classList.remove('light');
+                voteUser.classList.add('dark');
+            } else {
+                voteUser.classList.remove('dark');
+                voteUser.classList.add('light');
+            }
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyDarkMode);
+        applyDarkMode();
+
         const rangeInputs = document.querySelectorAll('input[type="range"]');
         const scoreSpans = document.querySelectorAll('span[id^="score-"]');
         const urlParams = window.location;
@@ -117,7 +136,7 @@
         rangeInputs.forEach((input, index) => {
             input.addEventListener('input', function() {
 
-                scoreSpans[index].textContent = 'Score : ' + input.value;
+                scoreSpans[index].textContent = 'COTE : ' + input.value;
             });
         });
 

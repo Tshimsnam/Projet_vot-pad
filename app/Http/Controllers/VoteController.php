@@ -205,10 +205,9 @@ class VoteController extends Controller
             $ponderationJuryPrive = $juryPhase->ponderation_prive;
             $typeVote = $juryPhase->type;
         } else {
-            $ponderationJuryPublic = 0; 
-            $ponderationJuryPrive = 0; 
-            $typeVote = 'prive et public'; 
-
+            $ponderationJuryPublic = 0;
+            $ponderationJuryPrive = 0;
+            $typeVote = 'prive et public';
         }
 
         $intervenants = [];
@@ -293,7 +292,10 @@ class VoteController extends Controller
         usort($intervenants, function ($a, $b) {
             return $b->cote - $a->cote;
         });
+
+        $phase = Phase::findOrFail($phase_id);
+        $evenement = Evenement::findOrFail($phase->evenement_id);
         //return response()->json($intervenants);
-        return view('votes.showResultat', compact('intervenants', 'totalVote', 'ponderationJuryPublic', 'ponderationJuryPrive', 'typeVote', 'phase_id'));
+        return view('votes.showResultat', compact('intervenants', 'totalVote', 'ponderationJuryPublic', 'ponderationJuryPrive', 'typeVote', 'phase_id', 'evenement', 'phase'));
     }
 }
