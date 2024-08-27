@@ -1,21 +1,21 @@
 @extends('layouts.template')
 
 @section('content')
-    <section id="loginUser" class="bg-cover bg-center">
+    <section id="loginUser" class="bg-cover bg-center bg-white dark:bg-gray-900">
         <div class="flex flex-col items-center justify-center min-h-screen px-6 py-8 mx-auto lg:py-0">
             <h2
-                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold text-white">
-                <img class="w-8 h-8 mr-2"
-                    src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg" alt="logo">
-                VotePad2
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white ">
+                <img class="w-10 h-10" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
+                    alt="logo">
+                otePad2
             </h2>
-            <div class="container">
+            <div class="container bg-white dark:bg-gray-900 opacity-95 shadow-md overflow-hidden sm:rounded-lg ">
                 <div class="forms-container">
                     <div class="signin-signup">
                         <form class="sign-in-form" action="{{ route('authenticate') }}" autocomplete="off" method="post">
                             @csrf
                             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                                <h2 class="text-2xl font-bold leading-tight tracking-tight text-white">
+                                <h2 class="text-2xl font-bold leading-tight tracking-tight dark:text-white">
                                     Login Evaluation
                                 </h2>
                                 @if (session('unsuccess'))
@@ -33,20 +33,20 @@
                                 @endif
                                 <div class="mb-5">
                                     <label for="email"
-                                        class="block mb-2 text-sm font-medium text-white dark:text-white">Email</label>
-                                    <input type="email" id="email" name="email"
+                                        class="block mb-2 text-sm font-medium dark:text-white">Email</label>
+                                    <input type="email" autocomplete="off" id="email" name="email"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-white-500 focus:border-white-500 block w-full p-2.5"
-                                        placeholder="names@gmail.com" autocomplete="off" required />
+                                        placeholder="names@gmail.com" required />
                                 </div>
                                 <div class="mb-5">
                                     <label for="coupon"
-                                        class="block mb-2 text-sm font-medium text-white dark:text-white">Coupon</label>
-                                    <input type="coupon" id="coupon" name="coupon"
+                                        class="block mb-2 text-sm font-medium dark:text-white">Coupon</label>
+                                    <input type="coupon" autocomplete="off" id="coupon" name="coupon"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
                                         required />
                                 </div>
                                 <button type="submit"
-                                    class="text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-500 font-bold rounded-lg text-sm w-full sm:w-40 h-10 text-center">
+                                    class="text-white bg-gray-900 border border-gray-700 hover:bg-gray-800 hover:border-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-500 font-bold rounded-lg text-sm w-full sm:w-40 h-10 text-center dark:bg-white dark:text-black dark:border-gray-300 dark:hover:bg-gray-200 dark:hover:border-gray-200 dark:text-gray-900 dark:border dark:border-red">
                                     Login
                                 </button>
 
@@ -56,7 +56,7 @@
                             method="post">
                             @csrf
                             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                                <h2 class="text-2xl font-bold leading-tight tracking-tight text-white">
+                                <h2 class="text-2xl font-bold leading-tight tracking-tight dark:text-white">
                                     Vote Login
                                 </h2>
                                 @if (session('unsuccessJury'))
@@ -74,13 +74,13 @@
                                 @endif
                                 <div class="mb-5">
                                     <label for="coupon"
-                                        class="block mb-2 text-sm font-medium text-white dark:text-white">Coupon</label>
+                                        class="block mb-2 text-sm font-medium dark:text-white">Coupon</label>
                                     <input type="coupon" id="coupon" name="coupon"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
                                         required />
                                 </div>
                                 <button type="submit"
-                                    class="text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-500 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+                                    class="text-white bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-500 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-white dark:text-black dark:hover:bg-gray-200">
                                     Login
                                 </button>
                         </form>
@@ -95,7 +95,9 @@
                                 Cette section est dédiée à l'authentification des jurys.<br> Elle gère les processus de
                                 vérification et de validation des informations fournies par les jurés.
                             </p>
-                            <button class="btn transparent" id="sign-up-btn">
+                            <button
+                                class="btn transparent text-white bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-500 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                                id="sign-up-btn">
                                 Vote
                             </button>
                         </div>
@@ -109,7 +111,9 @@
                                 l'identité des candidats pour s'assurer qu'ils sont éligibles à participer au processus
                                 d'évaluation.
                             </p>
-                            <button class="btn transparent" id="sign-in-btn">
+                            <button
+                                class="btn transparent text-white bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-500 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                                id="sign-in-btn">
                                 evaluation
                             </button>
                         </div>
@@ -117,6 +121,25 @@
                 </div>
 
                 <script>
+                    function getDarkMode() {
+                        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    }
+
+                    // Applique le style en fonction du mode du navigateur
+                    function applyDarkMode() {
+                        const loginUser = document.getElementById('loginUser');
+                        if (getDarkMode()) {
+                            loginUser.classList.remove('light');
+                            loginUser.classList.add('dark');
+                        } else {
+                            loginUser.classList.remove('dark');
+                            loginUser.classList.add('light');
+                        }
+                    }
+
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyDarkMode);
+                    applyDarkMode();
+
                     document.addEventListener("DOMContentLoaded", () => {
                         const sign_in_btn = document.querySelector("#sign-in-btn");
                         const sign_up_btn = document.querySelector("#sign-up-btn");

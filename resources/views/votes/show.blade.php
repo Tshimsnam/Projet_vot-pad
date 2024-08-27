@@ -1,24 +1,25 @@
 @extends('layouts.template')
 @section('content')
     <section id="voteUser" class="px-4 md:px-8">
-        <div class="mb-5 pt-8 flex justify-center">
+        <div class="mb-5 pt-5 flex justify-center">
             <h2
-                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold text-white">
-                <img class="w-12 h-12" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
+                class="mb-4 text-2xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
+                <img class="w-8 h-8" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
                     alt="logo">
                 otePad2
             </h2>
         </div>
-        <h2 class="mb-1 text-4xl font-extrabold text-white">{{ $evenement->nom }}</h2>
-        <h2 class="mb-3 text-xl font-extrabold text-white">{{ $phaseAndSpeaker->nom }}</h2>
-        <p class="text-sm font-normal text-white">{{ $phaseAndSpeaker->description }}</p>
+        <h2 class="mb-1 text-4xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2>
+        <h2 class="mb-3 text-xl font-extrabold dark:text-white">{{ $phaseAndSpeaker->nom }}</h2>
+        {{-- <p class="text-sm font-normal text-white">{{ $phaseAndSpeaker->description }}</p> --}}
         <div class="py-5">
             <div class="text-center mb-4">
-                <h3 class="text-2xl font-bold leading-none text-white uppercase">Les candidats</h3>
+                <h3 class="text-2xl font-bold leading-none dark:text-white uppercase">Les candidats</h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach ($intervenants as $item)
-                    <div class="bg-white bg-opacity-90 border border-gray-300 border-opacity-90 rounded-lg shadow sm:p-4">
+                    <div
+                        class="bg-gray-200 bg-opacity-95 border border-gray-300 border-opacity-90 rounded-lg shadow sm:p-4 dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
                         <div class="flex items-center space-x-4 rtl:space-x-reverse p-2 md:p-0">
                             <div class="flex-shrink-0">
                                 <img class="w-16 h-16 rounded-full border border-gray-300"
@@ -26,21 +27,21 @@
                                     alt="">
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-xl font-medium uppercase text-gray-900 truncate dark:text-black">
+                                <p class="text-xl font-medium uppercase text-gray-900 truncate dark:text-white">
                                     {{ $item->noms }}
                                 </p>
-                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                <p class="text-sm text-gray-500 truncate dark:text-gray-300">
                                     {{ $item->email }}
                                 </p>
                                 <h3 id="cote-{{ $item->id }}"
-                                    class="inline-flex items-center text-base font-semibold text-gray-900">
+                                    class="inline-flex items-center text-base font-semibold dark:text-white">
                                 </h3>
                             </div>
                             <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                     <a id="vote-{{ $item->id }}"
                                         href="{{ route('showIntervenant', [$phaseAndSpeaker->slug, 'candidat' => $item->id, 'jury' => $jury_id, 'nombreUser' => $nombreUser, 'evenement' => $evenement]) }}"
-                                        class="px-3 text-sm gap-3 font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 focus:font-medium rounded-lg focus:text-sm focus: py-2.5 me-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                        class="px-3 text-sm gap-3 font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 focus:font-medium rounded-lg focus:text-sm focus: py-2.5 me-2 dark:bg-gray-100 dark:hover:bg-gray-300 focus:outline-none dark:focus:ring-gray-800 dark:text-gray-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
                                             class="size-6">
                                             <path fill-rule="evenodd"
@@ -50,7 +51,7 @@
                                     </a>
                                     <a id="icon-{{ $item->id }}"
                                         href="{{ route('showIntervenant', [$phaseAndSpeaker->slug, 'candidat' => $item->id, 'jury' => $jury_id, 'nombreUser' => $nombreUser, 'evenement' => $evenement]) }}"
-                                        class="px-3 text-sm gap-3 font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 focus:font-medium rounded-lg focus:text-sm focus: py-2.5 me-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+                                        class="px-3 text-sm gap-3 font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 focus:font-medium rounded-lg focus:text-sm focus: py-2.5 me-2 dark:bg-gray-100 dark:hover:bg-gray-300 focus:outline-none dark:focus:ring-gray-800 dark:text-gray-800"
                                         style="display: none">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                             class="size-5">
@@ -121,6 +122,25 @@
     </section>
 
     <script>
+        function getDarkMode() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
+        // Applique le style en fonction du mode du navigateur
+        function applyDarkMode() {
+            const voteUser = document.getElementById('voteUser');
+            if (getDarkMode()) {
+                voteUser.classList.remove('light');
+                voteUser.classList.add('dark');
+            } else {
+                voteUser.classList.remove('dark');
+                voteUser.classList.add('light');
+            }
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyDarkMode);
+        applyDarkMode();
+
         function getDataFromLocalStorage(phaseId, candidats_id, jury_id, criteresIds, nombreUser) {
             let data = [];
             let somme = Array(candidats_id.length).fill(0);
