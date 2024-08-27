@@ -18,7 +18,7 @@ class JuryTokenIsValid
             $token = $request->cookie('juryToken');
             
             if (empty($token)) {
-                throw new AuthorizationException('Acces non autorisé');
+                return redirect()->route('form-authenticate');
             }
         } else {
             $token = $matches[1];
@@ -29,7 +29,7 @@ class JuryTokenIsValid
             ->exists();
 
         if (!$validToken) {
-            throw new AuthorizationException('Acces non autorisé');
+            return redirect()->route('form-authenticate');
         }
         
         return $next($request);

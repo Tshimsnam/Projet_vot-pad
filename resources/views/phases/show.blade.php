@@ -69,7 +69,7 @@
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
                                 <div class="flex justify-between items-center">
                                     <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
-                                        {{ __('Send mails des candidats') }}
+                                        {{ __('Envoyer les mails aux candidats') }}
                                     </h3>
                                     <a href="#" onclick="sendMail(event, '{{ $phase_id }}')"
                                         data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat"
