@@ -19,6 +19,6 @@ Route::apiResource('evenements', EvenementController::class, ['as'=>'api']);
 Route::apiResource('criteres', CritereController::class, ['as'=>'api']);
 Route::apiResource('intervenants', IntervenantController::class, ['as'=>'api']);
 Route::apiResource('phase-criteres', PhaseCritereController::class, ['as'=>'api']);
-Route::apiResource('intervenant-phases', IntervenantPhaseController::class, ['as'=>'api'])->middleware(JuryTokenIsValid::class);
+Route::apiResource('intervenant-phases', IntervenantPhaseController::class, ['as'=>'api']);//->middleware(JuryTokenIsValid::class);
 
 Route::post('/intervenants-authenticate', [IntervenantController::class, 'authenticate'])->name('authenticate');
