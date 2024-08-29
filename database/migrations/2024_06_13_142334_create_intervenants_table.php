@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('email');
             $table->string('token')->default('0');
-            $table->foreignId('groupe_id')->default(0)->constrained()
+            $table->foreignId('groupe_id')->nullable()->constrained()
                   ->onDelete('no action')
                   ->onUpdate('cascade');
             $table->timestamps(); 

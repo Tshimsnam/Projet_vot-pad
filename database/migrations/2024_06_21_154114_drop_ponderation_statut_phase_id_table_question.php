@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('questions', function (Blueprint $table) {
             $table->dropColumn('statut');
             $table->dropColumn('ponderation');
+            $table->dropForeign(['phase_id']);
             $table->dropColumn('phase_id');
         });
     }

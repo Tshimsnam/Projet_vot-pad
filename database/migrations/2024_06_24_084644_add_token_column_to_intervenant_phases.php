@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('intervenant_phases', function (Blueprint $table) {
-            $table->string('token')->after('coupon')->default('0');
+            $table->string('token')->after('coupon')->nullable();
         });
     }
 
