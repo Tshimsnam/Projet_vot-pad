@@ -310,7 +310,7 @@ class PhaseController extends Controller
 
             foreach ($intervenants as $intervenant) {
                 $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
-                if ($intervenantPhaseMail->token == 0) {
+                if ($intervenantPhaseMail->token == 0 && $intervenantPhaseMail->mail_send == 0) {
                     $intervenantsMails[] = $intervenant;
                 }
             }
@@ -340,7 +340,7 @@ class PhaseController extends Controller
 
             foreach ($intervenants as $intervenant) {
                 $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
-                if ($intervenantPhaseMail->token == 0) {
+                if ($intervenantPhaseMail->token == 0 && $intervenantPhaseMail->mail_send == 0) {
                     $intervenantsMails[] = $intervenant;
                 }
             }

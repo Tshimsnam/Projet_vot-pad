@@ -30,17 +30,20 @@
                         placeholder="Saisissez l'objet du mail" required />
                 </div>
                 <div id="">
-                    <label for="candFirst"
-                        class="block mb-2  text-sm font-medium text-gray-900 dark:text-white">Envoyer les coupons de :</label>
+                    <label for="candFirst" class="block mb-2  text-sm font-medium text-gray-900 dark:text-white">Envoyer
+                        les coupons de :</label>
                     <select id="candFirst" name="candFirst"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        onchange="countSelectedIntervenants()">
                     </select>
                 </div>
                 <div id="">
                     <label for="candLast"
-                        class="block mb-2 pt-2  text-sm font-medium text-gray-900 dark:text-white">à :</label>
+                        class="block mb-2 pt-2  text-sm font-medium text-gray-900 dark:text-white">Jusqu'au candidat
+                        (Candidats sélectionnés : <span id="selectedCount">0</span>)</label>
                     <select id="candLast" name="candLast"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        onchange="countSelectedIntervenants()">
                     </select>
                 </div>
                 <div id="">
@@ -62,21 +65,26 @@
                     </div>
                 </div>
                 <div id="">
-                    <label for="heureTest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                        Heure de l'evaluation
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                    <div>
+                        <div>
+                            <label for="heureTest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Heure de l'evaluation
+                            </label>
+                            <div class="relative">
+                                <div
+                                    class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input type="time" id="heureTest" name="heureTest"
+                                    class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    min="00:00" max="24:00" value="08:00" />
+                            </div>
                         </div>
-                        <input type="time" id="heureTest" name="heureTest"
-                            class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            min="00:00" max="24:00" value="08:00" />
                     </div>
                     <div class="flex justify-between items-center mt-4 sm:mt-6">
                         <button id="valider" type="submit"
@@ -88,3 +96,24 @@
         </form>
     </div>
 </div>
+
+<script>
+    function countSelectedIntervenants() {
+        const candFirstSelect = document.querySelector('#mail-modal-candidat form div #candFirst');
+        const candLastSelect = document.querySelector('#mail-modal-candidat form div #candLast');
+
+        const firstValue = candFirstSelect.value;
+        const lastValue = candLastSelect.value;
+
+        const options = Array.from(candFirstSelect.options);
+
+        const firstIndex = options.findIndex(option => option.value === firstValue);
+        const lastIndex = options.findIndex(option => option.value === lastValue);
+
+        let selectedCount = 0;
+        if (firstIndex !== -1 && lastIndex !== -1 && firstIndex <= lastIndex) {
+            selectedCount = lastIndex - firstIndex + 1;
+        }
+        document.getElementById('selectedCount').innerText = selectedCount;
+    }
+</script>

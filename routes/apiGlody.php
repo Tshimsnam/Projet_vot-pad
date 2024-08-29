@@ -21,4 +21,4 @@ Route::apiResource('intervenants', IntervenantController::class, ['as'=>'api']);
 Route::apiResource('phase-criteres', PhaseCritereController::class, ['as'=>'api']);
 Route::apiResource('intervenant-phases', IntervenantPhaseController::class, ['as'=>'api']);//->middleware(JuryTokenIsValid::class);
 
-Route::post('/intervenants-authenticate', [IntervenantController::class, 'authenticate'])->name('authenticate');
+Route::post('/intervenants-authenticate', [IntervenantController::class, 'authenticate']);
