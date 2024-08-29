@@ -5,7 +5,10 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
                 {{ __('Phase') }}
             </h2>
-
+            <h2 class="text-lg text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                <a href="{{route('open.phase',$phase_id)}}">Lancer la phase</a>
+            </h2>
+            
         </div>
     </x-slot>
     <div class=" relative overflow-x-auto shadow-md" style="padding-top: 10px;">
@@ -26,23 +29,7 @@
             </h2>
             <div id="accordion-open-interv-body-1" class="hidden" aria-labelledby="accordion-open-interv-heading-1">
                 <div class="p-2 border border-b border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-                    <!-- <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
-                        <div class="bg-white dark:bg-gray-800 shadow">
-                            <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
-                                        {{ __('Détails des Resultats') }}
-                                    </h3>
-                                    @foreach ($phaseShow as $key => $item)
-<a href="{{ route('resultats.show', $item->id) }}" class="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/>
-                                        </svg>
-                                        </a>
-@endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
+                   
                     <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
                         <div class="bg-white dark:bg-gray-800 shadow">
                             <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
@@ -202,31 +189,7 @@
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-                        @if (session('success'))
-                            <div id="alert-3"
-                                class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
-                                role="alert">
-                                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                                </svg>
-                                <span class="sr-only">Info</span>
-                                <div class="ms-3 text-sm font-medium">
-                                    {{ session('success') }}
-                                </div>
-                                <button type="button"
-                                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                                    data-dismiss-target="#alert-3" aria-label="Close">
-                                    <span class="sr-only">Close</span>
-                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                </button>
-                            </div>
-                        @endif
+                       
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -234,7 +197,6 @@
                                     <th scope="col" class="px-6 py-2">N°</th>
                                     <th scope="col" class="py-2">Question</th>
                                     <th scope="col" class="py-2">Ponderation à la phase</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -438,7 +400,7 @@
                                             <label
                                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
                                                 d'assertion et COCHEZ LA BONNE REPONSE :</label>
-                                            <input type="number" id="N" min="2" max="10"
+                                            <input type="number" id="N" min="2" max="6"
                                                 step="1" style="width:4em"
                                                 class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 onchange="Chbx();return false;" required>
@@ -532,8 +494,8 @@
                 </div>
                 <!-- Modal body -->
                 <div class="mb-5 m-5">
-                    <label for="nbr_max" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
-                        de meilleur à retenir</label>
+                    <label for="nbr_max" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Pourcentage (%) minimum à retenir</label>
                     <input type="number" name="nbr_retenu" id="nbr_max"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="" required />

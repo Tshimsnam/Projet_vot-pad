@@ -512,10 +512,35 @@ class PhaseController extends Controller
         }
     }
 
+    public function lancerPhase(Request $request){
+        // dd($request->id);
+        // dd(request());
+        $phase = Phase::where('id', $request->id)->where('statut','!=','En cours')->where('statut','!=','Cloturer')->first(); 
+        // dd($phase); 
+        if($phase != null){
+            $phase_statut_update = DB::table('phases')
+            ->where('id', $phase->id)
+            ->update(['statut' => 'En cours']);
+            return back()->with("success", "Phase lancée avec succes");
+        }else{
+            $phase = Phase::where('id', $request->id)->where('statut','Cloturer')->first();
+            
+            if($phase == null){
+                return back()->with("success", "Phase a déjà été lancée avec succes");
+            }else{
+                return back()->with("success", "Phase est déjà cloturée");
+            }
+   
+        }
+       
+
+        
+
+    }
     public function closePhase(Request $request)
     {
         // dd($request->all());
-        //    "nbr_retenu" => "5"
+        //  pourcentageMin  "nbr_retenu"  => "5" ceci equivaut au pourcentage minimum de l'intervenant
         //   "phase_id" => "1"
         $phase = Phase::where('id', '=', $request->phase_id)->where('type', '=', 'evaluation')->get(); //recuper phase du type evaluation
         if ($phase) {
@@ -554,29 +579,37 @@ class PhaseController extends Controller
                 $tableau['pourcentage'] = $pourcentage;
                 array_push($intervenant_resultat, $tableau);
             }
-            // dd($intervenant_resultat);
+
             usort($intervenant_resultat, function ($a, $b) {
                 return $b['pourcentage'] - $a['pourcentage'];
             });
 
             $event = Phase::where('evenement_id', $phase[0]->evenement->id)->get();
-            $total_intervenant = count($intervenant_resultat);
+            // $total_intervenant = count($intervenant_resultat);
             $interv_retenu_passage = [];
-            $tous = "";
-            if ($total_intervenant >= $request->nbr_retenu) {
-                for ($i = 0; $i < $request->nbr_retenu; $i++) {
-                    $intervenant_resultat[$i];
-                    array_push($interv_retenu_passage, $intervenant_resultat[$i]);
-                }
-                $tous = "non";
-            } else {
-                $tous = 'oui';
-                for ($i = 0; $i < $total_intervenant; $i++) {
-                    $intervenant_resultat[$i];
-                    array_push($interv_retenu_passage, $intervenant_resultat[$i]);
+            // $tous = "";
+            foreach($intervenant_resultat as $k=>$v){
+                // dd($v["pourcentage"], $k, $intervenant_resultat[$k]);
+                if($v["pourcentage"] >= $request->nbr_retenu){
+                   array_push($interv_retenu_passage, $intervenant_resultat[$k]); 
                 }
             }
-            $next_phase = "c'est la derniere phase enregistree pour cette phase";
+            // dd($interv_retenu_passage, $intervenant_resultat);
+            // if ($total_intervenant >= $request->nbr_retenu) {
+            //     for ($i = 0; $i < $request->nbr_retenu; $i++) {
+            //         $intervenant_resultat[$i];
+            //         array_push($interv_retenu_passage, $intervenant_resultat[$i]);
+            //     }
+            //     $tous = "non";
+            // } else {
+            //     $tous = 'oui';
+            //     for ($i = 0; $i < $total_intervenant; $i++) {
+            //         $intervenant_resultat[$i];
+            //         array_push($interv_retenu_passage, $intervenant_resultat[$i]);
+            //     }
+            // }
+
+            $next_phase = "c'est la derniere phase enregistree pour cet evenement";
             $next_phase_cle = "";
             foreach ($event as $key => $val) {
                 if ($val->id == $phase[0]->id) {
@@ -584,16 +617,16 @@ class PhaseController extends Controller
                         $next_phase_cle = $key + 1;
                         $next_phase = $event[$next_phase_cle];
 
-                        foreach ($interv_retenu_passage as $intervenant) {
+                        foreach ($interv_retenu_passage as $intervenant){
                             $slug = $next_phase->slug;
-                            // dd($slug);
+                           
                             $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                             $charactersNumber = strlen($characters);
                             $codeLength = 3;
                             $coupon = null;
 
                             $getIntervenant = Intervenant::where('email', $intervenant['email'])->first();
-                            // dd($getIntervenant);
+                           
                             if ($getIntervenant) {
                                 $intervenantId = $getIntervenant->id;
                                 do {
@@ -603,27 +636,37 @@ class PhaseController extends Controller
                                         $coupon .= $characters[$position];
                                     }
                                 } while (IntervenantPhase::where('coupon', $coupon)->exists());
-                                // dd($coupon);
+
                                 $couponPhase = $slug . $coupon;
-                                // dd($couponPhase);
-                                $passage_success = IntervenantPhase::create([
-                                    'intervenant_id' => $intervenantId,
-                                    'phase_id' => $next_phase->id,
-                                    'coupon' => $couponPhase
-                                ]);
+
+                                $verif_affectation = IntervenantPhase::where('phase_id',$next_phase->id)->where('intervenant_id',$next_phase->id)->count();
+                               
+                                if($verif_affectation==0){
+                                     $passage_success = IntervenantPhase::firstOrCreate([
+                                        'intervenant_id' => $intervenantId,
+                                        'phase_id' => $next_phase->id,
+                                        'coupon' => $couponPhase
+                                    ]);
+                                }else{
+                                    $intervenant_coupon_update = DB::table('intervenant_phases')
+                                        ->where('phase_id',0)
+                                        ->where('intervenant_id',$next_phase->id)
+                                        ->update(['coupon'=>$couponPhase]);
+                                }
+                               
                             }
                         }
                     }
                     break;
                 }
             }
-            $phaseintervenant_update = DB::table('phases')
+            $phase_intervenant_update = DB::table('phases')
                 ->where('id', $phase[0]->id)
                 ->update(['statut' => 'cloturer']);
 
             // dd($intervenant_resultat, $request->nbr_retenu,$interv_retenu_passage,$tous,$total_intervenant,$next_phase);
 
-            return back()->with("success", "Phase clorée avec succes");
+            return back()->with("success", "Phase cloturée avec succes");
         } else {
             return Redirect::back();
         }
