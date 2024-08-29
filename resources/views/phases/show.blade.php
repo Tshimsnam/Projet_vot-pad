@@ -88,7 +88,7 @@
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-                        
+
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -677,14 +677,14 @@
 
         function sendMail(event, phaseId) {
             event.preventDefault();
-            const form = document.querySelector('#mail-modal-candidat form')
+            const form = document.querySelector('#mail-modal-candidat form');
             form.setAttribute('action', `{{ route('sendMailMany') }}`);
 
-            const phase = document.querySelector('#mail-modal-candidat form div #phaseId')
+            const phase = document.querySelector('#mail-modal-candidat form div #phaseId');
             phase.setAttribute('value', phaseId);
 
-            const candFirstSelect = document.querySelector('#mail-modal-candidat form div #candFirst')
-            const candLastSelect = document.querySelector('#mail-modal-candidat form div #candLast')
+            const candFirstSelect = document.querySelector('#mail-modal-candidat form div #candFirst');
+            const candLastSelect = document.querySelector('#mail-modal-candidat form div #candLast');
 
             candFirstSelect.innerHTML = '';
             candLastSelect.innerHTML = '';
@@ -703,19 +703,29 @@
                     option.text = intervenant.noms;
                     candLastSelect.appendChild(option);
                 });
+
+                countSelectedIntervenants();
             }
 
-            intervenants.forEach(intervenant => {
+            intervenants.forEach((intervenant, index) => {
                 const option = document.createElement('option');
                 option.value = intervenant.id;
                 option.text = intervenant.noms;
                 candFirstSelect.appendChild(option);
             });
 
+            if (intervenants.length > 0) {
+                candFirstSelect.value = intervenants[0].id;
+                populateCandLastSelect(intervenants, intervenants[0].id);
+            }
+
             candFirstSelect.addEventListener('change', (event) => {
                 const selectedId = parseInt(event.target.value, 10);
                 populateCandLastSelect(intervenants, selectedId);
             });
+
+            candLastSelect.addEventListener('change', countSelectedIntervenants);
+            countSelectedIntervenants();
         }
     </script>
 </x-app-layout>
