@@ -48,5 +48,6 @@ Route::get('intervenant-logout',[IntervenantController::class, 'logout'])->name(
 Route::resource('reponses', ReponseController::class);//->middleware("is_login");
 Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");//->middleware('is_login');
 Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('close.phase');
+Route::get('lancer-evaluation/{id}',[PhaseController::class, 'lancerPhase'])->name('open.phase');
 
 require __DIR__.'/auth.php';
