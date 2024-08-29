@@ -1,9 +1,17 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
 
 Route::get('/', function () {
+    $admin = [
+        'name'=>'admin',
+        'email'=>'admin@odc.cd',
+        'password'=>Hash::make('123456789')
+    ];
+    $user = User::firstOrCreate($admin);
     return redirect()->route('login');
 });
 
