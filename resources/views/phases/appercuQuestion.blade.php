@@ -94,19 +94,26 @@
             </div>
         </nav>
         <div id="mega-edite-full-dropdown" class="mt-1 shadow-sm bg-gray-50 md:bg-white  dark:bg-gray-800 ">
-            <form class="grid gap-4 max-w-screen-xl px-4 py-5 mx-auto text-gray-900 dark:text-white sm:grid-cols-2 md:px-6">
-                <div class="border-b border-gray-300 sm:border-b-0">
-                    Modification de la question
-                    
-                </div>
-                <div class="assertion">
-                    <label for="">Assertion</label>
-                    <div class="flex items-center rounded dark:border-gray-700">
-                        
-                        <input type="text"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-                        <input type="text"  class="m-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" required />
+            <form action="{{route('question.update')}}" method="post"  class="grid gap-4 max-w-screen-xl px-4 py-5 mx-auto text-gray-900 dark:text-white sm:grid-cols-2 md:px-6">
+                @csrf
+                @method('post')
+                <div class="border-b  border-gray-300 sm:border-b-0">
+                    <div class="block items-center rounded dark:border-gray-700">
+                        <input type="text" name="question[{{$question->question->id}}]" value="{{$question->question->question}}"  class=" my-6 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                        <input type="number" name="ponderation[{{$question->id}}]" value="{{$question->ponderation}}"  class="my-6 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                     </div>
                 </div>
+                <div class="assertion">
+                    @foreach ($question->question->assertion as $v )
+                        <label for="">Assertion</label>
+                        <div class="flex items-center rounded dark:border-gray-700">
+                            <input type="text" name="assertion[{{$v->id}}]" value="{{$v->assertion}}"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="radio" name="bonneReponse" value="{{$v->id}}" class="m-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" required />
+                        </div>
+                    @endforeach
+                    
+                </div>
+                <button type="submit" class=" bg-blue-600 rounded-md">Enregistrer</button>
             </form>
         </div>
 

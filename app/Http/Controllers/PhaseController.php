@@ -730,4 +730,8 @@ class PhaseController extends Controller
         
         
     }
+
+    public function updateQuestion(Request $request){
+        dd($request->all());
+    }
 }
