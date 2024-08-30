@@ -50,4 +50,6 @@ Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->
 Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('close.phase');
 Route::get('lancer-evaluation/{id}',[PhaseController::class, 'lancerPhase'])->name('open.phase');
 
+Route::get('details-question/{id}/{phase_id}',[PhaseController::class, 'detailQuestion'])->name('question.phase');
+
 require __DIR__.'/auth.php';

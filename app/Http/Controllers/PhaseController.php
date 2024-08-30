@@ -718,4 +718,21 @@ class PhaseController extends Controller
 
         return redirect(route('phase.show', $phaseId))->with('successCand', 'La passation à la phase suivante enregistrée avec succès');
     }
+
+
+    public function detailQuestion(Request $request){
+        
+        $id=$request->id;
+        $phase_id= $request->phase_id;
+        $question_verif = QuestionPhase::where('question_id',$id)->where('phase_id',$phase_id)->first();
+        // dd($question_verif);
+        if($question_verif != null){
+          $question = $question_verif;
+          return view('phases.appercuQuestion',compact('question'));
+        }else{
+            return back()->with('success', "Un erreur inattendue s'est produite avec l'affectation de la question dans la phase");
+        }
+        
+        
+    }
 }

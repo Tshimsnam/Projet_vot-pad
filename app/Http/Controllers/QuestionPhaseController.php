@@ -121,7 +121,7 @@ class QuestionPhaseController extends Controller
                 $tableau['assertion']=[$assertion];//tabeau pour assertion
                 array_push($questionAssetionTab, $tableau);
             }
-
+            shuffle($questionAssetionTab);
     
             foreach ($questionAssetionTab as $key => $value) {
                 //value a deux tableaux [question] et [assertion] mais assertion un objet
@@ -136,7 +136,7 @@ class QuestionPhaseController extends Controller
                 }
                 
             }
-
+            
             $timing = $phase->duree;
             $tabtimefin = explode(":",$timing);
             $heurefin =  $debut_evaluation->addHours((int)$tabtimefin[0])->addMinutes((int)$tabtimefin[1])->addSeconds((int)$tabtimefin[2]);
