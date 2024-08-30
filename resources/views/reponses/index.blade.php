@@ -223,7 +223,12 @@
                         value="{{ session()->get('phaseId') }}">
                     <input type="text" name="intervenant_id" id="" class="hidden"
                         value="{{ session()->get('intervenantId') }}">
-                    @foreach (session('questionAssetionTab') as $key => $value)
+                    @php
+                        $tab= session('questionAssetionTab');
+                        shuffle($tab);
+                    @endphp
+
+                    @foreach ($tab as $key => $value)
                         <div id="{{ $value['question']['question'] }}" value="{{ $value['question']['question'] }}"
                             class="hidden">
                             <label class="flex items-center gap-4 dark:text-white">
@@ -240,11 +245,18 @@
                                     {{ $value['question']['question'] }}?</h3>
                             </label>
 
+                            @php
+                                $assertions_tab =$value['assertion'];
+                                shuffle($assertions_tab)
+                            @endphp
+                            @foreach ($assertions_tab as $key1 => $assertions)
+                                @php
+                                    $assertions_tab1=$assertions->shuffle();
+                                @endphp
 
-                            @foreach ($value['assertion'] as $key1 => $assertions)
-                                @foreach ($assertions as $i => $var)
-                                    <div
-                                        class="items-center ps-4 my-4 flex border border-gray-200 rounded-md dark:border-gray-300 dark:bg-gray-300 opacity-100">
+                                @foreach ($assertions_tab1 as $i => $var)
+                                    
+                                    <div class="items-center ps-4 my-4 flex border border-gray-200 rounded-md dark:border-gray-300 dark:bg-gray-300 opacity-100">
                                         <input id="{{ $var->id }}" type="radio" value="{{ $var->id }}"
                                             name="id_collection_keyQuestion_valAssertion[{{ $value['question']['id'] }}]"
                                             onclick="handleAssertionChecked(this, '{{ $var->question_id }}');"
@@ -256,7 +268,6 @@
                             @endforeach
                         </div>
                     @endforeach
-
                     <div class="inline-flex items-center gap-20">
                         <!-- Buttons -->
                         <div id="precedent"
