@@ -228,7 +228,6 @@ class IntervenantController extends Controller
         $intervenatId = $intervenant->id;
         $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenatId)->first();
         $intervenantPhase->delete();
-        $intervenant->delete();
         return redirect(route('phase.show', $phaseId))->with('successCand', 'Suppression effectuée');
     }
 
