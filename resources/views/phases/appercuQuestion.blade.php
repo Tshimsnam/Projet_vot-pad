@@ -107,7 +107,7 @@
                     @foreach ($question->question->assertion as $v )
                         <label for="">Assertion</label>
                         <div class="flex items-center rounded dark:border-gray-700">
-                            <input type="text" name="assertion[{{$v->id}}]" value="{{$v->assertion}}"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <input type="text" name="assertions[{{$v->id}}]" value="{{$v->assertion}}"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                             <input type="radio" name="bonneReponse" value="{{$v->id}}" class="m-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" required />
                         </div>
                     @endforeach
