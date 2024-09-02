@@ -91,7 +91,7 @@ class IntervenantController extends Controller
                 $intervenant = Intervenant::where('email', $request->email)->first();
                 if (!$intervenant) {
                     $intervenant = Intervenant::create([
-                        'noms' => $request->name,
+                        'noms' => strtolower($request->name),
                         'email' => $request->email,
                         'telephone' => $request->telephone,
                         'genre' => $request->genre,
@@ -110,13 +110,13 @@ class IntervenantController extends Controller
                         $couponPhase = $slug . $coupon;
                     } while (IntervenantPhase::where('coupon', $couponPhase)->exists());
 
-                    $data[] = [
+                    $intervenantPhaseNew = IntervenantPhase::create([
                         'intervenant_id' => $intervenantId,
                         'phase_id' => $phaseId,
                         'coupon' => $couponPhase,
                         'created_at' => $now,
                         'updated_at' => $now,
-                    ];
+                    ]);
                 }
             }
         } else {
@@ -128,7 +128,7 @@ class IntervenantController extends Controller
                 $intervenant = Intervenant::where('email', $row['1'])->first();
                 if (!$intervenant) {
                     $intervenant = Intervenant::create([
-                        'noms' => $row[0],
+                        'noms' => strtolower($row[0]),
                         'email' => $row[1],
                         'telephone' => $row[2],
                         'genre' => $row[3]
@@ -146,24 +146,18 @@ class IntervenantController extends Controller
                         $couponPhase = $slug . $coupon;
                     } while (IntervenantPhase::where('coupon', $couponPhase)->exists());
 
-                    $data[] = [
+                    $intervenantPhaseNew = IntervenantPhase::create([
                         'intervenant_id' => $intervenantId,
                         'phase_id' => $phaseId,
                         'coupon' => $couponPhase,
                         'created_at' => $now,
                         'updated_at' => $now,
-                    ];
+                    ]);
                 }
             }
         }
 
-        if (count($data) > 0) {
-            $status = IntervenantPhase::insert($data);
-        } else {
-            $status = true;
-        }
-
-        if ($status) {
+        if ($intervenantPhaseNew) {
             if ($isVote == 1) {
                 return redirect(route('phase.show', $phaseId))->with('successCand', 'Insertion effectuée');
             } else {
@@ -283,7 +277,8 @@ class IntervenantController extends Controller
         }
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         $request->session()->flush();
         return redirect()->route('form-authenticate');
     }

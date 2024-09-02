@@ -24,6 +24,7 @@
             <div class=" mr-5" style="padding-left: 20px">
                 @csrf
                 <input type="hidden" name="phase" id="phaseId" value="">
+                <input type="hidden" name="typePhase" id="typePhase" value="">
                 <div id="ajoutPass" class="pt-5">
                     <ul
                         class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -125,6 +126,7 @@
 
 <script>
     const nombre_div = document.getElementById('nombreDiv');
+    nombre_div.style.display = 'none';
     const nombre_candidat = document.getElementById('nombre_candidat');
 
     const pourcent_div = document.getElementById('pourcentDiv');
@@ -181,16 +183,28 @@
     const validerButton = document.getElementById('validPass');
     const editPass = document.getElementById('editPass');
     const insertPass = document.getElementById('insertPass');
+    const typePhase = document.getElementById('typePhase');
 
     function modif() {
-        modifierButton.style.display = 'none';
-        annulerButton.style.display = 'inline-block';
-        validerButton.style.display = 'block';
-        nombre_div.style.display = 'block';
-        nombre_candidat.style.display = 'block';
-        insertPass.style.display = 'none';
-        editPass.style.display = 'flex';
-        passNombreCheckbox.checked = true;  
+        if (typePhase.value == "Evaluation" || typePhase.value == "evaluation") {
+            modifierButton.style.display = 'none';
+            annulerButton.style.display = 'inline-block';
+            validerButton.style.display = 'block';
+            insertPass.style.display = 'none';
+            editPass.style.display = 'flex';
+            passPourcentCheckbox.checked = 'true';
+            pourcent_div.style.display = 'block';
+            pourcent_candidat.style.display = 'block';
+        } else {
+            modifierButton.style.display = 'none';
+            annulerButton.style.display = 'inline-block';
+            validerButton.style.display = 'block';
+            nombre_div.style.display = 'block';
+            nombre_candidat.style.display = 'block';
+            insertPass.style.display = 'none';
+            editPass.style.display = 'flex';
+            passNombreCheckbox.checked = true;
+        }
     }
 
     function annul() {
@@ -200,7 +214,11 @@
         nombre_div.style.display = 'none';
         nombre_candidat.style.display = 'none';
         insertPass.style.display = 'flex';
-        editPass.style.display = 'none';    
+        editPass.style.display = 'none';
         passNombreCheckbox.checked = false;
+
+        passPourcentCheckbox.checked = 'false';
+        pourcent_div.style.display = 'none';
+        pourcent_candidat.style.display = 'none';
     }
 </script>
