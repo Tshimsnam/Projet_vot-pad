@@ -102,9 +102,13 @@ class VoteController extends Controller
         $nombreUser = $voteData['nombre_user'];
 
         $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
+        if(!$intervenantPhase)
+        {
+            return response()->json(['status' => 'unsuccess'], 400);
+        }
         $intervenantPhaseIds = $intervenantPhase->id;
 
-        $votes = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('nombre', $nombreUser)->get();
+        $votes = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('jury_phase_id', $juryId)->where('nombre', $nombreUser)->get();
         if ($votes) {
             foreach ($votes as $vote) {
                 $vote->delete();
@@ -118,7 +122,7 @@ class VoteController extends Controller
             $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
             $criterePhaseId = $criterePhase->id;
 
-            $vote = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('phase_critere_id', $criterePhaseId)->first();
+            $vote = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('jury_phase_id', $juryId)->where('phase_critere_id', $criterePhaseId)->first();
 
             if ($vote) {
                 $jury = Jury::where('id', $juryId)->first();
@@ -127,7 +131,7 @@ class VoteController extends Controller
                 if ($typeJury == 'public') {
                     $addVote = new Vote();
                     $addVote->intervenant_phase_id = $intervenantPhaseIds;
-                    $addVote->phase_jury_id = $juryId;
+                    $addVote->jury_phase_id = $juryId;
                     $addVote->phase_critere_id = $criterePhaseId;
                     $addVote->cote = $coteValue;
                     $addVote->nombre = $nombreUser;
@@ -136,7 +140,7 @@ class VoteController extends Controller
             } else {
                 Vote::create([
                     'intervenant_phase_id' => $intervenantPhaseIds,
-                    'phase_jury_id' => $juryId,
+                    'jury_phase_id' => $juryId,
                     'phase_critere_id' => $criterePhaseId,
                     'cote' => $coteValue,
                     'nombre' => $nombreUser,

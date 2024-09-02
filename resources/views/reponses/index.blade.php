@@ -231,17 +231,16 @@
                     @foreach ($tab as $key => $value)
                         <div id="{{ $value['question']['question'] }}" value="{{ $value['question']['question'] }}"
                             class="hidden">
-                            <label class="flex items-center gap-4 dark:text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                                    class="size-8">
-                                    <path fill-rule="evenodd"
-                                        d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0Zm-6 3.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7.293 5.293a1 1 0 1 1 .99 1.667c-.459.134-1.033.566-1.033 1.29v.25a.75.75 0 1 0 1.5 0v-.115a2.5 2.5 0 1 0-2.518-4.153.75.75 0 1 0 1.061 1.06Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-
+                            {{-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                class="size-8">
+                                <path fill-rule="evenodd"
+                                    d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0Zm-6 3.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7.293 5.293a1 1 0 1 1 .99 1.667c-.459.134-1.033.566-1.033 1.29v.25a.75.75 0 1 0 1.5 0v-.115a2.5 2.5 0 1 0-2.518-4.153.75.75 0 1 0 1.061 1.06Z"
+                                    clip-rule="evenodd" />
+                            </svg> --}}
+                            <label class="flex gap-4 dark:text-white">
                                 <h5 class="hidden text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                                     {{ $value['question']['question'] }}?</h5>
-                                <h3 class="text-lg font-bold text-center dark:text-white">
+                                <h3 class="text-lg font-bold dark:text-white">
                                     {{ $value['question']['question'] }}?</h3>
                             </label>
 
@@ -500,13 +499,17 @@
             let min = 0;
             let sec = 0;
 
-            element.style.color = 'white'; 
-
             let countInterval = setInterval(function() {
                 min = parseInt(secondsRemaining / 60);
                 sec = parseInt(secondsRemaining % 60);
+
+                let textColor = 'white';
+                if (min < 10) {
+                    textColor = 'red';
+                }
+
                 element.innerHTML =
-                    `Il vous reste <span style="color: white;">${paddedFormat(min)}:${paddedFormat(sec)} min</span>`;
+                    `Il vous reste <span style="color: ${textColor};">${paddedFormat(min)}:${paddedFormat(sec)} min</span>`;
 
                 const form = document.getElementById('fini_evaluation');
                 if (`${paddedFormat(min)}` == 0 && `${paddedFormat(sec)}` == 0) {
@@ -522,6 +525,7 @@
                 }
             }, 1000);
         }
+
 
 
         window.onload = function() {
