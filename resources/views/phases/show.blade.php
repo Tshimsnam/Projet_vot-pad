@@ -51,11 +51,6 @@
                 @endforeach
             </h3>
             <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
-                @foreach ($phases as $phase)
-                    {{ $phase->decrip_phase }}
-                @endforeach
-            </p>
-            <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
                     style="margin-right: 0.5rem;">
                     <path fill-rule="evenodd"
@@ -67,6 +62,17 @@
                 </svg>
                 @foreach ($phases as $phase)
                     {{ $phase->type_phase }}
+                @endforeach
+            </p>
+            <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4"
+                    style="margin-right: 0.5rem;">
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                        clip-rule="evenodd" />
+                </svg>
+                @foreach ($phases as $phase)
+                    {{ $phase->duree }}
                 @endforeach
             </p>
             <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
@@ -94,7 +100,7 @@
                     {{ $phase->fin_phase }}
                 @endforeach
             </p>
-            <div class="float-right">
+            {{-- <div class="float-right">
                 <?php $message = 'Voulez-vous clôturer cette phase?'; ?>
                 <a href="{{ route('open.phase', $phase_id) }}"
                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#ff7900] hover:bg-[#ff7900]/80 focus:ring-4 focus:outline-none focus:ring-[#ff7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#ff7900]/80 dark:focus:ring-[#ff7900]/40">
@@ -106,6 +112,72 @@
                     </svg>
                     <p class="flex justify-inline items-center">Lancer la phase</p>
                 </a>
+            </div> --}}
+            <div class="float-right">
+                <?php $message = 'Voulez-vous clôturer cette phase?'; ?>
+                <a id="closeVote" href="#" data-modal-target="status-modal" data-modal-toggle="status-modal"
+                    onclick="status(event, '{{ $message }}' , '{{ route('phases.status', ['status' => 'Cloturer', 'id' => $phase_id]) }}')"
+                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#ff7900] hover:bg-[#ff7900]/80 focus:ring-4 focus:outline-none focus:ring-[#ff7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#ff7900]/80 dark:focus:ring-[#ff7900]/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
+                        style="margin-right: 0.5rem; display:none">
+                        <path fill-rule="evenodd"
+                            d="M6.455 1.45A.5.5 0 0 1 6.952 1h2.096a.5.5 0 0 1 .497.45l.186 1.858a4.996 4.996 0 0 1 1.466.848l1.703-.769a.5.5 0 0 1 .639.206l1.047 1.814a.5.5 0 0 1-.14.656l-1.517 1.09a5.026 5.026 0 0 1 0 1.694l1.516 1.09a.5.5 0 0 1 .141.656l-1.047 1.814a.5.5 0 0 1-.639.206l-1.703-.768c-.433.36-.928.649-1.466.847l-.186 1.858a.5.5 0 0 1-.497.45H6.952a.5.5 0 0 1-.497-.45l-.186-1.858a4.993 4.993 0 0 1-1.466-.848l-1.703.769a.5.5 0 0 1-.639-.206l-1.047-1.814a.5.5 0 0 1 .14-.656l1.517-1.09a5.033 5.033 0 0 1 0-1.694l-1.516-1.09a.5.5 0 0 1-.141-.656L2.46 3.593a.5.5 0 0 1 .639-.206l1.703.769c.433-.36.928-.65 1.466-.848l.186-1.858Zm-.177 7.567-.022-.037a2 2 0 0 1 3.466-1.997l.022.037a2 2 0 0 1-3.466 1.997Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="flex justify-inline items-center">Clôturer la phase</p>
+                </a>
+
+                <button type="button" id="dropdownLeftButtonStatus" data-dropdown-toggle="dropdownLeftStatus"
+                    data-dropdown-placement="left"
+                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#ff7900] hover:bg-[#ff7900]/80 focus:ring-4 focus:outline-none focus:ring-[#ff7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#ff7900]/80 dark:focus:ring-[#ff7900]/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
+                        style="margin-right: 0.5rem;">
+                        <path fill-rule="evenodd"
+                            d="M6.455 1.45A.5.5 0 0 1 6.952 1h2.096a.5.5 0 0 1 .497.45l.186 1.858a4.996 4.996 0 0 1 1.466.848l1.703-.769a.5.5 0 0 1 .639.206l1.047 1.814a.5.5 0 0 1-.14.656l-1.517 1.09a5.026 5.026 0 0 1 0 1.694l1.516 1.09a.5.5 0 0 1 .141.656l-1.047 1.814a.5.5 0 0 1-.639.206l-1.703-.768c-.433.36-.928.649-1.466.847l-.186 1.858a.5.5 0 0 1-.497.45H6.952a.5.5 0 0 1-.497-.45l-.186-1.858a4.993 4.993 0 0 1-1.466-.848l-1.703.769a.5.5 0 0 1-.639-.206l-1.047-1.814a.5.5 0 0 1 .14-.656l1.517-1.09a5.033 5.033 0 0 1 0-1.694l-1.516-1.09a.5.5 0 0 1-.141-.656L2.46 3.593a.5.5 0 0 1 .639-.206l1.703.769c.433-.36.928-.65 1.466-.848l.186-1.858Zm-.177 7.567-.022-.037a2 2 0 0 1 3.466-1.997l.022.037a2 2 0 0 1-3.466 1.997Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="flex justify-inline items-center">Changer statut</p>
+                </button>
+                <!-- Dropdown menu -->
+                <div id="dropdownLeftStatus"
+                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-15 dark:bg-gray-700 dark:divide-gray-600">
+
+                    <ul class="py-1 text-xs text-gray-700 dark:text-gray-200"
+                        aria-labelledby="dropdownLeftButtonStatus">
+                        <li id = "enCours" style="margin-right: 0.2rem; margin-left: 0.2rem;">
+                            <?php $message = 'Voulez-vous lancer cette phase?'; ?>
+                            <a href="#"
+                                onclick="status(event, '{{ $message }}', '{{ route('phases.status', ['status' => 'En cours', 'id' => $phase_id]) }}')"
+                                data-modal-target="status-modal" data-modal-toggle="status-modal"
+                                class="block px-3 py-1 text-center inline-flex items-center hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white rounded-md ">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                    class="size-5">
+                                    <path fill-rule="evenodd"
+                                        d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm3.844-8.791a.75.75 0 0 0-1.188-.918l-3.7 4.79-1.649-1.833a.75.75 0 1 0-1.114 1.004l2.25 2.5a.75.75 0 0 0 1.15-.043l4.25-5.5Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <p class="flex justify-inline items-center" style="margin-left: 0.2rem;">Lancer la
+                                    phase </p>
+                            </a>
+                        </li>
+
+                        <li id="fermer" style="margin-right: 0.2rem; margin-left: 0.2rem;">
+                            <?php $message = 'Voulez-vous fermer cette phase?'; ?>
+                            <a href="#"
+                                onclick="status(event, '{{ $message }}' , '{{ route('phases.status', ['status' => 'Fermer', 'id' => $phase_id]) }}')"
+                                data-modal-target="status-modal" data-modal-toggle="status-modal"
+                                class="block px-3 py-1 text-center inline-flex items-center hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                    class="size-5">
+                                    <path
+                                        d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+                                </svg>
+                                <p class="flex justify-inline items-center" style="margin-left: 0.2rem;">Fermer la
+                                    phase </p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
@@ -169,7 +241,7 @@
                         <div class="flex justify-center items-center mb-3">
                             <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Details
                                 candidats</h5>
-                            <svg data-popover-target="chart-info" data-popover-placement="bottom"
+                            <svg data-popover-target="chart-info" data-popover-placement="right"
                                 class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                 viewBox="0 0 20 20">
@@ -191,6 +263,10 @@
                                     <p>Dans cette section, c'est pour déterminer le nombre des candidats qui ont reçus
                                         un mail liés à cette
                                         phase.</p>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Start</h3>
+                                    <p>Dans cette section, c'est pour déterminer le nombre des candidats qui ont passés
+                                        l'évaluation de cette
+                                        phase.</p>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +274,7 @@
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                    <div class="grid grid-cols-3 gap-3 mb-2">
+                    <div class="grid grid-cols-4 gap-4 mb-2">
                         <dl
                             class="bg-orange-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
@@ -218,19 +294,26 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ count($intervenants) - count($intervenantsMails) }}</dt>
+                                {{ count($intervenantStart) - count($intervenantsMails) }}</dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Mails</dd>
+                        </dl>
+                        <dl
+                            class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                            <dt
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
+                                {{ count($intervenants) - count($intervenantStart) }}</dt>
+                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Start</dd>
                         </dl>
                     </div>
                 </div>
             </div>
 
-            <div class=" bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+            <div class=" bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mr-2">
                 <div class="flex justify-between">
                     <div class="flex items-center">
                         <div class="flex justify-center items-center mb-3">
                             <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Details
-                                de passation</h5>
+                                passation</h5>
                             <svg data-popover-target="chart-info-pass" data-popover-placement="top"
                                 class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -242,7 +325,8 @@
                                 class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
                                 <div class="p-3 space-y-2">
                                     <h3 class="font-semibold text-gray-900 dark:text-white">Section Pourcentage</h3>
-                                    <p>Dans cette section, c'est pour déterminer le pourcentage minimum d'un candidat qui
+                                    <p>Dans cette section, c'est pour déterminer le pourcentage minimum d'un candidat
+                                        qui
                                         va passer à la phase suivanet si cette dernière existe.<br>ND : Non défini</p>
                                 </div>
                             </div>
@@ -256,10 +340,50 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $phaseExist->passation_nombre ?? 'ND' }}
+                                {{ $phaseExist->passation_pourcent ?? 'ND' }}
                             </dt>
 
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Pourcentage</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                <div class="flex justify-between">
+                    <div class="flex items-center">
+                        <div class="flex justify-center items-center mb-3">
+                            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Details
+                                questions
+                            </h5>
+                            <svg data-popover-target="chart-info-quest" data-popover-placement="top"
+                                class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z" />
+                            </svg>
+                            <div data-popover id="chart-info-quest" role="tooltip"
+                                class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                <div class="p-3 space-y-2">
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Nombre</h3>
+                                    <p>Dans cette section, c'est pour déterminer le nombre des questions insérées dans
+                                        cette phase.<br>ND : Non défini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                    <div class=" mb-2">
+                        <dl
+                            class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                            <dt
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
+                                {{ $questionPhasePagnation->total() ?? 'ND' }}
+                            </dt>
+                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Nombre</dd>
                         </dl>
                     </div>
                 </div>
@@ -309,9 +433,10 @@
                             </svg>
                         </a>
 
-                        <a href="#" data-modal-target="default-modal" data-modal-toggle="default-modal"
+                        <a onclick="passation(event, '{{ route('passation') }}', '{{ $phase_id }}', {{ $passPourcent }}, '{{ $phaseExist->type }}')"
+                            data-modal-target="pass-modal" data-modal-toggle="pass-modal"
                             class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
-                            Règle de passation et cloturer
+                            Règle de passation
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -449,9 +574,9 @@
                             </div>
                         @endforeach
                     </div>
-                    <div class="p-2">
+                    {{-- <div class="p-2">
                         {{ $intervenantPhases->appends(['intervenant_page' => $intervenantPhases->currentPage()])->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -877,9 +1002,11 @@
         </form>
     </div>
     <x-delete :message="__('Voulez-vous vraiment supprimer?')" />
+    <x-phases.status />
     <x-intervenants.create />
     <x-intervenants.edit />
     <x-questions.create />
+    <x-passations.pass />
     <x-mails.send />
     <x-candidats.edit />
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -1065,7 +1192,57 @@
             form.setAttribute('action', url);
         }
 
+        setTimeout(function() {
+            let alerts = document.querySelectorAll('[role="alert"]');
+            alerts.forEach(function(alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            });
+        }, 5000);
+
         //FrontEnd design
+        window.onload = function() {
+            initial("{{ $status_phase }}");
+        };
+
+        function initial(status_phase) {
+            const enCoursStatut = document.getElementById('enCours');
+            const fermerStatut = document.getElementById('fermer');
+            const closeVote = document.getElementById('closeVote');
+            const dropdownLeftButtonStatus = document.getElementById('dropdownLeftButtonStatus');
+            if (status_phase == 'En cours' || status_phase == 'en cours') {
+                enCoursStatut.hidden = true;
+                fermerStatut.hidden = false;
+                closeVote.style.display = 'flex';
+                dropdownLeftButtonStatus.style.display = 'none';
+            } else if (status_phase == 'Fermer' || status_phase == 'fermer') {
+                enCoursStatut.hidden = false;
+                fermerStatut.hidden = true;
+                closeVote.style.display = 'none';
+                dropdownLeftButtonStatus.style.display = 'none';
+            } else if (status_phase == 'en attente') {
+                enCoursStatut.hidden = false;
+                fermerStatut.hidden = false;
+                closeVote.style.display = 'none';
+                dropdownLeftButtonStatus.style.display = 'flex';
+            } else {
+                closeVote.style.display = 'none';
+                dropdownLeftButtonStatus.style.display = 'none';
+            }
+        }
+
+        function status(event, message, url) {
+            event.preventDefault();
+            const form = document.querySelector('#status-modal form')
+            form.setAttribute('action', url);
+
+            const messageH3 = document.querySelector('#status-modal h3')
+            messageH3.textContent = message
+        }
+
         document.querySelectorAll('#tabs ul li a').forEach(tab => {
             tab.addEventListener('click', function(event) {
                 event.preventDefault();
@@ -1149,6 +1326,54 @@
 
             const selectGenre = document.querySelector('#intervEdit-modal div form div #genre')
 
+        }
+
+        function passation(event, url, phaseId, passPourcent, typePhase) {
+            event.preventDefault();
+            const form = document.querySelector('#pass-modal form')
+            form.setAttribute('action', url);
+
+            const inputPhaseId = document.querySelector('#pass-modal form #phaseId')
+            inputPhaseId.setAttribute('value', phaseId);
+
+            const inputType = document.querySelector('#pass-modal form #typePhase')
+            inputType.setAttribute('value', typePhase);
+
+            const passPourcentCheck = document.querySelector('#pass-modal form #passPourcent')
+            const getNombPass = document.querySelector('#pass-modal form #getNombPass');
+            const buttonValider = document.querySelector('#pass-modal form #validPass');
+            const annulerValider = document.querySelector('#pass-modal form #annuler');
+            const modifierValider = document.querySelector('#pass-modal form #modifier');
+            const pourcent_candidat = document.querySelector('#pass-modal form #pourcent_candidat');
+            const pourcentDiv = document.querySelector('#pass-modal form #pourcentDiv');
+            const insertPass = document.querySelector('#pass-modal #insertPass');
+            const editPass = document.querySelector('#pass-modal #editPass');
+            const ajoutPass = document.querySelector('#pass-modal #ajoutPass');
+            ajoutPass.style.display = 'none';
+            passPourcentCheck.checked = false;
+            if (passPourcent != null) {
+                passPourcentCheck.style.display = 'none';
+                pourcent_candidat.style.display = 'none';
+                pourcent_candidat.setAttribute('value', passPourcent);
+                getNombPass.textContent = passPourcent;
+                buttonValider.style.display = 'none';
+                pourcentDiv.style.display = 'none';
+                modifierValider.style.display = 'flex';
+                annulerValider.style.display = 'none';
+                insertPass.style.display = 'flex';
+                editPass.style.display = 'none';
+            } else {
+                passPourcentCheck.checked = true;
+                passPourcentCheck.style.display = 'flex';
+                pourcent_candidat.style.display = 'flex';
+                pourcent_candidat.setAttribute('value', 50);
+                pourcentDiv.style.display = 'block';
+                buttonValider.style.display = 'flex';
+                modifierValider.style.display = 'none';
+                annulerValider.style.display = 'none';
+                insertPass.style.display = 'flex';
+                editPass.style.display = 'none';
+            }
         }
     </script>
 </x-app-layout>
