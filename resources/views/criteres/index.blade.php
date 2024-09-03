@@ -50,11 +50,11 @@
                     {{ $phase->nom_phase }}
                 @endforeach
             </h3>
-            <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
+            {{-- <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
                 @foreach ($phases as $phase)
                     {{ $phase->decrip_phase }}
                 @endforeach
-            </p>
+            </p> --}}
             <p class="flex justify-inline items-center text-gray-500 dark:text-gray-400 ">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4"
                     style="margin-right: 0.5rem;">
@@ -290,7 +290,7 @@
                 </div>
             </div>
 
-            <div class=" bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+            <div class=" bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mr-2">
                 <div class="flex justify-between">
                     <div class="flex items-center">
                         <div class="flex justify-center items-center mb-3">
@@ -306,7 +306,8 @@
                             <div data-popover id="chart-info-pass" role="tooltip"
                                 class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
                                 <div class="p-3 space-y-2">
-                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Nombre éligible</h3>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Nombre éligible
+                                    </h3>
                                     <p>Dans cette section, c'est pour déterminer le nombre de tous les candidats qui
                                         vont passer à la phase suivanet si cette dernière existe.<br>ND : Non défini</p>
                                 </div>
@@ -325,6 +326,46 @@
                             </dt>
 
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Nombre éligible</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class=" bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                <div class="flex justify-between">
+                    <div class="flex items-center">
+                        <div class="flex justify-center items-center mb-3">
+                            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Details
+                                critères</h5>
+                            <svg data-popover-target="chart-info-critere" data-popover-placement="top"
+                                class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z" />
+                            </svg>
+                            <div data-popover id="chart-info-critere" role="tooltip"
+                                class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                <div class="p-3 space-y-2">
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Nombre
+                                    </h3>
+                                    <p>Dans cette section, c'est pour déterminer le nombre de critères liés à cette
+                                        phase.<br>ND : Non défini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                    <div class=" mb-2">
+                        <dl
+                            class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                            <dt
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
+                                {{ $phaseCriteres->total() ?? 'ND' }}
+                            </dt>
+
+                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Nombre</dd>
                         </dl>
                     </div>
                 </div>
@@ -632,9 +673,9 @@
                     </a>
                 </div>
             </div>
-            <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
                 <div class="bg-white dark:bg-gray-800 shadow">
-                    <div class="mx-auto py-2 px-2">
+                    <div class="mx-auto py-3 px-2">
                         <div class="flex justify-between items-center">
                             <h3 class="font-semibold text-gray-800 dark:text-gray-200 leading-tight"
                                 style="text-transform: uppercase">
@@ -645,244 +686,179 @@
                 </div>
             </div>
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-2">N°</th>
-                            <th scope="col" class="py-2">type</th>
-                            <th scope="col" class="py-2">coupon</th>
-                            <th scope="col" class="py-2">is_use</th>
-                            <th scope="col" class="py-2">QrCode</th>
-                            <th scope="col" class="py-2">action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($jurys as $i => $item)
-                            <tr
-                                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                <td class="px-6 py-2">{{ $juryPhases->firstItem() + $i }}</td>
-                                <th scope="row"
-                                    class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ $item->type }}
-                                </th>
-                                <th scope="row"
-                                    class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ $item->coupon }}
-                                </th>
-                                <th scope="row"
-                                    class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ $item->is_use }}
-                                </th>
-                                <th scope="row"
-                                    class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a type="button" data-modal-target="qrcode-modal{{ $item->id }}"
-                                        data-modal-toggle="qrcode-modal{{ $item->id }}" href="#"
-                                        class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                            fill="currentColor" class="size-4">
-                                            <path d="M4.75 4.25a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1Z" />
-                                            <path fill-rule="evenodd"
-                                                d="M2 3.5A1.5 1.5 0 0 1 3.5 2H6a1.5 1.5 0 0 1 1.5 1.5V6A1.5 1.5 0 0 1 6 7.5H3.5A1.5 1.5 0 0 1 2 6V3.5Zm1.5 0H6V6H3.5V3.5Z"
-                                                clip-rule="evenodd" />
-                                            <path d="M4.25 11.25a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Z" />
-                                            <path fill-rule="evenodd"
-                                                d="M2 10a1.5 1.5 0 0 1 1.5-1.5H6A1.5 1.5 0 0 1 7.5 10v2.5A1.5 1.5 0 0 1 6 14H3.5A1.5 1.5 0 0 1 2 12.5V10Zm1.5 2.5V10H6v2.5H3.5Z"
-                                                clip-rule="evenodd" />
-                                            <path d="M11.25 4.25a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1Z" />
-                                            <path fill-rule="evenodd"
-                                                d="M10 2a1.5 1.5 0 0 0-1.5 1.5V6A1.5 1.5 0 0 0 10 7.5h2.5A1.5 1.5 0 0 0 14 6V3.5A1.5 1.5 0 0 0 12.5 2H10Zm2.5 1.5H10V6h2.5V3.5Z"
-                                                clip-rule="evenodd" />
-                                            <path
-                                                d="M8.5 9.417a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM8.5 13.083a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM13.083 8.5a.917.917 0 1 0 0 1.833.917.917 0 0 0 0-1.833ZM12.166 13.084a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM11.25 10.333a.917.917 0 1 0 0 1.833.917.917 0 0 0 0-1.833Z" />
-                                        </svg>
-                                    </a>
-                                </th>
-                                <th scope="row"
-                                    class=" py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a onclick="supprimer(event, '{{ route('jury.destroy', ['jury' => $item->id, 'phaseId' => $phase_id]) }}');"
-                                        data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                        href="#"
-                                        class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                            fill="currentColor" class="size-4">
-                                            <path fill-rule="evenodd"
-                                                d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-
-                                    </a>
-                                </th>
-                            </tr>
-                            <div id="qrcode-modal{{ $item->id }}" tabindex="-1" aria-hidden="true"
-                                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                <div class="relative overflow-x-auto sm:rounded-lg bg-white rounded-lg shadow dark:bg-gray-800"
-                                    style="width: 80%;">
-                                    <div
-                                        class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white"
-                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                            Veuillez scanner le QrCode</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    @foreach ($jurys as $item)
+                        <div class="w-full">
+                            <div
+                                class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
+                                <div class="flex justify-between pl-3 relative">
+                                    <div>
+                                        <h3
+                                            class="text-xl text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                            {{ $item->type }}
                                         </h3>
-                                        <button type="button"
-                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                            data-modal-toggle="qrcode-modal{{ $item->id }}">
-                                            <svg class="w-3 h-3" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 14 14">
-                                                <path stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                            </svg>
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-                                    <div
-                                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 90vh;">
-                                        <h2 class="text-white" style="margin: 20px; font-size:50px">
-                                            @foreach ($phases as $phase)
-                                                {{ $phase->nom_event }}
-                                            @endforeach
-                                        </h2>
-                                        <div id="qrcodeUnique">
-                                            {{ $item->qr_code }}
-                                        </div>
-                                        <h2 id="couponH2" class="text-white"
-                                            style="margin-top: 20px; font-size:50px">
+                                        <h3 class="text-xl text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3">
                                             {{ $item->coupon }}
-                                        </h2>
+                                        </h3>
+                                        <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300 pr-6">
+                                            Nombre_utilisé : {{ $item->is_use }}
+                                        </h3>
                                     </div>
+                                    <div class="float right">
+                                        <div
+                                            class=" py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                            <a type="button" data-modal-target="qrcode-modal{{ $item->id }}"
+                                                data-modal-toggle="qrcode-modal{{ $item->id }}" href="#"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path d="M4.75 4.25a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1Z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M2 3.5A1.5 1.5 0 0 1 3.5 2H6a1.5 1.5 0 0 1 1.5 1.5V6A1.5 1.5 0 0 1 6 7.5H3.5A1.5 1.5 0 0 1 2 6V3.5Zm1.5 0H6V6H3.5V3.5Z"
+                                                        clip-rule="evenodd" />
+                                                    <path d="M4.25 11.25a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M2 10a1.5 1.5 0 0 1 1.5-1.5H6A1.5 1.5 0 0 1 7.5 10v2.5A1.5 1.5 0 0 1 6 14H3.5A1.5 1.5 0 0 1 2 12.5V10Zm1.5 2.5V10H6v2.5H3.5Z"
+                                                        clip-rule="evenodd" />
+                                                    <path d="M11.25 4.25a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1Z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 2a1.5 1.5 0 0 0-1.5 1.5V6A1.5 1.5 0 0 0 10 7.5h2.5A1.5 1.5 0 0 0 14 6V3.5A1.5 1.5 0 0 0 12.5 2H10Zm2.5 1.5H10V6h2.5V3.5Z"
+                                                        clip-rule="evenodd" />
+                                                    <path
+                                                        d="M8.5 9.417a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM8.5 13.083a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM13.083 8.5a.917.917 0 1 0 0 1.833.917.917 0 0 0 0-1.833ZM12.166 13.084a.917.917 0 1 1 1.833 0 .917.917 0 0 1-1.833 0ZM11.25 10.333a.917.917 0 1 0 0 1.833.917.917 0 0 0 0-1.833Z" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                        <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a onclick="supprimer(event, '{{ route('jury.destroy', ['jury' => $item->id, 'phaseId' => $phase_id]) }}');"
+                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                href="#"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
 
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="pr-2 absolute right-0">
+                                    </div>
                                 </div>
                             </div>
-                        @endforeach
-                    </tbody>
-                </table>
+
+                        </div>
+                    @endforeach
+                </div>
                 <div class="p-2">
-                    {{ $juryPhases->withPath(request()->url())->links() }}
+
                 </div>
             </div>
         </div>
     </div>
 
     <div id="critere-content" class="hidden">
-        <div class="relative overflow-x-auto shadow-md" style="padding-top: 10px;">
-            <div class="bg-white dark:bg-gray-800 shadow">
-                <div class="mx-auto py-2 px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight ">
-                            {{ __('Détails des critères') }}
-                        </h3>
-                        <a onclick="creer(event, {{ $phase_id }})" data-modal-target="create-modal"
-                            data-modal-toggle="create-modal"
-                            class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                            Ajouter un critère
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                        </a>
-                    </div>
+        @if (session('success'))
+            <div id="alert-3"
+                class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                role="alert">
+                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                </svg>
+                <span class="sr-only">Info</span>
+                <div class="ms-3 text-sm font-medium">
+                    {{ session('success') }}
                 </div>
+                <button type="button"
+                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                    data-dismiss-target="#alert-3" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+        @endif
+
+        <div class="py-2 ">
+            <div class="flex justify-between items-center">
+                <a onclick="creer(event, {{ $phase_id }})" data-modal-target="create-modal"
+                    data-modal-toggle="create-modal"
+                    class="ml-auto px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
+                    Ajouter un critère
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-8 h-5 pl-2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </a>
             </div>
         </div>
-        <div class="overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-            @if (session('success'))
-                <div id="alert-3"
-                    class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
-                    role="alert">
-                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                    </svg>
-                    <span class="sr-only">Info</span>
-                    <div class="ms-3 text-sm font-medium">
-                        {{ session('success') }}
-                    </div>
-                    <button type="button"
-                        class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                        data-dismiss-target="#alert-3" aria-label="Close">
-                        <span class="sr-only">Close</span>
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                    </button>
-                </div>
-            @endif
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <th scope="col" class="px-6 py-3">Num</th>
-                        <th scope="col" class="px-6 py-3">Libellé</th>
-                        <th scope="col" class="px-6 py-3">description</th>
-                        <th scope="col" class="px-6 py-3">ponderation</th>
-                        <th scope="col" class="px-6 py-3">action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($criteres as $i => $item)
-                        <tr
-                            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                            <td class="px-6 py-4">{{ $i + 1 }}</td>
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->libelle }}</th>
-                            <td class="px-6 py-4">{{ $item->description }}</td>
-                            <td class="px-6 py-4">{{ $item->ponderation }}</td>
-                            <td class="px-6 ">
-                                <button id="dropdownMenuIconButton"
-                                    data-dropdown-toggle="dropdownDots{{ $i }}"
-                                    class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                                    type="button">
-                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="currentColor" viewBox="0 0 4 15">
-                                        <path
-                                            d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-                                    </svg>
-                                </button>
-                                <!-- Dropdown menu -->
-                                <div id="dropdownDots{{ $i }}"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-15 dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="dropdownMenuIconButton">
-                                        <li>
-                                            <a onclick="modifier(event, '{{ route('criteres.update', $item->id) }}', '{{ $item->libelle }}', '{{ $item->description }}', '{{ $item->ponderation }}')"
-                                                data-modal-target="edit-modal" data-modal-toggle="edit-modal"
-                                                href="#"
-                                                class="block px-3 py-2 hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:text-white border-2 rounded-md border-gray-700">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="size-5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                                </svg>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a onclick="supprimer(event, '{{ route('criteres.destroy', $item->id) }}');"
-                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                                href="#"
-                                                class="block px-3 py-2 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white border-2 rounded-md border-gray-700">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="size-5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                </svg>
-                                            </a>
-                                        </li>
+
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                @foreach ($criteres as $item)
+                    <div class="w-full">
+                        <div
+                            class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
+                            <div class="flex justify-between pl-3 relative">
+                                <div>
+                                    <h3
+                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                        {{ $item->libelle }}
+                                    </h3>
+                                    <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3">
+                                        Ponderation: {{ $item->ponderation }}
+                                    </h3>
+                                    <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300 pr-6">
+                                        {{ $item->description }}
+                                    </h3>
                                 </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                <div class="float right">
+                                    <div
+                                        class=" py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                        <a onclick="modifier(event, '{{ route('criteres.update', $item->id) }}', '{{ $item->libelle }}', '{{ $item->description }}', '{{ $item->ponderation }}')"
+                                            data-modal-target="edit-modal" data-modal-toggle="edit-modal"
+                                            class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <a onclick="supprimer(event, '{{ route('criteres.destroy', $item->id) }}');"
+                                            data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                            href="#"
+                                            class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                fill="currentColor" class="size-4">
+                                                <path fill-rule="evenodd"
+                                                    d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="pr-2 absolute right-0">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
             <div class="p-2">
-                {{ $phaseCriteres->links() }}
+
             </div>
         </div>
     </div>

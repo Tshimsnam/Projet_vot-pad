@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html translate="no">
 
 <head>
     <meta charset="utf-8">
@@ -17,7 +17,7 @@
     <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
 </head>
 
-<body id="voteUser" class="">
+<body id="voteUser" class="select-none">
     @if (!session('debut'))
         <div class="containe">
 
