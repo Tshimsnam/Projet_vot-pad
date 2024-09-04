@@ -10,7 +10,7 @@ class Vote extends Model
     use HasFactory;
     protected $fillable = [
         'intervenant_phase_id',
-        'phase_jury_id',
+        'jury_phase_id',
         'phase_critere_id',
         'cote',
         'nombre',

@@ -53,7 +53,7 @@ class VoteController extends Controller
     {
         $phaseAndSpeaker = Phase::with('intervenants')->find($phase_id);
         $evenement = Evenement::find($evenement_id);
-        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
         $intervenants = [];
         foreach ($intervenantPhases as $intervenantPhase) {
             $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
@@ -190,7 +190,7 @@ class VoteController extends Controller
 
     public function results($phase_id)
     {
-        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
         $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
         $numberCritere = $criterePhases->count();
         $ponderationTotale = 0;

@@ -234,7 +234,7 @@ class PhaseController extends Controller
                 $intervenant->mail_send = $intervenantPhase->mail_send;
                 $intervenants[] = $intervenant;
             }
-
+            $totalIntervenants = $intervenantPhases->total();
             //recuperer les criteres liés à une phase
             $phases = $phaseShow;
             $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
@@ -321,7 +321,7 @@ class PhaseController extends Controller
                 }
             }
             $phaseExist = Phase::findOrFail($phase_id);
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist'));
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants'));
         } else {
             // module phase evaluation
             $phases = $phaseShow;
