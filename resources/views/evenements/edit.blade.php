@@ -44,7 +44,7 @@
                     
                     </select>
                 </div>
-                <div class="w-full">
+                <div class="w-full" style="display: none">
                     <div style="display: flex; align-items: center;">
                         <div> 
                             <label for="datedebut"
@@ -61,7 +61,7 @@
                                 </div> 
                                 <input datepicker datepicker-autohide datepicker-orientation="top" type="text" name="datedebut"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Select date" value="{{ \Carbon\Carbon::parse($evenement->date_debut)->format('m/d/Y') }}">
+                                    placeholder="Select date" value="{{ \Carbon\Carbon::parse($evenement->date_debut)->format('d/m/Y') }}">
                             </div>
                         </div>
                         <div> 
@@ -80,12 +80,12 @@
                                 </div> 
                                 <input type="time" id="time" name="heuredebut"
                                     class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    min="06:00" max="23:00" value="{{ date('H:i', strtotime($evenement->date_debut)) }}" required />
+                                    min="06:00" max="23:00" value="{{ date('H:i', strtotime($evenement->date_debut)) }}" />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="w-full">
+                <div class="w-full" style="display: none">
                     <div style="display: flex; align-items: center;">
                         <div>
                             <label for="datefin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -102,7 +102,7 @@
                                 </div>
                                 <input datepicker datepicker-autohide datepicker-orientation="top" type="text" name="datefin"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Select date" value="{{ \Carbon\Carbon::parse($evenement->date_fin)->format('m/d/Y') }}">
+                                    placeholder="Select date" value="{{ \Carbon\Carbon::parse($evenement->date_fin)->format('d/m/Y') }}">
                             </div>
                         </div>
                         <div>
@@ -121,7 +121,7 @@
                                 </div>
                                 <input type="time" id="time" name="heurefin"
                                     class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    min="06:00" max="23:00" value="{{ date('H:i', strtotime($evenement->date_fin)) }}" required />
+                                    min="06:00" max="23:00" value="{{ date('H:i', strtotime($evenement->date_fin)) }}" />
                             </div>
                         </div>
                     </div>

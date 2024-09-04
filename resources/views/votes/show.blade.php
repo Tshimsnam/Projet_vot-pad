@@ -16,6 +16,10 @@
             <div class="text-center mb-4">
                 <h3 class="text-2xl font-bold leading-none dark:text-white uppercase">Les candidats</h3>
             </div>
+            <div class="mb-4">
+                <input type="text" id="search" placeholder="Rechercher par nom..."
+                    class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach ($intervenants as $item)
                     <div
@@ -122,6 +126,23 @@
     </section>
 
     <script>
+        const searchInput = document.getElementById('search');
+        const items = document.querySelectorAll('.grid > div');
+
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.toLowerCase();
+
+            items.forEach(item => {
+                const name = item.querySelector('p.text-xl').textContent.toLowerCase();
+                if (name.includes(query)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+
         function getDarkMode() {
             return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         }
