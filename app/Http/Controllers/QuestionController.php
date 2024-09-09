@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateQuestionRequest;
 use App\Models\Assertion;
 use App\Models\Phase;
 use App\Models\QuestionPhase;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\SimpleExcel\SimpleExcelReader;
@@ -190,9 +191,32 @@ class QuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Question $question)
+    public function destroy($id)
     {
-        //desactivation de statut et on va creer une vue pour les questions supprimees
+        $questionPhase = QuestionPhase::where('question_id', $id)->first();//->delete();
+        if($questionPhase){
+            $dejautilise = $questionPhase->reponse;
+
+            if($dejautilise->count() > 0){
+                return back()->with('success', 'Une question déjà utilisée ne peut être éffacée');
+            }else{
+                try{
+                $question = Question::where('id',$id)->delete();
+                $assertion = Assertion::where('question_id',$id)->delete();
+                $questionPhase->delete();
+                return back()->with('success', 'Question supprimée avec succès');
+                }catch(Exception $e){
+                    return back()->with('success', 'Erreur de suppression de question');
+                }
+            }
+            
+            
+
+
+        }else{
+            return back()->with('success', 'Erreur de suppression de question');
+        }
+        
     }
 
     public function getQuestionAuto1(Request $request)
