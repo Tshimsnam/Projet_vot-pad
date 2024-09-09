@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::get('phase/{id}', [PhaseController::class,'evenementPhase'])->name('phase.show');
     Route::get('phase_question_detatil/{id}', [PhaseController::class,'phaseQuestionDetail'])->name('phase_question_detatil');
     
-
+    Route::delete('question-delete-all/{id}', [QuestionController::class,'deleteQuestion'])->name('DeleteQuestion');
     Route::post('auto-question-get', [QuestionController::class,'getQuestionAuto'])->name('auto-question-get');
 
     Route::get('phase/encours', [PhaseController::class,'encours'])->name('phase.encours');
@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('assertions', AssertionController::class);
     Route::resource('questionPhases', QuestionPhaseController::class);
     Route::resource('resultats', ResultatController::class);
+
+    
+
    
 });
 Route::get('response-test', function (){
@@ -49,8 +52,6 @@ Route::resource('reponses', ReponseController::class);//->middleware("is_login")
 Route::get("questions_phase",[QuestionPhaseController::class,"questionPhase"])->name("phasequestion");//->middleware('is_login');
 Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('close.phase');
 Route::get('lancer-evaluation/{id}',[PhaseController::class, 'lancerPhase'])->name('open.phase');
-
 Route::get('details-question/{id}/{phase_id}',[PhaseController::class, 'detailQuestion'])->name('question.phase');
 Route::post('update-question',[PhaseController::class, 'updateQuestion'])->name('question.update');
-
 require __DIR__.'/auth.php';
