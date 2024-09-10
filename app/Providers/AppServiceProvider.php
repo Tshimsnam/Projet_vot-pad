@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Http\ViewComposers\BreadcrumbComposer;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +26,7 @@ class AppServiceProvider extends ServiceProvider
         //
         JsonResource::withoutWrapping();
         Schema::defaultStringLength(191);
+
+        View::composer('*', BreadcrumbComposer::class);
     }
 }

@@ -20,19 +20,19 @@ class ResultatController extends Controller
      */
     public function index()
     {
-       
-       $phase = Phase::where('type','=','evaluation')->get();//recuper phase du type evaluation
-      
-       $intervenant_phase=array();
-       $tableau=array();
-       foreach ($phase as $key => $value) {
-           $intervant = IntervenantPhase::where('phase_id','=',$value->id)->count();
-           $tableau['phase']=['nom'=>$value->nom,'id'=>$value->id];//tabeau pour renseigner phase
-           $tableau['inter']=[$intervant];//tabeau pour rensiegner le nombre d'intervenant
-           array_push($intervenant_phase, $tableau);
-       }
-    //    dd($intervenant_phase);
-        return view('resultats.index', compact('phase','intervenant_phase'));
+
+        $phase = Phase::where('type', '=', 'evaluation')->get(); //recuper phase du type evaluation
+
+        $intervenant_phase = array();
+        $tableau = array();
+        foreach ($phase as $key => $value) {
+            $intervant = IntervenantPhase::where('phase_id', '=', $value->id)->count();
+            $tableau['phase'] = ['nom' => $value->nom, 'id' => $value->id]; //tabeau pour renseigner phase
+            $tableau['inter'] = [$intervant]; //tabeau pour rensiegner le nombre d'intervenant
+            array_push($intervenant_phase, $tableau);
+        }
+        //    dd($intervenant_phase);
+        return view('resultats.index', compact('phase', 'intervenant_phase'));
     }
 
     /**
@@ -56,65 +56,64 @@ class ResultatController extends Controller
      */
     public function show(string $id)
     {
-        $phase = Phase::where('id','=',$id)->where('type','=','evaluation')->get();//recuper phase du type evaluation
-        if($phase){
+        $phase = Phase::where('id', '=', $id)->where('type', '=', 'evaluation')->get(); //recuper phase du type evaluation
+        if ($phase) {
 
-            $question = QuestionPhase::where('phase_id','=',$phase[0]->id)->get();
+            $question = QuestionPhase::where('phase_id', '=', $phase[0]->id)->get();
             $somme_ponderation_phase = 0;
-            foreach($question as $cle => $valeur){
-                    $ponde = $valeur->ponderation;
-                    $somme_ponderation_phase+=$ponde;
+            foreach ($question as $cle => $valeur) {
+                $ponde = $valeur->ponderation;
+                $somme_ponderation_phase += $ponde;
             }
             $somme_ponderation_phase;
-            if($somme_ponderation_phase>0){
+            if ($somme_ponderation_phase > 0) {
 
-            $intervenant_resultat = array();
-            $tableau=array();
-            $intervants = DB::table('intervenants')
-                        ->join('intervenant_phases', "intervenant_phases.intervenant_id", "=", "intervenants.id")
-                        ->select(
-                            'intervenants.id as id',
-                            'intervenants.email as email',
-                        )
-                        ->where("intervenant_phases.phase_id", "=", $phase[0]->id)
-                        ->get();
-            
-                foreach($intervants as $key => $value){
+                $intervenant_resultat = array();
+                $tableau = array();
+                $intervants = DB::table('intervenants')
+                    ->join('intervenant_phases', "intervenant_phases.intervenant_id", "=", "intervenants.id")
+                    ->select(
+                        'intervenants.id as id',
+                        'intervenants.email as email',
+                    )
+                    ->where("intervenant_phases.phase_id", "=", $phase[0]->id)
+                    ->get();
+
+                foreach ($intervants as $key => $value) {
                     $point_inter = 0;
-                    $cote = Reponse::where('phase_id','=',$phase[0]->id)->where('intervenant_id','=',$value->id)->get();
-                    if(count($cote)>0){
+                    $cote = Reponse::where('phase_id', '=', $phase[0]->id)->where('intervenant_id', '=', $value->id)->get();
+                    if (count($cote) > 0) {
                         $msg = 1;
-                    }else{
+                    } else {
                         $msg = null;
                     }
-                    foreach($cote as $k => $v){
+                    foreach ($cote as $k => $v) {
                         $point_inter += $v->cote;
                     }
-                    
-                    $pourcentage_interv = ( $point_inter/$somme_ponderation_phase)*100;
-                    
-                    $pourcentage = round($pourcentage_interv,2);
+
+                    $pourcentage_interv = ($point_inter / $somme_ponderation_phase) * 100;
+
+                    $pourcentage = round($pourcentage_interv, 2);
 
                     $tableau['id'] = $value->id;
                     $tableau['email'] = $value->email;
                     $tableau['pourcentage'] = $pourcentage;
                     $tableau['evaluee'] = $msg;
                     array_push($intervenant_resultat, $tableau);
-                    
                 }
                 // dd($intervenant_resultat);
                 usort($intervenant_resultat, function ($a, $b) {
                     return $b['pourcentage'] - $a['pourcentage'];
                 });
-            return view('resultats.index', compact('intervenant_resultat','phase'));
-        }else{
-           return back()->with('success',"Il n'y a pas de question pour cette phase");
-        }
-            
-        }else{
+                session(['breadPhase' => $phase[0]->id]);
+
+                return view('resultats.index', compact('intervenant_resultat', 'phase'));
+            } else {
+                return back()->with('success', "Il n'y a pas de question pour cette phase");
+            }
+        } else {
             return Redirect::back();
         }
-
     }
 
     /**
@@ -140,34 +139,34 @@ class ResultatController extends Controller
     {
         //
     }
-    public function resultatDetail($phase_id,$interv_id){
+    public function resultatDetail($phase_id, $interv_id)
+    {
 
-        $phase = Phase::where('id','=',$phase_id)->get();//recuper phase
-        if($phase){
+        $phase = Phase::where('id', '=', $phase_id)->get(); //recuper phase
+        if ($phase) {
 
-            $question_phases = QuestionPhase::where('phase_id','=',$phase[0]->id)->get(); //recupere les question de la phase
+            $question_phases = QuestionPhase::where('phase_id', '=', $phase[0]->id)->get(); //recupere les question de la phase
             $questions = $question_phases;
 
             $somme_ponderation_phase = 0;
             $tab_question_detail = [];
-            foreach($question_phases as $cle => $valeur){
+            foreach ($question_phases as $cle => $valeur) {
 
                 $ponde = $valeur->ponderation;
                 $somme_ponderation_phase += $ponde;
 
-                $reponse = Reponse::where('question_phase_id','=',$valeur->id)->where('intervenant_id','=',$interv_id)->first();
-                if($reponse != null){
-                    $questions[$cle]->assertion =(!empty($reponse->assertion->assertion))?$reponse->assertion->assertion: "assertion inexistante";
+                $reponse = Reponse::where('question_phase_id', '=', $valeur->id)->where('intervenant_id', '=', $interv_id)->first();
+                if ($reponse != null) {
+                    $questions[$cle]->assertion = (!empty($reponse->assertion->assertion)) ? $reponse->assertion->assertion : "assertion inexistante";
                     $questions[$cle]->cote = $reponse->cote;
                     $questions[$cle]->assertion_id = $reponse->assertion_id;
-                    
-                }else{
-                    $questions[$cle]->assertion = "N'a pas repondu " ;
+                } else {
+                    $questions[$cle]->assertion = "N'a pas repondu ";
                     $questions[$cle]->cote = 0;
                 }
                 $questions[$cle]->question = $valeur->question->question;
 
-               
+
 
                 // $point = 0;
                 // $assertion = "N'a pas repondu ";
@@ -182,7 +181,7 @@ class ResultatController extends Controller
                 //         break;
                 //     }
                 // }
-              
+
                 // array_push($tab_question_detail, 
                 // [
                 //     "libele" => $valeur->question->question,
@@ -192,27 +191,27 @@ class ResultatController extends Controller
                 // ]);
             }
             // dd($somme_ponderation_phase,$questions);
-            
 
-            $cote = Reponse::where('phase_id','=',$phase[0]->id)->where('intervenant_id','=', $interv_id)->get();
+
+            $cote = Reponse::where('phase_id', '=', $phase[0]->id)->where('intervenant_id', '=', $interv_id)->get();
             $point_inter = 0;
-            foreach($cote as $k => $v){
+            foreach ($cote as $k => $v) {
                 $point_inter += $v->cote;
             }
-            
-            $pourcentage_interv = ( $point_inter/$somme_ponderation_phase)*100;
-            
-            $pourcentage = round($pourcentage_interv,2);
 
-            $tab_synthese =[
-                "total_obtenu"=>$point_inter,
-                "total_phase"=>$somme_ponderation_phase,
-                "pourcentage"=>$pourcentage,
-                "intervenant"=>$cote[0]->intervenant->email
-            ] ;
-                
-            return view('resultats.show', compact('questions','phase','tab_synthese'));
-            
-        }else{}
+            $pourcentage_interv = ($point_inter / $somme_ponderation_phase) * 100;
+
+            $pourcentage = round($pourcentage_interv, 2);
+
+            $tab_synthese = [
+                "total_obtenu" => $point_inter,
+                "total_phase" => $somme_ponderation_phase,
+                "pourcentage" => $pourcentage,
+                "intervenant" => $cote[0]->intervenant->email
+            ];
+
+            return view('resultats.show', compact('questions', 'phase', 'tab_synthese'));
+        } else {
+        }
     }
 }
