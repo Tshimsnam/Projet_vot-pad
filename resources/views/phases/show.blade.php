@@ -675,7 +675,7 @@
                                     </div>
 
                                     <div class="pr-2 absolute right-0">
-                                        <a href="#"
+                                        <a href="{{ route('question.phase', ['id' => $item->question->id, 'phase_id' => $phase_id]) }}"
                                             class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
                                                 fill="currentColor" class="size-4">
@@ -685,7 +685,9 @@
                                                     d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
                                             </svg>
                                         </a>
-                                        <a href="#"
+                                        <a href=""
+                                        onclick="supprimer(event, '{{route('questions.destroy', $item->question->id)}}')"
+                                            data-modal-target="delete-modal" data-modal-toggle="delete-modal"
                                             class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
                                                 fill="currentColor" class="size-4">
@@ -750,6 +752,9 @@
                 </div>
             </div>
         </form>
+
+       
+
     </div>
     <x-delete :message="__('Voulez-vous vraiment supprimer?')" />
     <x-phases.status />
@@ -829,6 +834,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet"
         href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+
+    <script>
+        //suppression de question
+        function supprimer_q(event){
+            event.preventDefault()
+            var route = event.target.getAttribute('href');
+            alert(route)
+            var form = document.querySelector('#popup-modal #form_q_delete')
+            form.setAttribute('action', route)
+        }
+    </script>
     <script type="text/javascript">
         //script autocomplete de question
         // CSRF Token
