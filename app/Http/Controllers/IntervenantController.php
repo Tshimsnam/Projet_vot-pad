@@ -75,14 +75,14 @@ class IntervenantController extends Controller
                         }
                         $couponPhase = $slug . $coupon;
                     } while (IntervenantPhase::where('coupon', $couponPhase)->exists());
-
-                    $data[] = [
+                    
+                    $intervenantPhaseNew = IntervenantPhase::create([
                         'intervenant_id' => $intervenantId,
                         'phase_id' => $phaseId,
                         'coupon' => $couponPhase,
                         'created_at' => $now,
                         'updated_at' => $now,
-                    ];
+                    ]);
                 }
             } else {
                 $nom = $request->name;

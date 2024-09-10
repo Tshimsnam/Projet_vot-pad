@@ -24,7 +24,8 @@
             @csrf
             @foreach ($criteres as $key => $item)
                 <div class="px-3 w-full space-y-2">
-                    <div class="px-5 py-3 rounded-xl border bg-white bg-opacity-95 space-y-3 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
+                    <div
+                        class="px-5 py-3 rounded-xl border bg-white bg-opacity-95 space-y-3 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
                         <div class="">
                             <h1 class="text-xl font-bold dark:text-white">{{ $item->libelle }}</h1>
                             <p class="text-sm font-thin dark:text-white">{{ $item->description }}
@@ -65,7 +66,8 @@
 
                         </div>
                         <div class="flex justify-between items-center">
-                            <span id="score-{{ $item->id }}" class="text-xl font-extrabold pt-5 dark:text-white">COTE : 0</span>
+                            <span id="score-{{ $item->id }}" class="text-xl font-extrabold pt-5 dark:text-white">COTE :
+                                0</span>
                         </div>
                     </div>
                 </div>
@@ -252,12 +254,24 @@
             const savedData = getDataFromLocalStorage({{ $phase_id }}, {{ $candidat->id }}, jury_id,
                 critereIds, nombreUser);
 
-            const dataCand = localStorage.getItem(
-                `sum-{{ $phase_id }}{{ $jury_id }}{{ $candidat->id }}`);
+
             const taille = savedData.length;
             let sommeCand = [];
             sommeCand[{{ $candidat->id }}] = 0;
-            console.log(savedData);
+            const divButton = document.getElementById("divButton");
+            const dataCand = localStorage.getItem(
+                `sum-{{ $phase_id }}{{ $jury_id }}{{ $candidat->id }}{{ $nombreUser }}`);
+            if (dataCand != null) {
+                divButton.style.display = 'none';
+                for (let i = 0; i < taille; i++) {
+                    const labelsRangeInput = document.querySelectorAll(`#labels-range-input`)[i];
+                    if (labelsRangeInput) {
+                        labelsRangeInput.disabled = true;
+                    }
+                }
+            } else {
+                divButton.style.display = 'block';
+            }
 
             for (let i = 0; i < taille; i++) {
                 const scoreSpan = document.getElementById(`score-${critereIds[i]}`);

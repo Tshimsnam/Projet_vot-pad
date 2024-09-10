@@ -29,7 +29,7 @@
         </div> --}}
 
             <div class="flex justify-center items-center h-screen ml-20 mr-20">
-                <div class="shadow-md rounded-lg bg-slate-900 pt-8 pr-16 pb-8">
+                <div class="shadow-md rounded-lg bg-gray-200 dark:bg-slate-900 pt-8 pr-16 pb-8">
                     {{-- <p id="heure_actuel" class="  text-end dark:text-white"></p>
                 <p id="end-time" class=" text-end dark:text-white"></p>
 
@@ -224,7 +224,7 @@
                     <input type="text" name="intervenant_id" id="" class="hidden"
                         value="{{ session()->get('intervenantId') }}">
                     @php
-                        $tab= session('questionAssetionTab');
+                        $tab = session('questionAssetionTab');
                         shuffle($tab);
                     @endphp
 
@@ -245,23 +245,23 @@
                             </label>
 
                             @php
-                                $assertions_tab =$value['assertion'];
-                                shuffle($assertions_tab)
+                                $assertions_tab = $value['assertion'];
+                                shuffle($assertions_tab);
                             @endphp
                             @foreach ($assertions_tab as $key1 => $assertions)
                                 @php
-                                    $assertions_tab1=$assertions->shuffle();
+                                    $assertions_tab1 = $assertions->shuffle();
                                 @endphp
 
                                 @foreach ($assertions_tab1 as $i => $var)
-                                    
-                                    <div class="items-center ps-4 my-4 flex border border-gray-200 rounded-md dark:border-gray-300 dark:bg-gray-300 opacity-100">
+                                    <div
+                                        class="items-center ps-4 my-4 flex bg-gray-700 border border-gray-700 rounded-md dark:border-gray-300 dark:bg-gray-300 opacity-100">
                                         <input id="{{ $var->id }}" type="radio" value="{{ $var->id }}"
                                             name="id_collection_keyQuestion_valAssertion[{{ $value['question']['id'] }}]"
                                             onclick="handleAssertionChecked(this, '{{ $var->question_id }}');"
                                             class="assertion_cocher w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                         <label for="{{ $var->id }}"
-                                            class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-black">{{ $var->assertion }}.</label>
+                                            class="w-full py-4 ms-2 text-sm font-medium text-gray-100 dark:text-black">{{ $var->assertion }}.</label>
                                     </div>
                                 @endforeach
                             @endforeach
@@ -503,7 +503,12 @@
                 min = parseInt(secondsRemaining / 60);
                 sec = parseInt(secondsRemaining % 60);
 
-                let textColor = 'white';
+                let textColor = 'black';
+
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    textColor = 'white'; 
+                }
+
                 if (min < 10) {
                     textColor = 'red';
                 }

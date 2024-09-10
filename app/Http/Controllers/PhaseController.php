@@ -220,6 +220,7 @@ class PhaseController extends Controller
         }
         $questionAssert = $questionPhase;
 
+        session(['breadEvenement' => $evenement]);
 
         if ($phase_type === 'Vote' || $phase_type === 'vote') {
             // module phase vote

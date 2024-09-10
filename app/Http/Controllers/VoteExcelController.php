@@ -21,7 +21,7 @@ class VoteExcelController extends Controller
     public function export_excel($phase_id)
     {
         $phase_nom = Phase::find($phase_id)->nom;
-        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
         $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
         $numberCritere = $criterePhases->count();
         $ponderationTotale = 0;
@@ -51,17 +51,17 @@ class VoteExcelController extends Controller
             $intervenant->intervenantPhaseId = $intervenantPhase->id;
 
             $JuryByCandidat = Vote::where('intervenant_phase_id', $intervenantPhase->id)
-                ->distinct('phase_jury_id')
-                ->pluck('phase_jury_id');
+                ->distinct('jury_phase_id')
+                ->pluck('jury_phase_id');
 
-            $votes = Vote::whereIn('phase_jury_id', $JuryByCandidat)
+            $votes = Vote::whereIn('jury_phase_id', $JuryByCandidat)
                 ->where('intervenant_phase_id', $intervenantPhase->id)
                 ->get();
 
             $jurys = Jury::whereIn('id', $JuryByCandidat)->get()->keyBy('id');
 
             foreach ($votes as $vote) {
-                $jury = $jurys->get($vote->phase_jury_id);
+                $jury = $jurys->get($vote->jury_phase_id);
                 $vote->jury_type = $jury ? $jury->type : null;
             }
 

@@ -18,7 +18,15 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth')->group(function () {
-    Route::resource('evenements', EvenementController::class);
+    Route::resource('evenements', EvenementController::class)->names([
+        'index' => 'evenements.index',
+        'create' => 'evenements.create',
+        'store' => 'evenements.store',
+        'show' => 'evenements.show',
+        'edit' => 'evenements.edit',
+        'update' => 'evenements.update',
+        'destroy' => 'evenements.destroy',
+    ]);
     Route::resource('criteres', CritereController::class);
     Route::resource('intervenants', IntervenantController::class);
     Route::resource('jurys', JuryController::class);
