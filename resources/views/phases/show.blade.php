@@ -423,13 +423,11 @@
                             {{ $item->id }} @endforeach)"
                             data-modal-target="create-modal-interv" data-modal-toggle="create-modal-interv"
                             class="px-4 py-2 text-sm font-medium text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
-                            Importer des candidats
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                class="size-6 pl-2">
-                                <path
-                                    d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
-                                <path
-                                    d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+                            Ajouter le candidat
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </a>
 
@@ -686,7 +684,7 @@
                                             </svg>
                                         </a>
                                         <a href=""
-                                        onclick="supprimer(event, '{{route('questions.destroy', $item->question->id)}}')"
+                                            onclick="supprimer(event, '{{ route('questions.destroy', $item->question->id) }}')"
                                             data-modal-target="delete-modal" data-modal-toggle="delete-modal"
                                             class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
@@ -753,7 +751,7 @@
             </div>
         </form>
 
-       
+
 
     </div>
     <x-delete :message="__('Voulez-vous vraiment supprimer?')" />
@@ -837,7 +835,7 @@
 
     <script>
         //suppression de question
-        function supprimer_q(event){
+        function supprimer_q(event) {
             event.preventDefault()
             var route = event.target.getAttribute('href');
             alert(route)
@@ -886,6 +884,18 @@
 
             const inputPhaseId = document.querySelector('#create-modal-interv form #phaseId')
             inputPhaseId.setAttribute('value', phaseId);
+
+            const divImport = document.querySelector('#create-modal-interv form div #divImporter')
+            const divManuel = document.querySelector('#create-modal-interv form div #divManuel')
+
+            const importerCheck = document.querySelector('#create-modal-interv form div #importer')
+            const manuelCheck = document.querySelector('#create-modal-interv form div #manuel')
+
+            importerCheck.checked = false;
+            manuelCheck.checked = false;
+
+            divImport.style.display = 'none';
+            divManuel.style.display = 'none';
         }
 
         function insererQuestion(event, url, phaseId) {
