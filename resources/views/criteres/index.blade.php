@@ -379,7 +379,7 @@
                     <a onclick="inserer(event, '{{ route('intervenants.store') }}', '{{ $phase_id }}')"
                         data-modal-target="create-modal-candidat" data-modal-toggle="create-modal-candidat"
                         class="px-4 py-2 text-sm font-medium text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
-                        Ajouter un candidat
+                        Ajouter le candidat
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -1029,6 +1029,18 @@
 
             const inputPhaseId = document.querySelector('#create-modal-candidat form #phaseId')
             inputPhaseId.setAttribute('value', phaseId);
+
+            const divImport = document.querySelector('#create-modal-candidat form div #divImporter')
+            const divManuel = document.querySelector('#create-modal-candidat form div #divManuel')
+
+            const importerCheck = document.querySelector('#create-modal-candidat form div #importer')
+            const manuelCheck = document.querySelector('#create-modal-candidat form div #manuel')
+
+            importerCheck.checked = false;
+            manuelCheck.checked = false;
+
+            divImport.style.display = 'none';
+            divManuel.style.display = 'none';
         }
 
         function ajouter(event, url, phaseId, ponderation_public, ponderation_prive, type_vote) {
