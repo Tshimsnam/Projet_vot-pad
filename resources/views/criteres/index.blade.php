@@ -283,7 +283,7 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ count($intervenants) - count($intervenantsMails) }}</dt>
+                                {{ $totalIntervenants - count($intervenantsMails) }}</dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Mails</dd>
                         </dl>
                     </div>
@@ -452,92 +452,219 @@
                         <input type="text" id="search" placeholder="Rechercher par nom..."
                             class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white">
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        @foreach ($intervenants as $i => $item)
-                            <div class="w-full">
-                                <div
-                                    class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                                    <div class="pl-2 pr-5 float-left">
-                                        <img class="w-16 h-16 object-cover border-2 rounded-md"
-                                            src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
-                                            alt="">
-                                    </div>
-
-                                    <div class="flex justify-between">
-                                        <div>
-                                            <div class="flex items-center">
-                                                <h3
-                                                    class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                    {{ $item->noms }}
-                                                </h3>
-                                                @if ($item->mail_send == 0)
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                        <path
-                                                            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                        <path
-                                                            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                    </svg>
-                                                @else
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                        <path
-                                                            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                        <path
-                                                            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                    </svg>
-                                                @endif
-                                            </div>
-
-                                            <h3 class="text-sm text-gray-900 dark:text-gray-200">
-                                                {{ $item->email }}
-                                            </h3>
-                                            <div class="flex items-center space-x-4">
-                                                <h3 id='genre-{{ $i }}'
-                                                    class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
-                                                    data-genre="{{ $item->genre }}">
-                                                </h3>
-                                                <h3 class="text-sm text-gray-900 dark:text-white">
-                                                    +243{{ $item->telephone }}
-                                                </h3>
-                                            </div>
-
+                    <div class="">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="divPagination">
+                            @foreach ($intervenants as $i => $item)
+                                <div class="w-full">
+                                    <div
+                                        class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
+                                        <div class="pl-2 pr-5 float-left">
+                                            <img class="w-20 h-20 object-cover border-2 rounded-md"
+                                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
+                                                alt="">
                                         </div>
-                                        <div class="pr-2">
-                                            <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
-                                                data-modal-target="edit-modal-candidat"
-                                                data-modal-toggle="edit-modal-candidat" href="#"
-                                                class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                    fill="currentColor" class="size-4">
-                                                    <path
-                                                        d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-                                                    <path
-                                                        d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
-                                                </svg>
+
+                                        <div class="flex justify-between">
+                                            <div>
+                                                <div class="flex items-center">
+                                                    <h3
+                                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
+                                                        {{ $item->noms }}
+                                                    </h3>
+                                                    @if ($item->mail_send == 0)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
+                                                            <path
+                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                                            <path
+                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                                                        </svg>
+                                                    @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
+                                                            <path
+                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                                            <path
+                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                                                        </svg>
+                                                    @endif
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <h3
+                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
+                                                        {{ $item->coupon }}
+                                                    </h3>
+                                                    @if ($item->is_use == 0)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
+                                                            <path fill-rule="evenodd"
+                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
+                                                            <path fill-rule="evenodd"
+                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    @endif
+                                                </div>
+
+                                                <h3 class="text-sm text-gray-900 dark:text-gray-200">
+                                                    {{ $item->email }}
+                                                </h3>
+                                                <div class="flex items-center space-x-4">
+                                                    <h3 id='genre-{{ $i }}'
+                                                        class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
+                                                        data-genre="{{ $item->genre }}">
+                                                    </h3>
+                                                    <h3 class="text-sm text-gray-900 dark:text-white">
+                                                        +243{{ $item->telephone }}
+                                                    </h3>
+                                                </div>
+
+                                            </div>
+                                            <div class="pr-2">
+                                                <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
+                                                    data-modal-target="intervEdit-modal"
+                                                    data-modal-toggle="intervEdit-modal" href="#"
+                                                    class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                        fill="currentColor" class="size-4">
+                                                        <path
+                                                            d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                        <path
+                                                            d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                    </svg>
 
 
-                                            </a>
-                                            <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
-                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                                href="#"
-                                                class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                    fill="currentColor" class="size-4">
-                                                    <path fill-rule="evenodd"
-                                                        d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
+                                                </a>
+                                                <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
+                                                    data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                    href="#"
+                                                    class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                        fill="currentColor" class="size-4">
+                                                        <path fill-rule="evenodd"
+                                                            d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
+                        <div id="divRecherche" class="grid grid-cols-1 md:grid-cols-2 gap-2 hidden">
+                            @foreach ($intervenantAll as $i => $item)
+                                <div id="recherche" class="w-full">
+                                    <div
+                                        class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
+                                        <div class="pl-2 pr-5 float-left">
+                                            <img class="w-20 h-20 object-cover border-2 rounded-md"
+                                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
+                                                alt="">
+                                        </div>
 
-                    <div class="p-2">
-                        {{ $intervenantPhases->withPath(request()->url())->links() }}
+                                        <div class="flex justify-between">
+                                            <div>
+                                                <div class="flex items-center">
+                                                    <h3 id="h3Nom"
+                                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
+                                                        {{ $item->noms }}
+                                                    </h3>
+                                                    @if ($item->mail_send == 0)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
+                                                            <path
+                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                                            <path
+                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                                                        </svg>
+                                                    @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
+                                                            <path
+                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                                            <path
+                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                                                        </svg>
+                                                    @endif
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <h3
+                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
+                                                        {{ $item->coupon }}
+                                                    </h3>
+                                                    @if ($item->is_use == 0)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
+                                                            <path fill-rule="evenodd"
+                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
+                                                            <path fill-rule="evenodd"
+                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    @endif
+                                                </div>
+
+                                                <h3 class="text-sm text-gray-900 dark:text-gray-200">
+                                                    {{ $item->email }}
+                                                </h3>
+                                                <div class="flex items-center space-x-4">
+                                                    <h3 id='genre-{{ $i }}'
+                                                        class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
+                                                        data-genre="{{ $item->genre }}">
+                                                    </h3>
+                                                    <h3 class="text-sm text-gray-900 dark:text-white">
+                                                        +243{{ $item->telephone }}
+                                                    </h3>
+                                                </div>
+
+                                            </div>
+                                            <div class="pr-2">
+                                                <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
+                                                    data-modal-target="intervEdit-modal"
+                                                    data-modal-toggle="intervEdit-modal" href="#"
+                                                    class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                        fill="currentColor" class="size-4">
+                                                        <path
+                                                            d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                        <path
+                                                            d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                    </svg>
+
+
+                                                </a>
+                                                <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
+                                                    data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                    href="#"
+                                                    class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                        fill="currentColor" class="size-4">
+                                                        <path fill-rule="evenodd"
+                                                            d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                    </div>
+                    <div id="pagination" class="p-2">
+                        {{ $intervenantPhases->appends(['intervenant_page' => $intervenantPhases->currentPage()])->links() }}
                     </div>
                 </div>
             </div>
@@ -757,111 +884,110 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="critere-content" class="hidden">
-        @if (session('success'))
-            <div id="alert-3"
-                class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
-                role="alert">
-                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <span class="sr-only">Info</span>
-                <div class="ms-3 text-sm font-medium">
-                    {{ session('success') }}
+        <div id="critere-content" class="hidden">
+            @if (session('success'))
+                <div id="alert-3"
+                    class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                    role="alert">
+                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div class="ms-3 text-sm font-medium">
+                        {{ session('success') }}
+                    </div>
+                    <button type="button"
+                        class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                        data-dismiss-target="#alert-3" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
                 </div>
-                <button type="button"
-                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                    data-dismiss-target="#alert-3" aria-label="Close">
-                    <span class="sr-only">Close</span>
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>
-                </button>
+            @endif
+
+            <div class="py-2 ">
+                <div class="flex justify-between items-center">
+                    <a onclick="creer(event, {{ $phase_id }})" data-modal-target="create-modal"
+                        data-modal-toggle="create-modal"
+                        class="ml-auto px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
+                        Ajouter un critère
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor" class="w-8 h-5 pl-2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </a>
+                </div>
             </div>
-        @endif
 
-        <div class="py-2 ">
-            <div class="flex justify-between items-center">
-                <a onclick="creer(event, {{ $phase_id }})" data-modal-target="create-modal"
-                    data-modal-toggle="create-modal"
-                    class="ml-auto px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
-                    Ajouter un critère
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-8 h-5 pl-2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                @foreach ($criteres as $item)
-                    <div class="w-full">
-                        <div
-                            class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                            <div class="flex justify-between pl-3 relative">
-                                <div>
-                                    <h3
-                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
-                                        {{ $item->libelle }}
-                                    </h3>
-                                    <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3">
-                                        Ponderation: {{ $item->ponderation }}
-                                    </h3>
-                                    <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300 pr-6">
-                                        {{ $item->description }}
-                                    </h3>
-                                </div>
-                                <div class="float right">
-                                    <div
-                                        class=" py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white pr-3">
-                                        <a onclick="modifier(event, '{{ route('criteres.update', $item->id) }}', '{{ $item->libelle }}', '{{ $item->description }}', '{{ $item->ponderation }}')"
-                                            data-modal-target="edit-modal" data-modal-toggle="edit-modal"
-                                            class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="size-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                            </svg>
-                                        </a>
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    @foreach ($criteres as $item)
+                        <div class="w-full">
+                            <div
+                                class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
+                                <div class="flex justify-between pl-3 relative">
+                                    <div>
+                                        <h3
+                                            class="text-xl text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                            {{ $item->libelle }}
+                                        </h3>
+                                        <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3">
+                                            Ponderation: {{ $item->ponderation }}
+                                        </h3>
+                                        <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300 pr-6">
+                                            {{ $item->description }}
+                                        </h3>
                                     </div>
-                                    <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        <a onclick="supprimer(event, '{{ route('criteres.destroy', $item->id) }}');"
-                                            data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                            href="#"
-                                            class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                fill="currentColor" class="size-4">
-                                                <path fill-rule="evenodd"
-                                                    d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
+                                    <div class="float right">
+                                        <div
+                                            class=" py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                            <a onclick="modifier(event, '{{ route('criteres.update', $item->id) }}', '{{ $item->libelle }}', '{{ $item->description }}', '{{ $item->ponderation }}')"
+                                                data-modal-target="edit-modal" data-modal-toggle="edit-modal"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="size-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                        <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <a onclick="supprimer(event, '{{ route('criteres.destroy', $item->id) }}');"
+                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                href="#"
+                                                class="py-2 px-2 text-xs font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
 
-                                        </a>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="pr-2 absolute right-0">
+                                    <div class="pr-2 absolute right-0">
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
+                    @endforeach
+                </div>
+                <div class="p-2">
 
-                    </div>
-                @endforeach
-            </div>
-            <div class="p-2">
-
+                </div>
             </div>
         </div>
-    </div>
     </div>
 
     <x-delete :message="__('Voulez-vous vraiment supprimer?')" />
@@ -878,6 +1004,17 @@
         window.onload = function() {
             initial("{{ $status_phase }}");
             printCheck("{{ $type_vote }}");
+
+            let pageCandidat = localStorage.getItem('page-candidat-vote');
+            const divView = document.querySelector('a[data-target="view-content"]')
+            const divCandidat = document.querySelector('a[data-target="candidat-content"]')
+
+
+            if (pageCandidat) {
+                divView.removeAttribute('aria-current');
+                divCandidat.setAttribute('aria-current', 'page');
+            }
+            pagination();
         };
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -893,19 +1030,47 @@
             });
 
             const searchInput = document.getElementById('search');
-            const items = document.querySelectorAll('.grid .w-full');
+            const items = document.querySelectorAll('#recherche');
+            const divPagination = document.getElementById('divPagination');
+            const divRecherche = document.getElementById('divRecherche');
+
             searchInput.addEventListener('input', function() {
                 const query = searchInput.value.toLowerCase();
 
-                items.forEach(item => {
-                    const name = item.querySelector('h3.text-xl').textContent.toLowerCase();
-                    if (name.includes(query)) {
+                let visibiite = false;
+                if (query === '') {
+                    divRecherche.classList.add(
+                        'hidden');
+                    items.forEach(item => {
                         item.style.display = 'block';
+                    });
+                    divPagination.classList.remove(
+                        'hidden');
+                } else {
+                    divRecherche.classList.remove(
+                        'hidden');
+                    items.forEach(item => {
+                        const nameElement = item.querySelector('#h3Nom');
+                        if (nameElement) {
+                            const name = nameElement.textContent.toLowerCase();
+                            if (name.includes(query)) {
+                                item.style.display = 'block';
+                                visibiite = true;
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    if (visibiite) {
+                        divPagination.classList.add(
+                            'hidden');
                     } else {
-                        item.style.display = 'none';
+                        divPagination.classList.remove('hidden');
                     }
-                });
+                }
             });
+
         });
 
         function initial(status_phase) {
@@ -1318,7 +1483,23 @@
             countSelectedIntervenants();
         }
 
-        //FrontEnd design
+        document.addEventListener('DOMContentLoaded', function() {
+
+            let pagination = localStorage.getItem('pagination_vote')
+            if (pagination !== null) {
+                localStorage.setItem('page-candidat-vote', pagination);
+                localStorage.removeItem('pagination_vote');
+            } else {
+                localStorage.removeItem('page-candidat-vote');
+            }
+            
+            document.querySelectorAll('#pagination a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    localStorage.setItem('pagination_vote', '1');
+                });
+            });
+        });
+
         document.querySelectorAll('#tabs ul li a').forEach(tab => {
             tab.addEventListener('click', function(event) {
                 event.preventDefault();
@@ -1353,6 +1534,8 @@
             });
         });
 
-        document.querySelector('#tabs ul li a[aria-current="page"]').click();
+        function pagination() {
+            document.querySelector('#tabs ul li a[aria-current="page"]').click();
+        }
     </script>
 </x-app-layout>

@@ -226,7 +226,10 @@ class PhaseController extends Controller
             // module phase vote
 
             //recuperer les intervenats liés à une phase
-            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->paginate(10, ['*'], 'intervenant_page');
+            $page = $intervenantPhases->currentPage();
+            $intervenantPhasesAll = IntervenantPhase::where('phase_id', $phase_id)->latest()->get();
+            $intervenantAll = [];
             $intervenants = [];
             $intervenantsMails = [];
             foreach ($intervenantPhases as $intervenantPhase) {
@@ -236,6 +239,17 @@ class PhaseController extends Controller
                 $intervenants[] = $intervenant;
             }
             $totalIntervenants = $intervenantPhases->total();
+
+            foreach ($intervenantPhasesAll as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                if ($intervenant) {
+                    $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                    $intervenant->coupon = $intervenantPhase->coupon;
+                    $intervenant->mail_send = $intervenantPhase->mail_send;
+                    $intervenant->is_use = $intervenantPhase->token == 0 ? 0 : 1;
+                    $intervenantAll[] = $intervenant;
+                }
+            }
             //recuperer les criteres liés à une phase
             $phases = $phaseShow;
             $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
@@ -308,25 +322,31 @@ class PhaseController extends Controller
                 return $a->type == 'prive' ? -1 : 1;
             });
             usort($intervenants, function ($a, $b) {
-                return strcmp($a->noms, $b->noms);
+                return strtolower($a->noms) <=> strtolower($b->noms);
             });
 
-            $intervenantsFeminin = array_filter($intervenants, function ($intervenant) {
+            $intervenantsFeminin = array_filter($intervenantAll, function ($intervenant) {
                 return strtolower($intervenant->genre) === 'f';
             });
 
-            foreach ($intervenants as $intervenant) {
+            foreach ($intervenantAll as $intervenant) {
                 $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
                 if ($intervenantPhaseMail->token == 0 && $intervenantPhaseMail->mail_send == 0) {
                     $intervenantsMails[] = $intervenant;
                 }
             }
+            usort($intervenantsMails, function ($a, $b) {
+                return strtolower($a->noms) <=> strtolower($b->noms);
+            });
             $phaseExist = Phase::findOrFail($phase_id);
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants'));
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants', 'intervenantAll', 'page'));
         } else {
             // module phase evaluation
             $phases = $phaseShow;
-            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->get();
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10, ['*'], 'intervenant_page');
+            $intervenantPhasesAll = IntervenantPhase::where('phase_id', $phase_id)->latest()->get();
+            $intervenantAll = [];
+
             $intervenants = [];
             $intervenantsMails = [];
             foreach ($intervenantPhases as $intervenantPhase) {
@@ -343,27 +363,40 @@ class PhaseController extends Controller
                     $intervenants[] = $intervenant;
                 }
             }
+
+            foreach ($intervenantPhasesAll as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                if ($intervenant) {
+                    $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                    $intervenant->coupon = $intervenantPhase->coupon;
+                    $intervenant->mail_send = $intervenantPhase->mail_send;
+                    $intervenant->is_use = $intervenantPhase->token == 0 ? 0 : 1;
+                    $intervenantAll[] = $intervenant;
+                }
+            }
             usort($intervenants, function ($a, $b) {
                 return strcmp($a->noms, $b->noms);
             });
 
-            $intervenantsFeminin = array_filter($intervenants, function ($intervenant) {
+            //return response()->json($intervenants);
+
+            $intervenantsFeminin = array_filter($intervenantAll, function ($intervenant) {
                 return strtolower($intervenant->genre) === 'f';
             });
             $totalQuestions = $questionPhasePagnation->total();
             $intervenantStart = [];
-            foreach ($intervenants as $intervenant) {
+            foreach ($intervenantAll as $intervenant) {
                 $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
                 $intervenantPhaseStart = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
-                if ($intervenantPhaseMail->token == 0) {
+                if ($intervenantPhaseMail->token != 0) {
                     $intervenantStart[] = $intervenant;
-                    if ($intervenantPhaseMail->mail_send == 0) {
-                        $intervenantsMails[] = $intervenant;
-                    }
+                }
+                if ($intervenantPhaseMail->mail_send == 0 && $intervenantPhaseMail->token == 0) {
+                    $intervenantsMails[] = $intervenant;
                 }
             }
             $phaseExist = Phase::findOrFail($phase_id);
-            return view('phases.show', compact('phaseShow', 'phase_id', 'question', 'questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases', 'intervenantsMails', 'phases', 'status_phase', 'intervenantsFeminin', 'intervenantStart', 'passPourcent', 'phaseExist'));
+            return view('phases.show', compact('phaseShow', 'phase_id', 'question', 'questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases', 'intervenantsMails', 'phases', 'status_phase', 'intervenantsFeminin', 'intervenantStart', 'passPourcent', 'phaseExist', 'intervenantAll'));
         }
     }
     public function phaseQuestionDetail(Request $request, $id)
@@ -625,7 +658,6 @@ class PhaseController extends Controller
                             break;
                         }
                     }
-                    
                 }
             }
         }
@@ -857,62 +889,63 @@ class PhaseController extends Controller
         }
     }
 
-    public function updateQuestion(Request $request){
+    public function updateQuestion(Request $request)
+    {
         // dd($request->all());
         $question = $request->question;
         $ponderation = $request->ponderation;
-        $ponderation_ass = 0 ;
+        $ponderation_ass = 0;
         $assertions = $request->assertions;
         $reponse = $request->bonneReponse;
 
         $message_question = "Mise à jour de question a échouée";
         $message_ponderation = "Mise à jour de pondération a échouée";
         $nbre_ass_echec = 0;
-        $plus ="";
+        $plus = "";
         $message_assertion = "Mise à jour d'assertion a échouée";
-        
-        foreach($question as $k => $v){
-            $verif_qst= Question::where('id', $k)->first();
-            if($verif_qst != null){
-                $question_update = Question::where('id', $k)->update(['question'=>$v]);
-                if($question_update > 0){
+
+        foreach ($question as $k => $v) {
+            $verif_qst = Question::where('id', $k)->first();
+            if ($verif_qst != null) {
+                $question_update = Question::where('id', $k)->update(['question' => $v]);
+                if ($question_update > 0) {
                     $message_question = "Question mise à jour avec success";
                 }
 
-                foreach($ponderation as $key => $value){
-                    $verif_qst_pha_pond = QuestionPhase::where('id',$key)->where('question_id',$k)->first();
-                    if($verif_qst_pha_pond != null){
-                        $updat_ponderation = QuestionPhase::where('id',$key)->where('question_id',$k)->update(['ponderation'=>$value]);
-                        if( $updat_ponderation > 0){
+                foreach ($ponderation as $key => $value) {
+                    $verif_qst_pha_pond = QuestionPhase::where('id', $key)->where('question_id', $k)->first();
+                    if ($verif_qst_pha_pond != null) {
+                        $updat_ponderation = QuestionPhase::where('id', $key)->where('question_id', $k)->update(['ponderation' => $value]);
+                        if ($updat_ponderation > 0) {
                             $message_ponderation = "Ponderation de la question mise à jour avec succes";
                         }
                     }
                 }
 
-                foreach($assertions as $c =>$val){
-                    $assertion_verif = Assertion::where('id',$c)->where('question_id',$k)->first();
-                    if($assertion_verif != null){
-                        if($c==$reponse){
+                foreach ($assertions as $c => $val) {
+                    $assertion_verif = Assertion::where('id', $c)->where('question_id', $k)->first();
+                    if ($assertion_verif != null) {
+                        if ($c == $reponse) {
                             $ponderation_ass = 1;
                         }
-                       $assertion_update = Assertion::where('id',$c)->where('question_id',$k)->update(['assertion'=>$val,'ponderation'=>$ponderation_ass]);
-                        if($assertion_update > 0){
+                        $assertion_update = Assertion::where('id', $c)->where('question_id', $k)->update(['assertion' => $val, 'ponderation' => $ponderation_ass]);
+                        if ($assertion_update > 0) {
                             $message_assertion = "Assertion mise à jour avec succes";
-                        }else{
+                        } else {
                             $nbre_ass_echec += 1;
-                            ($nbre_ass_echec >1)?$plus="s":null;
-                            $message_assertion = "Mise à jour de $nbre_ass_echec assertion$plus a échouée";                    
+                            ($nbre_ass_echec > 1) ? $plus = "s" : null;
+                            $message_assertion = "Mise à jour de $nbre_ass_echec assertion$plus a échouée";
                         }
                         $ponderation_ass = 0;
                     }
                 }
-            } 
+            }
         }
         // $message = [
         //     "question"=>$,
         //     "assertion"=>$,
-            
+
         // ];
-       return back()->with('success','Mise à jour effectué avec succes');          
+        return back()->with('success', 'Mise à jour effectué avec succes');
     }
 }

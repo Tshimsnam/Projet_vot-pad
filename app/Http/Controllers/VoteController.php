@@ -292,7 +292,7 @@ class VoteController extends Controller
         usort($intervenants, function ($a, $b) {
             return $b->cote - $a->cote;
         });
-
+        session(['breadPhase' => $phase_id]);
         $phase = Phase::findOrFail($phase_id);
         $evenement = Evenement::findOrFail($phase->evenement_id);
         //return response()->json($intervenants);
