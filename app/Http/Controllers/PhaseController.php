@@ -87,6 +87,7 @@ class PhaseController extends Controller
         $evenement = Evenement::findOrFail($evenement_id);
         $evenement->auto_create = $autoCreate;
         $evenement->save();
+        session(['breadEvenement' => $evenement->id]);
         return redirect()->route('evenements.show', $evenement_id)->with('success', 'Enregistrement reussi');
     }
 
@@ -123,6 +124,8 @@ class PhaseController extends Controller
             'date_fin' => $request->date_fin,
             'duree' => $request->duree
         ]);
+        $evenement = Evenement::find($phase->evenement_id);
+        session(['breadEvenement' => $evenement->id]);
 
         return redirect(route('phase.show', $phase->id))->with('success', 'phase modifiée avec succes');
     }
