@@ -113,7 +113,7 @@ class EvenementController extends Controller
         //     );
         // }
 
-
+        session(['breadEvenement' => $evenements->id]);
         return redirect(route('phase.create', $evenements))->with('success', 'Evénement enregistré et ajout les details de la première phase');
     }
 
@@ -172,6 +172,7 @@ class EvenementController extends Controller
                 'status' => 'en attente',
             ]
         );
+        session(['breadEvenement' => $evenement->id]);
 
         return redirect(route('evenements.index'))->with('success', 'Modification reussie');
     }
