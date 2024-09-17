@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Jury;
+use App\Models\Vote;
 use App\Models\Intervenant;
 use Illuminate\Http\Request;
 use App\Models\IntervenantPhase;
@@ -59,6 +61,8 @@ class IntervenantPhaseController extends Controller
 
         return IntervenantPhaseResource::collection($intervenants);
     }
+
+
 
     /**
      * Update the specified resource in storage.
