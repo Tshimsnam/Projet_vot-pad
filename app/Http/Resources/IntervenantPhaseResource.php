@@ -27,6 +27,7 @@ class IntervenantPhaseResource extends JsonResource
                 'token' => $this->intervenantToken,
                 'fin_evaluation' => $this->finEvaluation,
                 'duree_restante' => $this->dureeRestante,
+                'isDone' => $this->isDone
             ];
     }
 }
