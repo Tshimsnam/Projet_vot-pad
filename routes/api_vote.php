@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\api\JuryController;
-use App\Http\Controllers\API\VoteController;
+use App\Http\Controllers\Api\JuryController;
+use App\Http\Controllers\Api\VoteController;
 use Illuminate\Support\Facades\Route;
 
 
