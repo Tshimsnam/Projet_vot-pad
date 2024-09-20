@@ -19,11 +19,13 @@ class CandidatMail extends Mailable
     public $noms;
     public $heure;
     public $isVote;
+    public $lien;
+    public $nonPresent;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($subject, $coupon, $date, $noms, $heure, $isVote)
+    public function __construct($subject, $coupon, $date, $noms, $heure, $isVote, $lien, $nonPresent)
     {
         $this->subject = $subject;
         $this->coupon = $coupon;
@@ -31,6 +33,8 @@ class CandidatMail extends Mailable
         $this->noms = $noms;
         $this->heure = $heure;
         $this->isVote = $isVote;
+        $this->lien = $lien;
+        $this->nonPresent = $nonPresent;
     }
 
     /**
@@ -65,6 +69,8 @@ class CandidatMail extends Mailable
                     'date' => $this->date,
                     'email' => $this->noms,
                     'heure' => $this->heure,
+                    'lien' => $this->lien,
+                    'nonPresent' => $this->nonPresent,
                 ],
             );
         }

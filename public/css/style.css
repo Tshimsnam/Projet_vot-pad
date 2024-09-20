@@ -30,12 +30,8 @@
 }
 
 @media (max-width: 870px) {
-    #loginUser {
-        background-image: url('/img/bg_auth_mobile.png');
-    }
-
-    #voteUser {
-        background-image: url('/img/bg_vote_mobile.png');
+    #loginUser.light {
+        background-image: url('/img/bg_login_light_mobile.svg');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -44,6 +40,40 @@
         min-height: 100vh;
         box-sizing: border-box;
     }
+
+    #loginUser.dark {
+        background-image: url('/img/bg_login_dark_mobile.svg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        width: 100%;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    #voteUser.light {
+        background-image: url('/img/bg_exam_light.svg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        width: 100%;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    #voteUser.dark {
+        background-image: url('/img/bg_exam_dark.svg');
+        background-size: cover;
+        /* Pour couvrir tout le conteneur */
+        background-repeat: no-repeat;
+        /* Pour éviter la répétition */
+        height: 100vh;
+        /* Ajustez selon vos besoins */
+        background-attachment: fixed;
+    }
+
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
@@ -126,7 +156,7 @@ form.sign-in-form {
     right: 48%;
     transform: translateY(-50%);
     background-image: linear-gradient(#ff9119 20%,
-    #ff90198e 80%);
+            #ff90198e 80%);
 
     transition: 1.8s ease-in-out;
     border-radius: 50%;

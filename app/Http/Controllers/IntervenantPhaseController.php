@@ -91,6 +91,12 @@ class IntervenantPhaseController extends Controller
         $firstCandidat = $request->candFirst;
         $lastCandidat = $request->candLast;
         $isVote = $request->isVote;
+        $nonPresent = $request->nonPresent;
+
+        $currentUrl = $request->fullUrl();
+        $parsedUrl = parse_url($currentUrl);
+        $hostPort = $parsedUrl['host'] . ':' . $parsedUrl['port'];
+        $lien = $hostPort . '/votePad-form';
 
         $firstIntervenat = Intervenant::where('id', $firstCandidat)->pluck('noms')->first();
         $lastIntervenat = Intervenant::where('id', $lastCandidat)->pluck('noms')->first();
@@ -111,7 +117,7 @@ class IntervenantPhaseController extends Controller
                     $noms = $intervenant->noms;
                     $email = $intervenant->email;
 
-                    Mail::to($email)->send(new CandidatMail($objet, $coupon, $date, $noms, $heureTest, $isVote));
+                    Mail::to($email)->send(new CandidatMail($objet, $coupon, $date, $noms, $heureTest, $isVote, $lien, $nonPresent));
                     $mailEnvoye = $intervenantPhase->mail_send;
                     $intervenantPhase->mail_send = $mailEnvoye + 1;
                     $intervenantPhase->save();

@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/votePad-form', [IntervenantController::class, 'form'])->name('form-authenticate');
 Route::post('/votePad/evaluation', [IntervenantController::class, 'authenticate'])->name('authenticate');
 
-Route::get('/votePad', [JuryController::class, 'form'])->name('jury-form');
+Route::get('/Del_votePad', [JuryController::class, 'form'])->name('jury-form');
 Route::post('/votePad/voting', [VoteController::class, 'authenticate'])->name('jury-authenticate');
 Route::get('/votePad/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}/{nombreUser}/{evenement}', [VoteController::class, 'show'])->name('jury.success')->middleware(JuryTokenIsValid::class);;
 

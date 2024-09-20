@@ -2,7 +2,7 @@
     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full sm:rounded-lg bg-white rounded-lg shadow dark:bg-gray-800"
         style="width: 90%;">
-        <div class="flex items-center justify-between p-2 md:p-5 border-b rounded-t dark:border-gray-600">
+        <div class="flex items-center justify-between p-2 md:p-2 border-b rounded-t dark:border-gray-600">
             <h3 id="insertH3" class="px-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Gestion de mails</h3>
             </h3>
@@ -22,7 +22,7 @@
                 @csrf
                 <input type="hidden" name="phase" id="phaseId" value="">
                 <input type="hidden" name="isVote" id="isVote" value="0">
-                <div class="mb-5">
+                <div class="mb-3">
                     <label for="objet" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Objet du
                         mail</label>
                     <input type="text" id="objet" name="objet"
@@ -86,6 +86,17 @@
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <div
+                            class="flex justify-between py-2 px-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg flex items-center dark:bg-gray-700 dark:border-gray-600 mt-3">
+                            <label for="nonPresent"
+                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Cochez si le test est
+                                hors ODC</label>
+                            <input id="nonPresent" type="checkbox" value="interieur" name="nonPresent"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+
+                        </div>
+                    </div>
                     <div class="flex justify-between items-center mt-4 sm:mt-6">
                         <button id="valider" type="submit"
                             class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
@@ -115,5 +126,13 @@
             selectedCount = lastIndex - firstIndex + 1;
         }
         document.getElementById('selectedCount').innerText = selectedCount;
+        const nonPresenInput = document.getElementById('nonPresent')
+        document.getElementById("nonPresent").addEventListener("change", function() {
+            if (this.checked) {
+                nonPresenInput.value = "exterieur"
+            } else {
+                nonPresenInput.value = "interieur"
+            }
+        });
     }
 </script>
