@@ -244,6 +244,12 @@ class IntervenantController extends Controller
             if (!$intervenantPhase) {
                 return redirect(route('form-authenticate'))->with('unsuccess', 'Le coupon inséré est invalide.');
             } else {
+                $intervenantPhaseCoupon = $intervenantPhase->coupon;
+                $slug = substr($intervenantPhaseCoupon, 0, 3);
+                $phaseTest = Phase::where('slug', $slug)->first();
+                if($phaseTest->statut != 'En cours'){
+                    return redirect(route('form-authenticate'))->with('unsuccess', 'Vous pouvez pas accéder à l\'évaluation. Veuillez patienter');
+                }
                 $intervenantToken = $intervenantPhase->token;
                 if ($intervenantToken != 0) {
                     $intervenantPhaseCoupon = $intervenantPhase->coupon;
