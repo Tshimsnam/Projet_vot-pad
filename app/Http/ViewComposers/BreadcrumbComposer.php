@@ -46,7 +46,7 @@ class BreadcrumbComposer
             case 'evenements.create':
                 $breadcrumbs = [
                     ['title' => 'Evénements', 'url' => route('evenements.index')],
-                    ['title' => 'Créer Evénement', 'url' => route('evenements.create')]
+                    ['title' => 'Configuration', 'url' => route('evenements.create')]
                 ];
                 break;
 
