@@ -137,9 +137,10 @@
                         <div class="w-full">
                             <div
                                 class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pl-3 relative">
-                                    <div>
-                                        <h3 class="text-xl text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:pl-3 relative">
+                                    <div class="pl-3">
+                                        <h3
+                                            class="text-2xl font-bold text-gray-900 whitespace-nowrap dark:text-white pr-3">
                                             {{ $item->nom }}
                                         </h3>
                                         <h3
@@ -147,23 +148,39 @@
                                             {{ $item->description }}
                                         </h3>
                                     </div>
-                                    <div>
-                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-white pr-3">
-                                            {{ $item->type }}
-                                        </h3>
-                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
-                                            {{ $item->statut }}
-                                        </h3>
+                                    <div class="flex justify-between">
+                                        <div class="pl-3 md:pl-5 col-span-1 md:col-span-1">
+                                            <h3
+                                                class="text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                                Type
+                                            </h3>
+                                            <h3 class="text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                                {{ $item->type }}
+                                            </h3>
+                                        </div>
+                                        <div class="pl-3 md:pl-5 col-span-1 md:col-span-1">
+                                            <h3
+                                                class="text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                                Status
+                                            </h3>
+                                            <h3 class="text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                                {{ $item->statut }}
+                                            </h3>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-white pr-3">
-                                            Début: {{ $item->date_debut }}
-                                        </h3>
-                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
-                                            Fin: {{ $item->date_fin }}
-                                        </h3>
+                                    <div class="pl-3 md:flex md:justify-center">
+                                        <div class="">
+                                            <h3
+                                                class="text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                                Début: {{ $item->date_debut }}
+                                            </h3>
+                                            <h3
+                                                class="text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                                Fin: {{ $item->date_fin }}
+                                            </h3>
+                                        </div>
                                     </div>
-                                    <div class="flex justify-end items-center">
+                                    <div class="pl-3 flex md:justify-end items-center">
                                         <div
                                             class="py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white pr-3">
                                             <a href="{{ route('phase.show', $item->id) }}"

@@ -49,28 +49,35 @@
                     <div class="w-full">
                         <div
                             class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                            <div class="grid grid-cols-3 gap-28 pl-3 relative">
-                                <div>
-                                    <h3 class="text-xl text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:pl-3 relative">
+                                <div class="pl-3 col-span-1">
+                                    <h3
+                                        class="text-2xl font-bold text-gray-900 whitespace-nowrap dark:text-white md:pr-3">
                                         {{ $item->nom }}
                                     </h3>
-                                    <h3
-                                        class=" text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize overflow-hidden">
-                                        {{ $item->description }}
-                                    </h3>
                                 </div>
-                                <div class="pl-5">
-                                    <h3 class=" text-gray-900 whitespace-nowrap dark:text-white pr-3">
-                                        {{ $item->type }}
-                                    </h3>
-                                    <h3 class=" text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
-                                        {{ $item->status }}
-                                    </h3>
+                                <div class="flex justify-between">
+                                    <div class="pl-3 md:pl-5 col-span-1 md:col-span-1">
+                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                            Type
+                                        </h3>
+                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                            {{ $item->type }}
+                                        </h3>
+                                    </div>
+                                    <div class="pl-3 md:pl-5 col-span-1 md:col-span-1">
+                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-gray-300 pr-3 capitalize">
+                                            Status
+                                        </h3>
+                                        <h3 class="text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                            {{ $item->status }}
+                                        </h3>
+                                    </div>
                                 </div>
-                                <div class="ml-auto">
-                                    <div class=" py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white pr-3">
+                                <div class="flex md:justify-end items-center">
+                                    <div class="py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white pr-3">
                                         <a href="{{ route('evenements.show', $item->id) }}"
-                                            class="px-3 text-sm font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                            class="px-3 text-sm font-medium text-center inline-flex items-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                                                 fill="currentColor" class="size-4">
                                                 <path fill-rule="evenodd"
@@ -85,6 +92,7 @@
                             </div>
 
                         </div>
+                    </div>
                 @endforeach
             </div>
             <div class="p-2">
