@@ -29,7 +29,7 @@ class EvaluationExcelController extends Controller
 
                 $intervenant_resultat = array();
                 $tableau = array();
-                $intervants = DB::table('intervenants')
+                $intervenants = DB::table('intervenants')
                     ->join('intervenant_phases', "intervenant_phases.intervenant_id", "=", "intervenants.id")
                     ->select(
                         'intervenants.id as id',
@@ -39,9 +39,11 @@ class EvaluationExcelController extends Controller
                         'intervenants.genre as genre'
                     )
                     ->where("intervenant_phases.phase_id", "=", $phase[0]->id)
+                    ->where("intervenant_phases.token", "<>", 0)  // Condition pour token différent de 0
                     ->get();
 
-                foreach ($intervants as $key => $value) {
+
+                foreach ($intervenants as $key => $value) {
                     $point_inter = 0;
                     $cote = Reponse::where('phase_id', '=', $phase[0]->id)->where('intervenant_id', '=', $value->id)->get();
                     foreach ($cote as $k => $v) {

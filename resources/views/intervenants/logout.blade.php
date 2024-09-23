@@ -1,16 +1,19 @@
 @extends('layouts.template')
 @section('content')
-    <section id="voteUser" class="px-4 md:px-8">
-        <div class="mb-2 pt-40 flex justify-center">
+    <section id="voteUser" class="px-4 md:px-8 flex flex-col items-center justify-center h-screen">
+        <div class="mb-2 flex justify-center">
             <h2
-                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold text-white">
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
                 <img class="w-12 h-12" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
                     alt="logo">
                 otePad2
             </h2>
         </div>
-        <div class="flex items-center h-full justify-center">
-            <label for="" class="text-6xl text-gray-900 dark:text-white"> {{ $message }}</label>
+        <div class="text-center">
+            <label for="" class="text-2xl flex justify-center text-gray-900 dark:text-white">
+                Merci d'avoir passé l'examen en ligne. Nous allons examiner vos résultats avec attention <br> et vous serez
+                contacté si votre candidature est retenue pour la prochaine étape.
+            </label>
             <form action="{{ route('inter.logout') }}" id="logout" method="get">
                 @method('get')
                 @csrf
@@ -18,6 +21,7 @@
             </form>
         </div>
     </section>
+
 
     <script>
         function getDarkMode() {
@@ -68,7 +72,7 @@
         }
 
         window.onload = function() {
-            let duration = 5;
+            let duration = 10;
             element = document.getElementById('#element');
             startCountDown(--duration, element);
         };

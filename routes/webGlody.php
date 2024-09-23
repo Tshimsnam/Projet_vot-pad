@@ -1,20 +1,21 @@
 <?php
 
-use App\Http\Controllers\CritereController;
-use App\Http\Controllers\EvaluationExcelController;
-use App\Http\Controllers\EvenementController;
-use App\Http\Controllers\IntervenantController;
-use App\Http\Controllers\IntervenantPhaseController;
-use App\Http\Controllers\JuryController;
-use App\Http\Controllers\PhaseController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\QRCodeController;
-use App\Http\Controllers\VoteController;
-use App\Http\Controllers\VoteExcelController;
-use App\Http\Middleware\JuryTokenIsValid;
 use App\Mail\CandidatMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JuryController;
+use App\Http\Controllers\VoteController;
+use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\PhaseController;
+use App\Http\Middleware\JuryTokenIsValid;
+use App\Http\Controllers\QRCodeController;
+use App\Http\Controllers\CritereController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\VoteExcelController;
+use App\Http\Controllers\IntervenantController;
+use App\Http\Controllers\EvaluationExcelController;
+use App\Http\Controllers\IntervenantPhaseController;
 
 
 Route::middleware('auth')->group(function () {
@@ -49,3 +50,13 @@ Route::get('/intro', [IntervenantPhaseController::class, 'intro']);
 
 Route::get('/vote-excel/{phase_id}', [VoteExcelController::class, 'export_excel'])->name('export_vote');
 Route::get('/evaluation-excel/{phase_id}', [EvaluationExcelController::class, 'export_excel'])->name('export_evaluation');
+
+Route::get('/question_format', function () {
+    $filePath = public_path('fichiers/format_question.xlsx');
+    return Response::download($filePath, 'format_question.xlsx');
+})->name('question_format');
+
+Route::get('/candidat_format', function () {
+    $filePath = public_path('fichiers/format_candidat.xlsx');
+    return Response::download($filePath, 'format_candidat.xlsx');
+})->name('candidat_format');

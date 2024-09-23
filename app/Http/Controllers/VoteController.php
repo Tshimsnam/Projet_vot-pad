@@ -279,7 +279,10 @@ class VoteController extends Controller
         }
         foreach ($intervenants as $intervenant) {
             if ($totalVote != 0) {
-                $pourcentage = ($intervenant->cote * 100) / $totalVote;
+                $pourcentage = 0;
+                if($intervenant->nombreJury){
+                    $pourcentage = ($intervenant->cote * 100) / ($ponderationTotale * $intervenant->nombreJury);
+                }
                 $intervenant->pourcentage = round($pourcentage, 2);
                 $intervenant->ponderation = ($ponderationTotale * $JuryByCandidat);
             } else {
@@ -290,7 +293,7 @@ class VoteController extends Controller
 
 
         usort($intervenants, function ($a, $b) {
-            return $b->cote - $a->cote;
+            return $b->pourcentage - $a->pourcentage;
         });
         session(['breadPhase' => $phase_id]);
         $phase = Phase::findOrFail($phase_id);

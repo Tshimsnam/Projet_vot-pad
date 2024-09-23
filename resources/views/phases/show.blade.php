@@ -765,7 +765,7 @@
                                         <div class="flex items-center flex-wrap">
                                             <h3
                                                 class="text-sm font-bold text-gray-900 dark:text-white capitalize dark:text-gray-300 flex-1 overflow-hidden">
-                                                Question {{ $i++ }} : {{ $item->question->question }}
+                                                Question {{ $i++ }} : {!! nl2br(e($item->question->question)) !!}
                                             </h3>
                                             <div class="ml-14 flex-shrink-0">
                                             </div>

@@ -108,10 +108,13 @@ class VoteExcelController extends Controller
 
             $intervenants[] = $intervenant;
         }
-        
+
         foreach ($intervenants as $intervenant) {
             if ($totalVote != 0) {
-                $pourcentage = ($intervenant->cote * 100) / $totalVote;
+                $pourcentage = 0;
+                if ($intervenant->nombreJury) {
+                    $pourcentage = ($intervenant->cote * 100) / ($ponderationTotale * $intervenant->nombreJury);
+                }
                 $intervenant->pourcentage = round($pourcentage, 2);
                 $intervenant->ponderation = ($ponderationTotale * $JuryByCandidat);
             } else {
@@ -120,9 +123,12 @@ class VoteExcelController extends Controller
             }
         }
 
+        $intervenants = array_filter($intervenants, function ($intervenant) {
+            return $intervenant->nombreJury > 0;
+        });
 
         usort($intervenants, function ($a, $b) {
-            return $b->cote - $a->cote;
+            return $b->pourcentage - $a->pourcentage;
         });
         $phase = Phase::findOrFail($phase_id);
         $evenement = Evenement::findOrFail($phase->evenement_id);
