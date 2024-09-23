@@ -227,7 +227,7 @@
     </div>
 
     <div class="">
-        <div id="view-content" class="hidden pt-2 flex">
+        <div id="view-content" class="hidden grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4">
             <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mr-2">
                 <div class="flex justify-between">
                     <div class="flex items-center">
