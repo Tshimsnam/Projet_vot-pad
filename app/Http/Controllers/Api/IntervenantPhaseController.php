@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 use App\Models\IntervenantPhase;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IntervenantPhaseResource;
-use App\Models\Jury;
-use App\Models\Vote;
 
 class IntervenantPhaseController extends Controller
 {

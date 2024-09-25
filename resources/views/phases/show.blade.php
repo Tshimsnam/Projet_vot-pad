@@ -432,7 +432,7 @@
                             </svg>
                         </a>
 
-                        <a onclick="passation(event, '{{ route('passation') }}', '{{ $phase_id }}', {{ $passPourcent }}, '{{ $phaseExist->type }}')"
+                        <a onclick="passation(event, '{{ route('passation') }}', '{{ $phase_id }}', '{{ $phaseExist->type }}', {{ $passPourcent }})"
                             data-modal-target="pass-modal" data-modal-toggle="pass-modal"
                             class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
                             Règle de passation
@@ -1270,7 +1270,7 @@
 
         }
 
-        function passation(event, url, phaseId, passPourcent, typePhase) {
+        function passation(event, url, phaseId, typePhase, passPourcent) {
             event.preventDefault();
             const form = document.querySelector('#pass-modal form')
             form.setAttribute('action', url);
@@ -1293,6 +1293,8 @@
             const ajoutPass = document.querySelector('#pass-modal #ajoutPass');
             ajoutPass.style.display = 'none';
             passPourcentCheck.checked = false;
+
+            console.log(passPourcent)
             if (passPourcent != null) {
                 passPourcentCheck.style.display = 'none';
                 pourcent_candidat.style.display = 'none';
