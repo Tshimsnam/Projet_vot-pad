@@ -24,7 +24,12 @@
                 <div class="shadow-md rounded-lg bg-gray-200 dark:bg-slate-900 max-h-64 md:max-h-80 overflow-y-auto">
                     <h2 class="text-xl text-center mt-2 font-extrabold dark:text-white">INSTRUCTION</h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400 px-8 pt-8">
-                        Les questions sont regroupées suivant ces quatre thématiques : <br>
+                        Le présent questionnaire a été élaboré par le cabinet Engineering Architecture and Services, «
+                        EASS SARL » en sigle avec le soutien de son partenaire Orange Digital Center, « ODC RDC ». <br><br>
+
+                        Il a pour objectif d’évaluer le niveau de connaissances de chaque candidat sollicitant une
+                        admission au module de formation « Auditeur des systèmes d’information » de ODC RDC.<br>
+                        Les questions sont regroupées suivant ces quatre thématiques :<br>
                         A. Réseau informatique ;<br>
                         B. Systèmes d’exploitation ;<br>
                         C. Systèmes de gestion des bases des données (SGBD) ;<br>
@@ -40,8 +45,7 @@
                         automatiquement envoyées à ODC RDC pour traitement.<br><br>
 
                         ODC RDC s’engage à traiter les données qu’il collectera dans le cadre de cette évaluation
-                        conformément au cadre légal congolais encadrant la protection des données à caractère
-                        personnel.<br><br>
+                        conformément au cadre légal congolais encadrant la protection des données à caractère personnel.<br><br>
                     </p>
                 </div>
             </div>
