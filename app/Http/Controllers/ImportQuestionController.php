@@ -17,6 +17,6 @@ class ImportQuestionController extends Controller
         // Excel::import(new QuestionImport, request()->file('fichier'));
         Excel::import(new QuestionImport, request()->file('fichier'));
         // dd('ici', request()->all());
-        return back()->with('success','Enregistrement reussi');
+        return back()->with('success','Enregistrement reussi avec succès');
     }
 }
