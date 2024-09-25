@@ -20,16 +20,44 @@
 <body id="voteUser" class="select-none">
     @if (!session('debut'))
         <div class="containe">
-            <div class="flex justify-center items-center h-screen ml-4 mr-4 md:ml-20 md:mr-20">
-                <div class="shadow-md rounded-lg bg-gray-200 dark:bg-slate-900 pt-6 pb-6 md:pt-8 md:pb-8">
+            <div class="flex justify-center items-center mt-16 mb-3 ml-4 mr-4 md:ml-20 md:mr-20">
+                <div class="shadow-md rounded-lg bg-gray-200 dark:bg-slate-900 max-h-64 md:max-h-80 overflow-y-auto">
+                    <h2 class="text-xl text-center mt-2 font-extrabold dark:text-white">INSTRUCTION</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 px-8 pt-8">
+                        Les questions sont regroupées suivant ces quatre thématiques : <br>
+                        A. Réseau informatique ;<br>
+                        B. Systèmes d’exploitation ;<br>
+                        C. Systèmes de gestion des bases des données (SGBD) ;<br>
+                        D. Programmation informatique ou applications.<br><br>
+
+                        Cette évaluation est faite dans la perspective de calibrer le contenu du module au niveau moyen
+                        et identifier les axes sur lesquels insisté au cours de l’exécution de la formation. De plus,
+                        ODC RDC se réserve le droit de faire usage de ces résultats à des fins internes.<br><br>
+
+                        L’évaluation est composée de questions à choix multiple. A chacune de ces dernières est associé
+                        une et une seule réponse. Le candidat dispose d’un maximum de 25 minutes pour y répondre. Passé
+                        ce délai le questionnaire ne sera plus accessible et les réponses renseignées seront
+                        automatiquement envoyées à ODC RDC pour traitement.<br><br>
+
+                        ODC RDC s’engage à traiter les données qu’il collectera dans le cadre de cette évaluation
+                        conformément au cadre légal congolais encadrant la protection des données à caractère
+                        personnel.<br><br>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="containe">
+            <div class="flex justify-center items-center  ml-4 mr-4 md:ml-20 md:mr-20">
+                <div class="shadow-md rounded-lg bg-gray-200 dark:bg-slate-900 mt-2 mb-3 pb-3 md:pt-3 md:pb-6">
                     <div class="questionnaire ">
                         <div
                             class="justify-center items-center text-center grid gap-1 sm:grid-cols-1 lg:grid-cols-2 md:grid-cols-2">
                             <div class="">
                                 <div class="md:pl-10">
-                                    <div class="flex justify-center">
+                                    <div class="flex justify-center mt-3">
                                         <h2
-                                            class=" text-3xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
+                                            class=" text-3xl font-extrabold leading-none tracking-tight flex items-center mb-3 text-2xl font-semibold dark:text-white">
                                             <img class="w-10 h-10"
                                                 src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
                                                 alt="logo">
@@ -37,7 +65,7 @@
                                         </h2>
                                     </div>
                                     <h5
-                                        class="px-6 mb-2 text-sm md:text-xl font-normal text-gray-500 dark:text-gray-400">
+                                        class="px-6 mb-2 text-sm md:text-[15px] font-normal text-gray-500 dark:text-gray-400">
                                         Rassurez-vous
                                         d'avoir
                                         répondu et soumis vos réponses avant de quitter la page d'évaluation. <br>
@@ -57,7 +85,7 @@
                                             value="{{ Session::get('intervenant_id') }}">
                                         <button type="submit" class="py-2 rounded-lg">
                                             <img src="{{ asset('img/button_demarer.png') }}" alt=""
-                                                class="rounded-lg w-[300px] h-[50px] md:w-[400px] md:h-[120px]">
+                                                class="rounded-lg w-[300px] h-[50px] md:w-[300px] md:h-[80px]">
                                         </button>
                                     </form>
                                 </div>
