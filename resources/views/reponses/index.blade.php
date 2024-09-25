@@ -223,13 +223,15 @@
                             </svg>
                         </div>
                         <button type="submit" onclick="cleanstorage()" id="envoi_reponse"
-                            class="hidden items-center justify-center p-8 px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            class="hidden items-center justify-center p-8 px-4 h-10 text-base font-medium text-white bg-green-800 border-0 border-s border-green-700 rounded-e hover:bg-green-900 dark:bg-green-800 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-700 dark:hover:text-white">
                             Terminer
-                            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                class="size-6 pl-2">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                                    clip-rule="evenodd" />
                             </svg>
+
                         </button>
                     </div>
                 </form>
@@ -384,7 +386,8 @@
                     buttonSuivant.className = "hidden";
                     placeQuestion.innerHTML = "Question: " + tableauJSON.length + " / " + tableauJSON.length;
                     buttonTerminer.className =
-                        "flex items-center justify-center ml-3 md:ml-6 px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        "flex items-center justify-center ml-3 md:ml-6 px-4 h-10 text-base font-medium text-white bg-green-800 border-0 border-s border-green-700 rounded-e hover:bg-green-900 dark:bg-green-800 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-700 dark:hover:text-white"
+
                     console.log('fin, derniere question')
 
                 } else {
