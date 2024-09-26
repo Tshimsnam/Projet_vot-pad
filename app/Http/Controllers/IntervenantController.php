@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Phase;
-use App\Models\Groupe;
-use App\Models\Intervenant;
-use Illuminate\Http\Request;
-use App\Models\IntervenantPhase;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Session;
-use Spatie\SimpleExcel\SimpleExcelReader;
 use App\Http\Requests\StoreIntervenantRequest;
 use App\Http\Requests\UpdateIntervenantRequest;
+use App\Models\Groupe;
+use App\Models\Intervenant;
+use App\Models\IntervenantPhase;
+use App\Models\Phase;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\SimpleExcel\SimpleExcelReader;
 
 class IntervenantController extends Controller
 {
@@ -75,7 +76,7 @@ class IntervenantController extends Controller
                         }
                         $couponPhase = $slug . $coupon;
                     } while (IntervenantPhase::where('coupon', $couponPhase)->exists());
-                    
+
                     $intervenantPhaseNew = IntervenantPhase::create([
                         'intervenant_id' => $intervenantId,
                         'phase_id' => $phaseId,
@@ -153,6 +154,8 @@ class IntervenantController extends Controller
                         'created_at' => $now,
                         'updated_at' => $now,
                     ]);
+                } else {
+                    $intervenantPhaseNew = true;
                 }
             }
         }
@@ -247,11 +250,20 @@ class IntervenantController extends Controller
                 $intervenantPhaseCoupon = $intervenantPhase->coupon;
                 $slug = substr($intervenantPhaseCoupon, 0, 3);
                 $phaseTest = Phase::where('slug', $slug)->first();
-                if($phaseTest->statut != 'En cours'){
-                    return redirect(route('form-authenticate'))->with('unsuccess', 'Vous pouvez pas accéder à l\'évaluation. Veuillez patienter');
-                }
                 $intervenantToken = $intervenantPhase->token;
+                $intervenantTerminer = $intervenantPhase->terminer;
+                if ($phaseTest->statut != 'En cours') {
+                    return redirect(route('form-authenticate'))->with('unsuccess', 'Vous ne pouvez pas encore accéder à l\'évaluation. Veuillez patienter');
+                }
+
                 if ($intervenantToken != 0) {
+                    $fin_evaluation = $intervenantPhase->fin_evaluation;
+                    $valider_evaluation = $intervenantPhase->terminer;
+                    $date_carbon = Carbon::now();
+                    $date_actuelle = $date_carbon->format('Y-m-d H:i:s');
+                    if (($date_actuelle > $fin_evaluation && $fin_evaluation != null) || $valider_evaluation != null) {
+                        return redirect(route('form-authenticate'))->with('unsuccess', 'Désolé(e), vous avez déjà passé l\'évaluation.');
+                    }
                     $intervenantPhaseCoupon = $intervenantPhase->coupon;
                     $phaseSlug = substr($intervenantPhaseCoupon, 0, 3);
                     $phase = Phase::select('id')->where('slug', $phaseSlug)->first();
@@ -260,8 +272,6 @@ class IntervenantController extends Controller
 
                     Session::put('phase_id', $IdPhase);
                     Session::put('intervenant_id', $IdIntervenant);
-
-                    // dd(session('IdPhase'));
 
                     return to_route('reponses.index')->with(compact('phase', 'intervenant'));
                 } else {

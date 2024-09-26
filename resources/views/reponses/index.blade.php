@@ -21,31 +21,11 @@
     @if (!session('debut'))
         <div class="containe">
             <div class="flex justify-center items-center mt-16 mb-3 ml-4 mr-4 md:ml-20 md:mr-20">
-                <div class="shadow-md rounded-lg bg-gray-200 dark:bg-slate-900 max-h-64 md:max-h-80 overflow-y-auto">
+                <div
+                    class="shadow-md rounded-lg bg-gray-200 dark:bg-slate-900 w-[100%] max-h-64 md:max-h-80 overflow-y-auto">
                     <h2 class="text-xl text-center mt-2 font-extrabold dark:text-white">INSTRUCTION</h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400 px-8 pt-8">
-                        Le présent questionnaire a été élaboré par le cabinet Engineering Architecture and Services, «
-                        EASS SARL » en sigle avec le soutien de son partenaire Orange Digital Center, « ODC RDC ». <br><br>
-
-                        Il a pour objectif d’évaluer le niveau de connaissances de chaque candidat sollicitant une
-                        admission au module de formation « Auditeur des systèmes d’information » de ODC RDC.<br>
-                        Les questions sont regroupées suivant ces quatre thématiques :<br>
-                        A. Réseau informatique ;<br>
-                        B. Systèmes d’exploitation ;<br>
-                        C. Systèmes de gestion des bases des données (SGBD) ;<br>
-                        D. Programmation informatique ou applications.<br><br>
-
-                        Cette évaluation est faite dans la perspective de calibrer le contenu du module au niveau moyen
-                        et identifier les axes sur lesquels insisté au cours de l’exécution de la formation. De plus,
-                        ODC RDC se réserve le droit de faire usage de ces résultats à des fins internes.<br><br>
-
-                        L’évaluation est composée de questions à choix multiple. A chacune de ces dernières est associé
-                        une et une seule réponse. Le candidat dispose d’un maximum de 25 minutes pour y répondre. Passé
-                        ce délai le questionnaire ne sera plus accessible et les réponses renseignées seront
-                        automatiquement envoyées à ODC RDC pour traitement.<br><br>
-
-                        ODC RDC s’engage à traiter les données qu’il collectera dans le cadre de cette évaluation
-                        conformément au cadre légal congolais encadrant la protection des données à caractère personnel.<br><br>
+                        {!! nl2br(e($phase->description)) !!}
                     </p>
                 </div>
             </div>
@@ -87,10 +67,20 @@
                                             value="{{ Session::get('phase_id') }}">
                                         <input type="text" name="intervenant_id" id="getIntervenantId" class="hidden"
                                             value="{{ Session::get('intervenant_id') }}">
-                                        <button type="submit" class="py-2 rounded-lg">
+                                        <button type="submit"
+                                            class="w-full text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg text-xl md:text-xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40  mb-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor" class="size-7 mr-2">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 2a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0v-7.5A.75.75 0 0 1 10 2ZM5.404 4.343a.75.75 0 0 1 0 1.06 6.5 6.5 0 1 0 9.192 0 .75.75 0 1 1 1.06-1.06 8 8 0 1 1-11.313 0 .75.75 0 0 1 1.06 0Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            DEMARRER
+                                        </button>
+                                        {{-- <button type="submit" class="py-2 rounded-lg">
                                             <img src="{{ asset('img/button_demarer.png') }}" alt=""
                                                 class="rounded-lg w-[300px] h-[50px] md:w-[300px] md:h-[80px]">
-                                        </button>
+                                        </button> --}}
                                     </form>
                                 </div>
                             </div>
