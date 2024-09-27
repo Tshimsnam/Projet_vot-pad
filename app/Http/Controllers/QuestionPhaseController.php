@@ -121,7 +121,6 @@ class QuestionPhaseController extends Controller
                 $tableau['assertion']=[$assertion];//tabeau pour assertion
                 array_push($questionAssetionTab, $tableau);
             }
-            shuffle($questionAssetionTab);
     
             foreach ($questionAssetionTab as $key => $value) {
                 //value a deux tableaux [question] et [assertion] mais assertion un objet
@@ -175,7 +174,7 @@ class QuestionPhaseController extends Controller
                                 session(['phaseId'      => $request->phase_id,
                                         'intervenantId' =>$request->intervenant_id]);
                                 return Redirect::back()
-                                        ->with('success','Bonne chance')
+                                        ->with('success','Tenez compte du temps de l\'évaluation et bonne application')
                                         ->with('debut',"C'est parti")
                                         ->with(compact('questionAssetionTab','phase','duree_evaluation','debut_evaluation_enreg'));
                             } else{

@@ -10,9 +10,9 @@
                 <br>
             </p>
             <p class="pb-3">
-                Pour accéder au test, cliquez sur ce lien: {{ $lien }}
+                Pour accéder au test, cliquez sur ce lien: https://{{ $lien }}
             </p>
-            <p class="pb-3">
+            <p class="pb-3">    
                 Voici votre coupon : <strong>{{ $coupon }}</strong>
             </p>
             <p>
