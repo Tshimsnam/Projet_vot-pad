@@ -1,17 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
+        <div class="">
+            <h3 class="text-2xl font-extrabold dark:text-white">
+                {{ $evenement
+                ->nom }}
+            </h3>
+            <h3 class="text-1xl font-extrabold dark:text-white">
+                {{ $phase[0]->nom }}
+            </h3>
+        </div>
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Liste des Resultats de la phase ') }}{{ $phase[0]->nom }}
+                {{ __('Résultat') }}
             </h2>
-            <!-- <a href=""
-                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            </a> -->
         </div>
     </x-slot>
 
@@ -64,14 +65,25 @@
                 </button>
             </div>
         @endif
-
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400 display "
+            style="width: 100%" id="resultTable">
+            <thead class="text-xs text-white uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
                 <tr>
-                    <th scope="col" class="px-6 py-3">N°</th>
-                    <th scope="col" class="px-6 py-3">Participant</th>
-                    <th scope="col" class="px-6 py-3">%</th>
-                    <th scope="col" class="px-6 py-3">action</th>
+                    <th scope="col" class="px-6 py-3 bg-slate-700">
+                        Num
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-slate-700">
+                        Noms
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-slate-700">
+                        Emails
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-slate-700">
+                        Pourcentages
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-slate-700">
+                        Détails
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -79,6 +91,9 @@
                     <tr
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                         <td class="px-6 py-4">{{ $i + 1 }}</td>
+                        <th scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ $item['noms'] }}</th>
                         <th scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $item['email'] }}</th>
@@ -111,9 +126,11 @@
                 @endforeach
             </tbody>
         </table>
-        {{-- <div class="p-2">
-            pagination
-        </div> --}}
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#resultTable').DataTable();
+        });
+    </script>
 
 </x-app-layout>
