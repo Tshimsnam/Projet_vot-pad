@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assertion;
+use App\Models\Evenement;
 use App\Models\Intervenant;
 use App\Models\IntervenantPhase;
 use App\Models\Phase;
@@ -56,7 +57,9 @@ class ResultatController extends Controller
      */
     public function show(string $id)
     {
-        $phase = Phase::where('id', '=', $id)->where('type', '=', 'evaluation')->get(); //recuper phase du type evaluation
+        $phase = Phase::where('id', '=', $id)->where('type', '=', 'evaluation')->get();
+        
+        $evenement = Evenement::findOrFail($phase[0]->evenement_id); //recuper phase du type evaluation
         if ($phase) {
 
             $question = QuestionPhase::where('phase_id', '=', $phase[0]->id)->get();
@@ -75,6 +78,7 @@ class ResultatController extends Controller
                     ->select(
                         'intervenants.id as id',
                         'intervenants.email as email',
+                        'intervenants.noms as noms',
                     )
                     ->where("intervenant_phases.phase_id", "=", $phase[0]->id)
                     ->get();
@@ -97,6 +101,7 @@ class ResultatController extends Controller
 
                     $tableau['id'] = $value->id;
                     $tableau['email'] = $value->email;
+                    $tableau['noms'] = $value->noms;
                     $tableau['pourcentage'] = $pourcentage;
                     $tableau['evaluee'] = $msg;
                     array_push($intervenant_resultat, $tableau);
@@ -106,8 +111,7 @@ class ResultatController extends Controller
                     return $b['pourcentage'] - $a['pourcentage'];
                 });
                 session(['breadPhase' => $phase[0]->id]);
-
-                return view('resultats.index', compact('intervenant_resultat', 'phase'));
+                return view('resultats.index', compact('intervenant_resultat', 'phase', 'evenement'));
             } else {
                 return back()->with('success', "Il n'y a pas de question pour cette phase");
             }
