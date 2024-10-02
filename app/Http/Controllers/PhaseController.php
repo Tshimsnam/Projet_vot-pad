@@ -343,6 +343,129 @@ class PhaseController extends Controller
             });
             $phaseExist = Phase::findOrFail($phase_id);
             return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants', 'intervenantAll', 'page'));
+        } else if ($phase_type === 'Entretien' || $phase_type === 'entretien') {
+
+            // module phase entretien
+
+            //recuperer les intervenats liés à une phase
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->paginate(10, ['*'], 'intervenant_page');
+            $page = $intervenantPhases->currentPage();
+            $intervenantPhasesAll = IntervenantPhase::where('phase_id', $phase_id)->latest()->get();
+            $intervenantAll = [];
+            $intervenants = [];
+            $intervenantsMails = [];
+            foreach ($intervenantPhases as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenant->mail_send = $intervenantPhase->mail_send;
+                $intervenants[] = $intervenant;
+            }
+            $totalIntervenants = $intervenantPhases->total();
+
+            foreach ($intervenantPhasesAll as $intervenantPhase) {
+                $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+                if ($intervenant) {
+                    $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                    $intervenant->coupon = $intervenantPhase->coupon;
+                    $intervenant->mail_send = $intervenantPhase->mail_send;
+                    $intervenant->is_use = $intervenantPhase->token == 0 ? 0 : 1;
+                    $intervenantAll[] = $intervenant;
+                }
+            }
+            //recuperer les criteres liés à une phase
+            $phases = $phaseShow;
+            $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
+            $criteres = [];
+            $sommePonderation = 0;
+            foreach ($phaseCriteres as $phaseCritere) {
+                $critere = Critere::find($phaseCritere->critere_id);
+                $critere->criterePhaseId = $phaseCritere->id;
+                $sommePonderation += $critere->ponderation;
+                $criteres[] = $critere;
+            }
+
+            //rerecuperer les jurys liés à une phase
+            $juryPhases = JuryPhase::where('phase_id', $phase_id)->latest()->paginate(10);
+
+            if ($juryPhases->count() > 0) {
+                $ponderation_public = $juryPhases->first()->ponderation_public;
+                $ponderation_prive = $juryPhases->first()->ponderation_prive;
+                $type_vote = $juryPhases->first()->type;
+            } else {
+                $ponderation_public = null;
+                $ponderation_prive = null;
+                $type_vote = null;
+            }
+
+            $jurys = [];
+            foreach ($juryPhases as $juryPhase) {
+                if (is_string($juryPhase->jury_id) && json_decode($juryPhase->jury_id, true) !== null) {
+                    $juryIds = json_decode($juryPhase->jury_id, true);
+                } else {
+                    $juryIds = $juryPhase->jury_id;
+                }
+
+                if (is_array($juryIds)) {
+                    $updatedJuryIds = [];
+                    foreach ($juryIds as $juryId) {
+                        $jury = Jury::find($juryId);
+                        if ($jury) {
+                            if ($jury->type == 'prive') {
+                                $jury->ponderation = $juryPhase->ponderation_prive;
+                            } else {
+                                $jury->ponderation = $juryPhase->ponderation_public;
+                            }
+                            $coupon = $jury->coupon;
+                            $qrCode = QrCode::size(650)->generate($coupon);
+                            $jury->qr_code = $qrCode;
+                            $updatedJuryIds[] = $juryId;
+                            $jurys[] = $jury;
+                        }
+                    }
+                    $juryPhase->jury_id = json_encode($updatedJuryIds);
+                    $juryPhase->save();
+                } else {
+                    $jury = Jury::find($juryIds);
+                    if ($jury) {
+                        if ($jury->type == 'prive') {
+                            $jury->ponderation = $juryPhase->ponderation_prive;
+                        } else {
+                            $jury->ponderation = $juryPhase->ponderation_public;
+                        }
+                        $coupon = $jury->coupon;
+                        $qrCode = QrCode::size(600)->generate($coupon);
+                        $jury->qr_code = $qrCode;
+                        $jurys[] = $jury;
+                    }
+                }
+            }
+            usort($jurys, function ($a, $b) {
+                if ($a->type == $b->type) {
+                    return 0;
+                }
+                return $a->type == 'prive' ? -1 : 1;
+            });
+            usort($intervenants, function ($a, $b) {
+                return strtolower($a->noms) <=> strtolower($b->noms);
+            });
+
+            $intervenantsFeminin = array_filter($intervenantAll, function ($intervenant) {
+                return strtolower($intervenant->genre) === 'f';
+            });
+
+            foreach ($intervenantAll as $intervenant) {
+                $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
+                if ($intervenantPhaseMail->token == 0 && $intervenantPhaseMail->mail_send == 0) {
+                    $intervenantsMails[] = $intervenant;
+                }
+            }
+            usort($intervenantsMails, function ($a, $b) {
+                return strtolower($a->noms) <=> strtolower($b->noms);
+            });
+            $phaseExist = Phase::findOrFail($phase_id);
+            return view('entretiens.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants', 'intervenantAll', 'page', 'sommePonderation'));
+
+            //fin entretien
         } else {
             // module phase evaluation
             $phases = $phaseShow;

@@ -127,6 +127,7 @@
                     <select id="type" name="type" required
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="Evaluation">Evaluation</option>
+                        <option value="Entretien">Entretien</option>
                         <option value="Vote">Vote</option>
                     </select>
                 </div>
@@ -187,7 +188,7 @@
                                 </div>
                                 <input type="time" id="duree" name="duree"
                                     class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    min="00:00" max="24:00" value="01:00"/>
+                                    min="00:00" max="24:00" value="01:00" />
                             </div>
                         </div>
                     </div>
@@ -269,7 +270,7 @@
         const dureeDiv = document.querySelector('.duree');
         typeSelect.addEventListener('change', function() {
             const selectedValue = this.value;
-            if (selectedValue === 'Vote') {
+            if (selectedValue === 'Vote' || selectedValue === 'Entretien') {
                 dureeDiv.style.display = 'none';
                 const duree = document.querySelector('#duree').required = false;
                 duree.setAttribute('value', 'null');
@@ -283,15 +284,26 @@
             const divSelect = document.getElementById('divSelect');
             if (eventCreate == 1) {
                 if (eventType === 'Compétition') {
-                    dureeDiv.style.display = 'none';
-                    duree.setAttribute('value', 'null');
-                    divSelect.style.display = 'none';
-                    typeSelect.value = 'Vote';
+                    dureeDiv.style.display = 'none'; 
+                    duree.setAttribute('value', 'null'); 
+                    divSelect.style.display = 'block'; 
+
+                    typeSelect.querySelector('option[value="Vote"]').style.display = 'block';
+                    typeSelect.querySelector('option[value="Evaluation"]').style.display = 'none';
+                    typeSelect.querySelector('option[value="Entretien"]').style.display = 'block';
+
+                    typeSelect.value = null;
                 } else {
-                    dureeDiv.style.display = 'block';
-                    typeSelect.value = 'Evaluation';
-                    divSelect.style.display = 'none';
+                    dureeDiv.style.display = 'block'; 
+                    divSelect.style.display = 'none'; 
+
+                    typeSelect.querySelector('option[value="Evaluation"]').style.display = 'block';
+                    typeSelect.querySelector('option[value="Entretien"]').style.display = 'none';
+                    typeSelect.querySelector('option[value="Vote"]').style.display = 'none'; 
+
+                    typeSelect.value = 'Evaluation'; 
                 }
+
             } else {
 
             }
