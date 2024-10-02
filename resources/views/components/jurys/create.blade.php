@@ -24,89 +24,105 @@
             <div class=" mr-5" style="padding-left: 20px">
                 @csrf
                 <input type="hidden" name="phase" id="phaseId" value="">
-                <p id="titreType" class="flex justify-inline items-center text-2xl font-extrabold dark:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path fill-rule="evenodd"
-                            d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z"
-                            clip-rule="evenodd" />
-                        <path fill-rule="evenodd"
-                            d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V9.375Zm9.586 4.594a.75.75 0 0 0-1.172-.938l-2.476 3.096-.908-.907a.75.75 0 0 0-1.06 1.06l1.5 1.5a.75.75 0 0 0 1.116-.062l3-3.75Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </p>
-                <div id="typeDiv">
-                    <label for="type"
-                        class="block mb-2  text-sm font-medium text-gray-900 dark:text-white">Type</label>
-                    <select id="type" name="type"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="prive">Privé</option>
-                        <option value="public">Public</option>
-                        <option value="prive et public" selected>Privé et Public</option>
-                    </select>
-                </div>
-                <div id="ajout" class="pt-5">
-                    <ul
-                        class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                            <div class="flex items-center ps-3">
-                                <input id="ajoutPrive" type="checkbox" value="" name="ajoutPrive"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                <label for="ajoutPrive"
-                                    class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                    Ajouter un jury privé
-                                    <h2 class="px-3 float-right"><strong id="getPondprive"></strong></h2>
-                                </label>
-                            </div>
-                        </li>
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                            <div class="flex items-center ps-3">
-                                <input id="ajoutPublic" type="checkbox" value="" name="ajoutPublic"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                <label for="ajoutPublic"
-                                    class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                    Ajouter un jury public
-                                    <h2 class="px-3 float-right"><strong id="getPondpublic"></strong></h2>
-                                </label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div id="infoPublic" class="">
-
-                    <p class="text-gray-500 dark:text-gray-400">Ici, un seul coupon public qui sera créé. <br> Veuillez cliquez sur le bouton pour générer le coupon</p>
-                </div>
-                <div id="priveDiv">
-                    <div id="nombre_prive">
-                        <label for="nombre_prive"
-                            class="block mb-2 pt-3 text-sm font-medium text-gray-900 dark:text-white">Nombre des jurys
-                            privé</label>
-                        <input type="number" id="nombre_prive_input" name="nombre_prive"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Pondération" value="0" required />
+                <div id="vote">
+                    <p id="titreType" class="flex justify-inline items-center text-2xl font-extrabold dark:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                            <path fill-rule="evenodd"
+                                d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z"
+                                clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V9.375Zm9.586 4.594a.75.75 0 0 0-1.172-.938l-2.476 3.096-.908-.907a.75.75 0 0 0-1.06 1.06l1.5 1.5a.75.75 0 0 0 1.116-.062l3-3.75Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </p>
+                    <div id="typeDiv">
+                        <label for="type"
+                            class="block mb-2  text-sm font-medium text-gray-900 dark:text-white">Type</label>
+                        <select id="type" name="type"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="prive">Privé</option>
+                            <option value="public">Public</option>
+                            <option value="prive et public" selected>Privé et Public</option>
+                        </select>
                     </div>
-                    <label id="label_prive" for="ponderation_prive"
-                        class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">Pondération
-                        privée</label>
-                    <label id="label_prive2" for="ponderation_prive"
-                        class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white"
-                        style="display: none">Pondération
-                    </label>
-                    <input type="number" id="ponderation_prive" name="ponderation_prive"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Pondération" value="" required />
+                    <div id="ajout" class="pt-5">
+                        <ul
+                            class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                                <div class="flex items-center ps-3">
+                                    <input id="ajoutPrive" type="checkbox" value="" name="ajoutPrive"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                    <label for="ajoutPrive"
+                                        class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        Ajouter un jury privé
+                                        <h2 class="px-3 float-right"><strong id="getPondprive"></strong></h2>
+                                    </label>
+                                </div>
+                            </li>
+                            <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                                <div class="flex items-center ps-3">
+                                    <input id="ajoutPublic" type="checkbox" value="" name="ajoutPublic"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                    <label for="ajoutPublic"
+                                        class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        Ajouter un jury public
+                                        <h2 class="px-3 float-right"><strong id="getPondpublic"></strong></h2>
+                                    </label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="infoPublic" class="">
+
+                        <p class="text-gray-500 dark:text-gray-400">Ici, un seul coupon public qui sera créé. <br>
+                            Veuillez cliquez sur le bouton pour générer le coupon</p>
+                    </div>
+                    <div id="priveDiv">
+                        <div id="nombre_prive">
+                            <label for="nombre_prive"
+                                class="block mb-2 pt-3 text-sm font-medium text-gray-900 dark:text-white">Nombre des
+                                jurys
+                                privé</label>
+                            <input type="number" id="nombre_prive_input" name="nombre_prive"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Pondération" value="0" required />
+                        </div>
+                        <label id="label_prive" for="ponderation_prive"
+                            class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">Pondération
+                            privée</label>
+                        <label id="label_prive2" for="ponderation_prive"
+                            class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white"
+                            style="display: none">Pondération
+                        </label>
+                        <input type="number" id="ponderation_prive" name="ponderation_prive"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Pondération" value="" required />
+                    </div>
+                    <div id="publicDiv">
+                        <label id="label_public" for="ponderation_public"
+                            class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">Pondération
+                            publique</label>
+                        <label id="label_public2" for="ponderation_prive"
+                            class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white"
+                            style="display: none">Pondération
+                        </label>
+                        <input type="number" id="ponderation_public" name="ponderation_public"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Pondération" value="" required />
+                    </div>
                 </div>
-                <div id="publicDiv">
-                    <label id="label_public" for="ponderation_public"
-                        class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">Pondération
-                        publique</label>
-                    <label id="label_public2" for="ponderation_prive"
-                        class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white"
-                        style="display: none">Pondération
-                    </label>
-                    <input type="number" id="ponderation_public" name="ponderation_public"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Pondération" value="" required />
+
+                <div id="entretien">
+                    <div id="">
+                        <label  for="noms"
+                            class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Noms</label>
+                        <input type="text" id="noms" name="noms"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Saissisez le prénom et le nom" value="" required />
+                    </div>
                 </div>
+
                 <div class="flex justify-between items-center mt-4 sm:mt-6">
                     <button id="valider" type="button" data-modal-target="checkValid"
                         onclick="validateForm(this)"
@@ -165,6 +181,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </form>
     </div>
@@ -236,7 +253,7 @@
             ponderationPrive.style.display = 'none';
             ponderationPublic.style.display = 'none';
             ponderationPriveInput.required = false;
-            ponderationPriveInput.setAttribute('value',100);
+            ponderationPriveInput.setAttribute('value', 100);
             ponderationPublicInput.required = false;
 
             //prive checked,public no
@@ -254,7 +271,7 @@
             ponderationPublic.style.display = 'none';
             ponderationPriveInput.required = false;
             ponderationPublicInput.required = false;
-            ponderationPublicInput.setAttribute('value',100);
+            ponderationPublicInput.setAttribute('value', 100);
 
             //public checked,prive no
             ponderationPublic.style.display = 'none';

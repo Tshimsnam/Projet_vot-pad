@@ -35,7 +35,6 @@ class CritereController extends Controller
     {
         $request->validate([
             'libelle' =>'required',
-            'description' =>'required',
             'ponderation' =>'required',
             'echelle' =>'required',
             ]
@@ -44,7 +43,7 @@ class CritereController extends Controller
         $critere = Critere::create(
             [
                 'libelle' => $request->libelle,
-                'description' => $request->description,
+                'description' => $request->description ?? '',
                 'ponderation' => $request->ponderation,
             ]
         );

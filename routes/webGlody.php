@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EntretienController;
 use App\Mail\CandidatMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/intervenants/{intervenant}/{phaseId}', [IntervenantController::class, 'destroy'])->name('intervenant.destroy');
     Route::put('/phases/{id}/{status}', [PhaseController::class, 'changeStatus'])->name('phases.status');
     Route::get('/qrcodes/{jurys}/{nombre}', [QRCodeController::class, 'index'])->name('qrcodes');
+
+    Route::resource('entretiens', EntretienController::class);
 });
 
 Route::get('/votePad-form', [IntervenantController::class, 'form'])->name('form-authenticate');
