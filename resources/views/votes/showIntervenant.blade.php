@@ -209,6 +209,7 @@
                         sommeCand[
                             {{ $candidat->id }}]
                     );
+                    localStorage.setItem("refreshPreviousPage", true);
                     // Retourner à la page précédente après une réponse réussie
                     window.history.back();
                 })

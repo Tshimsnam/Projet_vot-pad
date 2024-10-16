@@ -54,9 +54,10 @@
                                         </svg>
                                     </a>
                                     <svg id="icon-{{ $item->id }}" xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="w-8 mr-5
-                                        "
-                                        viewBox="0 0 256 256" xml:space="preserve" hidden>
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                                        class="w-8 mr-5
+                                        " viewBox="0 0 256 256"
+                                        xml:space="preserve" hidden>
                                         <defs>
                                         </defs>
                                         <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
@@ -66,9 +67,9 @@
                                                 style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                             <path d="M 45 90 C
-                                                20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
-                                                5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
-                                                -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
+                                                    20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
+                                                    5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
+                                                    -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
                                                 style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                         </g>
@@ -132,6 +133,13 @@
     </section>
 
     <script>
+        window.addEventListener("load", () => {
+            if (localStorage.getItem("refreshPreviousPage")) {
+                localStorage.removeItem("refreshPreviousPage");
+                location.reload();
+            }
+        });
+
         const searchInput = document.getElementById('search');
         const items = document.querySelectorAll('.grid > div');
 
@@ -253,7 +261,7 @@
 
         function finVote(phaseId, candidats_id, jury_id) {
             for (let j = 0; j < candidats_id.length; j++) {
-                localStorage.removeItem(`sum-${phaseId}${jury_id}${candidats_id[j]}{{ $nombreUser }}`);
+                localStorage.clear();
             }
             window.location.href = "{{ route('voteIndex') }}";
         }
