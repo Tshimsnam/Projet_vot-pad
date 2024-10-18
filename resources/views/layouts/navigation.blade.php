@@ -17,9 +17,9 @@
                         </svg>
                     </button>
                     <a href="" class="flex ms-2 md:me-24">
-                        <img src="{{ asset('img/orange.png') }}" class="h-8 me-3" alt="FlowBite Logo" />
+                        <img src="{{ asset('img/momekano.png') }}" class="h-8 " alt="FlowBite Logo" />
                         <span
-                            class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">VotePad2</span>
+                            class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">omekano</span>
                     </a>
                 </div>
                 <div class="flex items-center">

@@ -3,18 +3,18 @@
     <section id="voteUser" class="px-4 md:px-8">
         <div class="mb-5 pt-5 flex justify-center">
             <h2
-                class="mb-4 text-2xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
-                <img class="w-8 h-8" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
-                    alt="logo">
-                otePad2
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white ">
+                <img class="w-10 h-10" src="{{ asset('img/momekano.png') }}" alt="logo">
+                omekano
             </h2>
         </div>
-        <h2 class="mb-1 text-4xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2>
-        <h2 class="mb-3 text-xl font-extrabold dark:text-white">{{ $phaseAndSpeaker->nom }}</h2>
+        {{-- <h2 class="mb-1 text-4xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2> --}}
+        <h2 class=" text-3xl font-extrabold dark:text-white">{{ $phaseAndSpeaker->nom }}</h2>
         {{-- <p class="text-sm font-normal text-white">{{ $phaseAndSpeaker->description }}</p> --}}
         <div class="py-5">
-            <div class="text-center mb-4">
-                <h3 class="text-2xl font-bold leading-none dark:text-white uppercase">Les candidats</h3>
+            <div class="flex justify-between mb-4">
+                <h3 class="text-1xl font-bold leading-none dark:text-white uppercase">Les candidats</h3>
+                <h3 id="voteNombre" class="text-1xl font-bold leading-none dark:text-white uppercase"></h3>
             </div>
             <div class="mb-4">
                 <input type="text" id="search" placeholder="Rechercher par nom..."
@@ -54,9 +54,10 @@
                                         </svg>
                                     </a>
                                     <svg id="icon-{{ $item->id }}" xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="w-8 mr-5
-                                        "
-                                        viewBox="0 0 256 256" xml:space="preserve" hidden>
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                                        class="w-8 mr-5
+                                        " viewBox="0 0 256 256"
+                                        xml:space="preserve" hidden>
                                         <defs>
                                         </defs>
                                         <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
@@ -66,9 +67,9 @@
                                                 style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                             <path d="M 45 90 C
-                                                20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
-                                                5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
-                                                -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
+                                                        20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
+                                                        5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
+                                                        -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
                                                 style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                         </g>
@@ -132,6 +133,13 @@
     </section>
 
     <script>
+        window.addEventListener("load", () => {
+            if (localStorage.getItem("refreshPreviousPage")) {
+                localStorage.removeItem("refreshPreviousPage");
+                location.reload();
+            }
+        });
+
         const searchInput = document.getElementById('search');
         const items = document.querySelectorAll('.grid > div');
 
@@ -226,6 +234,7 @@
             const voteCandidat = [];
             const iconCandidat = [];
             const sumCandidat = [];
+            let voteCount = 0;
             for (let i = 0; i < taille; i++) {
                 coteCandidat[i] = document.getElementById(`cote-${candidats[i]}`);
                 if (coteCandidat[i]) {
@@ -234,11 +243,17 @@
                         iconCandidat[i] = document.getElementById(`icon-${candidats[i]}`);
                         voteCandidat[i].style.display = 'none';
                         iconCandidat[i].style.display = 'block';
+                        voteCount++;
                         check--;
                     }
                     coteCandidat[i].textContent = "COTE : " + savedData[i];
                 }
             }
+
+            const nombreCandidat = {{ count($intervenants) }};
+            const voteNombre = document.getElementById('voteNombre');
+            voteNombre.textContent = voteCount + "/" + nombreCandidat + " notes";
+
             if (check === 0) {
                 for (let i = 0; i < taille; i++) {
                     sumCandidat[i] = document.getElementById(`sum-${candidats[i]}`);
@@ -253,7 +268,7 @@
 
         function finVote(phaseId, candidats_id, jury_id) {
             for (let j = 0; j < candidats_id.length; j++) {
-                localStorage.removeItem(`sum-${phaseId}${jury_id}${candidats_id[j]}{{ $nombreUser }}`);
+                localStorage.clear();
             }
             window.location.href = "{{ route('voteIndex') }}";
         }
