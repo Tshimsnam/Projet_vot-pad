@@ -1,7 +1,7 @@
 @extends('layouts.template')
 @section('content')
     <section id="voteUser" class="px-2 md:px-8">
-        <div class="mb-5 pt-5 flex justify-center">
+        <div class="mb-3 pt-5 flex justify-center">
             <h2
                 class="mb-4 text-2xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
                 <img class="w-8 h-8" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
@@ -9,16 +9,25 @@
                 otePad2
             </h2>
         </div>
-        <div class="flex inline-block px-4 md:px-4">
-            <img class="w-16 h-16 rounded-full border border-gray-300"
-                src="{{ $candidat->image && file_exists(public_path($candidat->image)) ? asset($candidat->image) : asset('images/profil.jpg') }}"
-                alt="">
-            <div class="px-5">
-                <h2 class="text-4xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}</h2>
-                <p class="text-sm truncate dark:text-white">
-                    {{ $candidat->email }}
-                </p>
+        <div class="flex justify-between">
+            <div class="flex inline-block px-4 md:px-4">
+                <img class="w-12 h-12 rounded-full border border-gray-300"
+                    src="{{ $candidat->image && file_exists(public_path($candidat->image)) ? asset($candidat->image) : asset('images/profil.jpg') }}"
+                    alt="">
+                <div class="px-5">
+                    <h2 class="text-3xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}</h2>
+                    <p class="text-sm truncate dark:text-white">
+                        {{ $candidat->email }}
+                    </p>
+                </div>
             </div>
+            <div class="">
+                <div>
+                    <h3 id="critereNombre" class="pt-1 text-1xl font-bold leading-none dark:text-white uppercase pr-4">
+                        0/{{ count($criteres) }} critères</h3>
+                </div>
+            </div>
+
         </div>
         <form action="" method="post" class="space-y-4">
             @csrf
@@ -28,14 +37,21 @@
                         class="px-5 py-3 rounded-xl border bg-white bg-opacity-95 space-y-3 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
                         <div class="">
                             <h1 class="text-xl font-bold dark:text-white">{{ $item->libelle }}</h1>
-                            <p class="text-sm font-thin dark:text-white">{{ $item->description }}
+                            <p class="text-sm font-thin dark:text-white">Ponderation : {{ $item->ponderation }}
                             </p>
+                            {{-- <p class="text-sm font-thin dark:text-white">{{ $item->description }}
+                            </p> --}}
                         </div>
                         <div class="relative">
+                            <style>
+                                .accent {
+                                    accent-color: #FF7900;
+                                }
+                            </style>
                             <label for="labels-range-input" class="sr-only">Labels range</label>
                             <input id="labels-range-input" type="range" value="0" min="0" name="cote"
                                 max="{{ $item->ponderation }}"
-                                class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer dark:bg-gray-100">
+                                class="w-full h-2 bg-gray-700 rounded-lg accent dark:bg-gray-100">
                             <div class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 <span
                                     class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
@@ -74,7 +90,7 @@
             @endforeach
             <div id="divButton" class="flex justify-between px-5">
                 <button type="button" data-modal-target="valid-modal" data-modal-toggle="valid-modal"
-                    class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-100 dark:hover:bg-gray-300 dark:focus:ring-gray-300 dark:border-gray-100 dark:text-gray-900">Valider</button>
+                    class="text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">Valider</button>
             </div>
 
         </form>
@@ -134,11 +150,18 @@
         const rangeInputs = document.querySelectorAll('input[type="range"]');
         const scoreSpans = document.querySelectorAll('span[id^="score-"]');
         const urlParams = window.location;
+        const tailleCritere = {{ count($criteres) }};
+        const critereNombre = document.getElementById('critereNombre');
+        let critereValide = 0;
 
         rangeInputs.forEach((input, index) => {
             input.addEventListener('input', function() {
-
+                if (!input.dataset.valid) {
+                    critereValide++;
+                    input.dataset.valid = true; // Mark input as valid to avoid recounting
+                }
                 scoreSpans[index].textContent = 'COTE : ' + input.value;
+                critereNombre.textContent = critereValide + "/" + tailleCritere + " critères";
             });
         });
 

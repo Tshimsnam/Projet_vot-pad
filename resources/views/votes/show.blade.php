@@ -9,12 +9,13 @@
                 otePad2
             </h2>
         </div>
-        <h2 class="mb-1 text-4xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2>
-        <h2 class="mb-3 text-xl font-extrabold dark:text-white">{{ $phaseAndSpeaker->nom }}</h2>
+        {{-- <h2 class="mb-1 text-4xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2> --}}
+        <h2 class=" text-3xl font-extrabold dark:text-white">{{ $phaseAndSpeaker->nom }}</h2>
         {{-- <p class="text-sm font-normal text-white">{{ $phaseAndSpeaker->description }}</p> --}}
         <div class="py-5">
-            <div class="text-center mb-4">
-                <h3 class="text-2xl font-bold leading-none dark:text-white uppercase">Les candidats</h3>
+            <div class="flex justify-between mb-4">
+                <h3 class="text-1xl font-bold leading-none dark:text-white uppercase">Les candidats</h3>
+                <h3 id="voteNombre" class="text-1xl font-bold leading-none dark:text-white uppercase"></h3>
             </div>
             <div class="mb-4">
                 <input type="text" id="search" placeholder="Rechercher par nom..."
@@ -234,6 +235,7 @@
             const voteCandidat = [];
             const iconCandidat = [];
             const sumCandidat = [];
+            let voteCount = 0;
             for (let i = 0; i < taille; i++) {
                 coteCandidat[i] = document.getElementById(`cote-${candidats[i]}`);
                 if (coteCandidat[i]) {
@@ -242,11 +244,17 @@
                         iconCandidat[i] = document.getElementById(`icon-${candidats[i]}`);
                         voteCandidat[i].style.display = 'none';
                         iconCandidat[i].style.display = 'block';
+                        voteCount++;
                         check--;
                     }
                     coteCandidat[i].textContent = "COTE : " + savedData[i];
                 }
             }
+
+            const nombreCandidat = {{ count($intervenants) }};
+            const voteNombre = document.getElementById('voteNombre');
+            voteNombre.textContent = voteCount + "/" + nombreCandidat +" notes";
+
             if (check === 0) {
                 for (let i = 0; i < taille; i++) {
                     sumCandidat[i] = document.getElementById(`sum-${candidats[i]}`);
