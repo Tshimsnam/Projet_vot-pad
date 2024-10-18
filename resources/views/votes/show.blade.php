@@ -3,10 +3,9 @@
     <section id="voteUser" class="px-4 md:px-8">
         <div class="mb-5 pt-5 flex justify-center">
             <h2
-                class="mb-4 text-2xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
-                <img class="w-8 h-8" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
-                    alt="logo">
-                otePad2
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white ">
+                <img class="w-10 h-10" src="{{ asset('img/momekano.png') }}" alt="logo">
+                omekano
             </h2>
         </div>
         {{-- <h2 class="mb-1 text-4xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2> --}}
@@ -68,9 +67,9 @@
                                                 style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                             <path d="M 45 90 C
-                                                    20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
-                                                    5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
-                                                    -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
+                                                        20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
+                                                        5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
+                                                        -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
                                                 style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                         </g>
@@ -253,7 +252,7 @@
 
             const nombreCandidat = {{ count($intervenants) }};
             const voteNombre = document.getElementById('voteNombre');
-            voteNombre.textContent = voteCount + "/" + nombreCandidat +" notes";
+            voteNombre.textContent = voteCount + "/" + nombreCandidat + " notes";
 
             if (check === 0) {
                 for (let i = 0; i < taille; i++) {
