@@ -459,7 +459,7 @@
                                     <div
                                         class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
                                         <div class="pl-2 pr-5 float-left">
-                                            <img class="w-20 h-20 object-cover border-2 rounded-md"
+                                            <img class="w-16 h-16 object-cover border-2 rounded-md"
                                                 src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
                                                 alt="">
                                         </div>
@@ -489,27 +489,6 @@
                                                         </svg>
                                                     @endif
                                                 </div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->coupon }}
-                                                    </h3>
-                                                    @if ($item->is_use == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
 
                                                 <h3 class="text-sm text-gray-900 dark:text-gray-200">
                                                     {{ $item->email }}
@@ -527,8 +506,8 @@
                                             </div>
                                             <div class="pr-2">
                                                 <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
-                                                    data-modal-target="intervEdit-modal"
-                                                    data-modal-toggle="intervEdit-modal" href="#"
+                                                    data-modal-target="edit-modal-candidat"
+                                                    data-modal-toggle="edit-modal-candidat" href="#"
                                                     class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
                                                         fill="currentColor" class="size-4">
@@ -575,46 +554,7 @@
                                                         class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
                                                         {{ $item->noms }}
                                                     </h3>
-                                                    @if ($item->mail_send == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @endif
                                                 </div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->coupon }}
-                                                    </h3>
-                                                    @if ($item->is_use == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
-
                                                 <h3 class="text-sm text-gray-900 dark:text-gray-200">
                                                     {{ $item->email }}
                                                 </h3>
@@ -631,8 +571,8 @@
                                             </div>
                                             <div class="pr-2">
                                                 <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
-                                                    data-modal-target="intervEdit-modal"
-                                                    data-modal-toggle="intervEdit-modal" href="#"
+                                                    data-modal-target="edit-modal-candidat"
+                                                    data-modal-toggle="edit-modal-candidat" href="#"
                                                     class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
                                                         fill="currentColor" class="size-4">

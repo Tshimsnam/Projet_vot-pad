@@ -45,15 +45,16 @@
                         class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">Téléphone</label>
                     <input type="text" id="telephone" name="telephone"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Numéro de téléphone" value="" required />
+                        placeholder="Numéro de téléphone" value="" />
                 </div>
                 <div id="">
                     <label id="genreLabel" for="genre"
                         class="block mb-2 pt-2  text-sm font-medium text-gray-900 dark:text-white">Genre</label>
                     <select id="genre" name="genre"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="M" selected>Masculin</option>
+                        <option value="M">Masculin</option>
                         <option value="F">Féminin</option>
+                        <option value="NS" selected></option>
                     </select>
                 </div>
                 <div>
