@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jury;
-use App\Models\Vote;
-use App\Models\Phase;
-use App\Models\Groupe;
-use App\Models\Critere;
-use App\Models\Evenement;
-use App\Models\Intervenant;
-use App\Models\PhaseCritere;
-use Illuminate\Http\Request;
-use App\Models\IntervenantPhase;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
+use App\Models\Critere;
+use App\Models\Evenement;
+use App\Models\Groupe;
+use App\Models\Intervenant;
+use App\Models\IntervenantPhase;
+use App\Models\Jury;
 use App\Models\JuryPhase;
+use App\Models\Phase;
+use App\Models\PhaseCritere;
+use App\Models\Vote;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VoteController extends Controller
 {
@@ -190,8 +191,19 @@ class VoteController extends Controller
 
     public function results($phase_id)
     {
-        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
-        $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
+        $user = Auth::user();
+        $phase = Phase::find($phase_id);
+        $evenement_user_id = Evenement::find($phase->evenement_id)->user_id;
+        if ($user->role == 'super-momekano') {
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
+            $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
+        } else if ($user->id == $evenement_user_id) {
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
+            $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
+        } else {
+            return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
+        }
+
         $numberCritere = $criterePhases->count();
         $ponderationTotale = 0;
         foreach ($criterePhases as $key => $criterePhase) {
@@ -280,7 +292,7 @@ class VoteController extends Controller
         foreach ($intervenants as $intervenant) {
             if ($totalVote != 0) {
                 $pourcentage = 0;
-                if($intervenant->nombreJury){
+                if ($intervenant->nombreJury) {
                     $pourcentage = ($intervenant->cote * 100) / ($ponderationTotale * $intervenant->nombreJury);
                 }
                 $intervenant->pourcentage = round($pourcentage, 2);

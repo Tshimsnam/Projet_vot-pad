@@ -11,6 +11,7 @@ use App\Models\Question;
 use App\Models\QuestionPhase;
 use App\Models\Reponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -57,9 +58,19 @@ class ResultatController extends Controller
      */
     public function show(string $id)
     {
-        $phase = Phase::where('id', '=', $id)->where('type', '=', 'evaluation')->get();
-        
-        $evenement = Evenement::findOrFail($phase[0]->evenement_id); //recuper phase du type evaluation
+        $user = Auth::user();
+        $phase_verif = Phase::where('id', '=', $id)->where('type', '=', 'evaluation')->get();
+
+        $evenement = Evenement::findOrFail($phase_verif[0]->evenement_id);
+        if ($user->role == 'super-momekano') {
+            $phase = $phase_verif;
+        } else if ($user->id == $evenement->user_id) {
+            $phase = $phase_verif;
+        } else {
+            return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
+        }
+
+
         if ($phase) {
 
             $question = QuestionPhase::where('phase_id', '=', $phase[0]->id)->get();

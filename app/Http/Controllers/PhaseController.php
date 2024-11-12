@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jury;
-use App\Models\Vote;
-use App\Models\Phase;
-use App\Models\Groupe;
-use App\Models\Critere;
-use App\Models\Question;
-use App\Models\Assertion;
-use App\Models\Evenement;
-use App\Models\JuryPhase;
-use App\Models\Intervenant;
-use App\Models\PhaseCritere;
-use Illuminate\Http\Request;
-use App\Models\QuestionPhase;
-use App\Models\IntervenantPhase;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePhaseRequest;
 use App\Http\Requests\UpdatePhaseRequest;
+use App\Models\Assertion;
+use App\Models\Critere;
+use App\Models\Evenement;
+use App\Models\Groupe;
+use App\Models\Intervenant;
+use App\Models\IntervenantPhase;
+use App\Models\Jury;
+use App\Models\JuryPhase;
+use App\Models\Phase;
+use App\Models\PhaseCritere;
+use App\Models\Question;
+use App\Models\QuestionPhase;
 use App\Models\Reponse;
+use App\Models\Vote;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -175,7 +176,18 @@ class PhaseController extends Controller
 
     public function evenementPhase(Request $request, $id)
     {
-        $phaseShow1 = Phase::latest()->where('id', $id)->get();
+        $user = Auth::user();
+        $phase = Phase::find($id);
+        $evenement = Evenement::find($phase->evenement_id);
+
+        if ($user->role == 'super-momekano') {
+            $phaseShow1 = Phase::latest()->where('id', $id)->get();
+        } else if ($user->id == $evenement->user_id) {
+            $phaseShow1 = Phase::latest()->where('id', $id)->get();
+        } else {
+            return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
+        }
+        
         foreach ($phaseShow1 as $key => $value) {
             $evenement = $value->evenement_id;
             $phase_type = $value->type;
