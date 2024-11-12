@@ -3,10 +3,9 @@
     <section id="voteUser" class="px-4 md:px-8 flex flex-col items-center justify-center h-screen">
         <div class="mb-2 flex justify-center">
             <h2
-                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white">
-                <img class="w-12 h-12" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Eo_circle_orange_letter-v.svg"
-                    alt="logo">
-                otePad2
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white ">
+                <img class="w-10 h-10" src="{{ asset('img/momekano.png') }}" alt="logo">
+                omekano
             </h2>
         </div>
         <div class="text-center">

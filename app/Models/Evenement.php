@@ -15,9 +15,16 @@ class Evenement extends Model
         'date_debut',
         'date_fin',
         'status',
+        'user_id',
     ];
 
-    public function phases(){
-        return $this->hasMany(Phase::class,"evenement_id");
+    public function phases()
+    {
+        return $this->hasMany(Phase::class, "evenement_id");
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
