@@ -87,6 +87,15 @@ class BreadcrumbComposer
                     ['title' => 'Résultat', 'url' => route('resultats.show', ['resultat' => $resultat])]
                 ];
                 break;
+
+            case 'mail.view':
+                $breadcrumbs = [
+                    ['title' => 'Evénements', 'url' => route('evenements.index')],
+                    ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                    ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])],
+                    ['title' => 'Gestion des mails', 'url' => route('mail.view', ['phase_id' => $phase])]
+                ];
+                break;
         }
 
 
