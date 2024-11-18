@@ -54,4 +54,5 @@ Route::post('cloture-evaluation',[PhaseController::class, 'closePhase'])->name('
 Route::get('lancer-evaluation/{id}',[PhaseController::class, 'lancerPhase'])->name('open.phase');
 Route::get('details-question/{id}/{phase_id}',[PhaseController::class, 'detailQuestion'])->name('question.phase');
 Route::post('update-question',[PhaseController::class, 'updateQuestion'])->name('question.update');
+Route::get('send-mail/{phase_id}',[PhaseController::class, 'sendMail'])->name('mail.view');
 require __DIR__.'/auth.php';

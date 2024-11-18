@@ -187,7 +187,7 @@ class PhaseController extends Controller
         } else {
             return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
         }
-        
+
         foreach ($phaseShow1 as $key => $value) {
             $evenement = $value->evenement_id;
             $phase_type = $value->type;
@@ -1085,5 +1085,47 @@ class PhaseController extends Controller
 
         // ];
         return back()->with('success', 'Mise à jour effectué avec succes');
+    }
+
+    function sendMail($phase_id)
+    {
+        $user = Auth::user();
+        $phase = Phase::find($phase_id);
+        $evenement = Evenement::find($phase->evenement_id);
+
+        if ($user->role == 'super-momekano') {
+            $phaseShow = $phase;
+        } else if ($user->id == $evenement->user_id) {
+            $phaseShow = $phase;
+        } else {
+            return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
+        }
+
+        $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
+
+        $intervenants = [];
+        foreach ($intervenantPhases as $intervenantPhase) {
+            $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+            if ($intervenant) {
+                $intervenant->intervenantPhaseId = $intervenantPhase->id;
+                $intervenant->coupon = $intervenantPhase->coupon;
+                $intervenant->mail_send = $intervenantPhase->mail_send;
+                $intervenant->noms = strtolower($intervenant->noms); 
+                if ($intervenantPhase->token == 0) {
+                    $intervenant->is_use = 0;
+                } else {
+                    $intervenant->is_use = 1;
+                }
+                $intervenants[] = $intervenant;
+            }
+        }
+
+        usort($intervenants, function ($a, $b) {
+            return strcmp($a->noms, $b->noms);
+        });
+
+
+        session(['breadPhase' => $phase_id]);
+        return view('mails.sendMail', compact('phaseShow', 'phase_id', 'evenement', 'intervenants'));
     }
 }
