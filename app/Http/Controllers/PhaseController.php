@@ -1039,16 +1039,6 @@ class PhaseController extends Controller
         $newBonneReponse = (int)$reponse;
         $newAssertions = $request->newAssertions;
 
-        // $vrai = 0;
-        // $new = null;
-        // $tab = preg_replace('/\D/','',$reponse);
-        // if($newBonneReponse){
-        //     $vrai = 1;
-        // }else{
-            
-        //     $new = $request->newAssertions;
-        // }
-        // dd($request->all(), $vrai, $tab, $new, $newAssertions);
         $nbre_ass_echec = 0;
         $plus = "";
 
