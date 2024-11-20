@@ -157,7 +157,7 @@
 
         <div class="pb-5 flex justify-between items-center">
             <div>
-                <h3 class="text-xl dark:text-white">Intervenants selectionnés: <span id="selectedCount">0</span></h3>
+                <h3 class="text-xl dark:text-white">Candidats selectionnés: <span id="selectedCount">0</span></h3>
             </div>
             <div>
                 <a id="sendMail" href=""
@@ -237,7 +237,8 @@
                                 <div class="flex items-center">
                                     <input id="checkbox-{{ $i }}" type="checkbox"
                                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                        style="{{ $item->mail_send != 0 ? 'display: none;' : '' }}">
+                                        style="{{ $item->mail_send != 0 ? 'display: none;' : '' }}"
+                                        {{ $item->mail_send != 0 ? 'disabled' : '' }}>
                                 </div>
 
                                 <label for="checkbox-{{ $i }}" class="sr-only">checkbox</label>
@@ -360,6 +361,7 @@
                     tabBody.find("tr").show();
                     setupPagination();
                     displayRows(currentPage);
+                    checkAll.prop("disabled", false);
                     return;
                 }
 
@@ -448,8 +450,6 @@
         // Envoie des mails
         $('#sendMail').on('click', function(e) {
             e.preventDefault();
-
-
 
             const phaseId = @json($phase_id);
             const dateTest = document.getElementById('dateTest');
