@@ -1029,18 +1029,28 @@ class PhaseController extends Controller
 
     public function updateQuestion(Request $request)
     {
-        // dd($request->all());
+        
         $question = $request->question;
         $ponderation = $request->ponderation;
         $ponderation_ass = 0;
+        $newPonderation = 0 ;
         $assertions = $request->assertions;
         $reponse = $request->bonneReponse;
+        $newBonneReponse = (int)$reponse;
+        $newAssertions = $request->newAssertions;
 
-        $message_question = "Mise à jour de question a échouée";
-        $message_ponderation = "Mise à jour de pondération a échouée";
+        // $vrai = 0;
+        // $new = null;
+        // $tab = preg_replace('/\D/','',$reponse);
+        // if($newBonneReponse){
+        //     $vrai = 1;
+        // }else{
+            
+        //     $new = $request->newAssertions;
+        // }
+        // dd($request->all(), $vrai, $tab, $new, $newAssertions);
         $nbre_ass_echec = 0;
         $plus = "";
-        $message_assertion = "Mise à jour d'assertion a échouée";
 
         foreach ($question as $k => $v) {
             $verif_qst = Question::where('id', $k)->first();
@@ -1059,31 +1069,55 @@ class PhaseController extends Controller
                         }
                     }
                 }
-
+                
                 foreach ($assertions as $c => $val) {
                     $assertion_verif = Assertion::where('id', $c)->where('question_id', $k)->first();
                     if ($assertion_verif != null) {
-                        if ($c == $reponse) {
-                            $ponderation_ass = 1;
+                        if($newBonneReponse){
+                            if ($c == $reponse) {
+                                $ponderation_ass = 1;
+                            }
                         }
-                        $assertion_update = Assertion::where('id', $c)->where('question_id', $k)->update(['assertion' => $val, 'ponderation' => $ponderation_ass]);
-                        if ($assertion_update > 0) {
-                            $message_assertion = "Assertion mise à jour avec succes";
-                        } else {
-                            $nbre_ass_echec += 1;
-                            ($nbre_ass_echec > 1) ? $plus = "s" : null;
-                            $message_assertion = "Mise à jour de $nbre_ass_echec assertion$plus a échouée";
+
+                        if($val != null || $val !=""){
+                            $assertion_update = Assertion::where('id', $c)->where('question_id', $k)->update(['assertion' => $val, 'ponderation' => $ponderation_ass]);
+                            if ($assertion_update > 0) {
+                                $message_assertion = "Assertion mise à jour avec succes";
+                            } else {
+                                $nbre_ass_echec += 1;
+                                ($nbre_ass_echec > 1) ? $plus = "s" : null;
+                                $message_assertion = "Mise à jour de $nbre_ass_echec assertion$plus a échouée";
+                            }
+                            $ponderation_ass = 0;
+                        }else{
+                            $deleteAssert = Assertion::where('id',$c)->where('question_id',$k)->delete();
                         }
-                        $ponderation_ass = 0;
                     }
                 }
+
+                if($newAssertions != null){
+                    foreach($newAssertions as $cle=>$valeur){
+                        $newBonne = preg_replace('/\D/','',$reponse);
+                        if($newBonne == $cle){
+                            $newPonderation = 1;
+                        }
+                        if($valeur != null || $valeur != ""){
+                            $insert = Assertion::create([
+                                "assertion"=>$valeur,
+                                "ponderation"=>$newPonderation,
+                                "statut"=>'Valide',
+                                "question_id"=>$k
+                            ]);
+                        }
+                        
+                        $newPonderation=0;
+                    }
+                }
+                
+                
             }
         }
-        // $message = [
-        //     "question"=>$,
-        //     "assertion"=>$,
 
-        // ];
         return back()->with('success', 'Mise à jour effectué avec succes');
     }
 }
