@@ -16,10 +16,35 @@
                 <span class="sr-only">Close modal</span>
             </button>
         </div>
-        <form method="POST" action="" enctype="multipart/form-data" style="padding: 20px 0 20px 0">
-            <div class=" mr-5" style="padding-left: 20px">
+        <form method="POST" id="formInsertQuestion" action="" enctype="multipart/form-data" style="padding: 20px 0 20px 0">
+        <div id="ajout" class="m-5">
+                    <ul
+                        class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                            <div class="flex items-center ps-3">
+                                <input id="importerCheck" type="radio" value="" name="choice"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                <label for="importerCheck"
+                                    class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Importer
+                                    des questions
+                                </label>
+                            </div>
+                        </li>
+                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                            <div class="flex items-center ps-3">
+                                <input id="manuelCheck" type="radio" name="choice"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                <label for="manuelCheck"
+                                    class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ajouter
+                                    une question
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            <div class="mr-5 " style="padding-left: 20px; display: none;" id="divImporterQuestion" >
                 @csrf
-                <input type="text" name="phase" id="phaseId" value="" class="hidden">
+                <input type="text" name="phase" id="phaseId" class="hidden">
                 <p class="flex items-center pl-1 mb-2 text-xl font-medium text-gray-900 dark:text-white">Sélectionnez un fichier CSV
                     (.csv) <button data-popover-target="popover-question" data-popover-placement="right"
                         type="button"><svg class="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true"
@@ -39,11 +64,103 @@
 
                 <input
                     class="block w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                    aria-describedby="file_input_help" id="file_input" type="file" name="fichier" required>
+                    aria-describedby="file_input_help" id="fichierInput" 
+                    type="file" name="fichier" accept=".csv, .xlsx">
                 <button type="submit"
                     class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">Importer</button>
             </div>
+            <div id="divManuelQuestion" style="display: none" class="m-5 mr-5" style="padding-left: 20px; margin:5px">
+                    <div id="" class="mb-5">
+                        <label id="" for="questionInput"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Question</label>
+                        <input type="text" id="questionInput" name="question"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Libele de la question" />
+                    </div>
+                    <div id="" class="mb-5">
+                        <label i for="ponderationQuestion"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pondération</label>
+                        <input type="number" id="ponderationQuestion" name="ponderation" max="99" min="0"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="0" />
+                    </div>
+
+                    @for($i=1; $i<=5;$i++)    
+                        <div id="" class="mb-5">
+                            <label for="assertionInput{{$i}}"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Assertion {{ $i}} 
+                                <input type="radio" name="bonneReponse" value="{{$i}}"
+                                    class="w-4 h-4 ml-5 text-green-600 bg-gray-100 border-gray-300 rounded-full focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                            </label>
+                            
+                            <input type="text" id="assertionInput{{$i}}" name="assertions[{{$i}}]"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Libele de assertion {{$i}} "  required />
+                        </div>  
+                    @endfor
+ 
+                    <div class="flex justify-between items-center mt-4 sm:mt-6">
+                        <button id="valider" type="submit"
+                            class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                            Valider
+                        </button>
+                    </div>
+                </div>
         </form>
 
     </div>
 </div>
+<script>
+        const formInsertQuestion = document.getElementById('formInsertQuestion');
+        const divManuelQuestion = document.getElementById('divManuelQuestion');
+        const divImporterQuestion = document.getElementById('divImporterQuestion');
+        const importerCheckboxQuestion = document.getElementById('importerCheck');
+        const manuelcCheckboxQuestion = document.getElementById('manuelCheck');
+        const questionInput = document.getElementById('questionInput');
+        const fichierInput = document.getElementById('fichierInput');
+        const ponderationQuestion = document.getElementById('ponderationQuestion');
+
+        const actionImport = @json(route('importQuestion'));
+        const actionManuel = @json(route('questions.store'));
+
+        const formInput = {};
+        
+        importerCheckboxQuestion.addEventListener('change', () => {
+            if (importerCheckboxQuestion.checked) {
+
+                divManuelQuestion.style.display = 'none';
+                divImporterQuestion.style.display = 'block';
+                formInsertQuestion.action = actionImport
+                fichierInput.required = true;
+                questionInput.required= false
+                ponderationQuestion.required=false
+                
+                for(let i=1; i<=5;i++){
+                    formInput[`assertion${i}`] = document.getElementById(`assertionInput${i}`).required = false;
+                }
+                console.log(formInput)
+                console.log(actionImport)
+            } 
+        });
+        
+        manuelcCheckboxQuestion.addEventListener('change', () => {
+            if (manuelcCheckboxQuestion.checked) {
+                divImporterQuestion.style.display = 'none';
+                divManuelQuestion.style.display = 'block';
+                formInsertQuestion.action = actionManuel
+                
+                fichierInput.required = false;
+                ponderationQuestion.required=true
+                questionInput.required= true
+
+                for(let i=1; i<=5;i++){
+                    formInput[`assertion${i}`] = document.getElementById(`assertionInput${i}`).required = true;
+                }
+                
+                console.log(formInput)
+                console.log(actionManuel)
+
+            }
+        });
+    </script>
