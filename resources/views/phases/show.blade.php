@@ -743,7 +743,7 @@
                     {{ $item->id }} @endforeach)"
                     data-modal-target="create-modal-question" data-modal-toggle="create-modal-question"
                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
-                    Importer les questions
+                    Ajouter Question(s)
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-8 h-5 pl-2">
                         <path stroke-linecap="round" stroke-linejoin="round"

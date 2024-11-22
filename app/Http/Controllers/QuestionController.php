@@ -39,7 +39,8 @@ class QuestionController extends Controller
      */
     public function store(StoreQuestionRequest $request)
     {
-        // dd($request->all());
+        // $req= Question::where('id',23)->count();
+        // dd($request->all(), $req);
         $verifQuestion = Question::orderBy('id', 'desc')->where("question", $request->question)->count();
         if ($verifQuestion > 0) {
             return back()->with("echec", "Cette question existe déjà");
@@ -47,46 +48,36 @@ class QuestionController extends Controller
             $question = Question::firstOrCreate([
                 'question' => $request->question,
             ]);
-            $dernier = Question::orderBy('id', 'desc')->take(1)->get();
-            foreach ($dernier as $key => $value) {
-                $question_id = $value->id;
-            }
-            $enregistrment = ['question_id' => $question_id, 'phase_id' => $request->phase_id, 'ponderation' => $request->ponderation];
-            $bonneAssertion = 0;
-            // $autreAssertion = [];
-            // dd($request->all());
+
+           $data = [
+                'question_id' => $question->id,
+                'assertion' => '',
+                'ponderation' => 0,
+                'statut' => "Valide"
+            ];
+           
             foreach ($request->assertions as $key => $value) {
-                // dd($key, $request->bonneReponse);
+
                 if ($key == $request->bonneReponse) {
-                    $bonneAssertion = $value['ponderation'] = 1;
-                    // $nameAsse = $key;
-                    // dd("ponderation bonne assertion ".$bonneAssertion, "clé ".$key,"value ".$value["name"]);
+                    $data['ponderation']=1; 
                 }
-                // else{
-                //     array_push($autreAssertion,$bonneAssertion);
-                // }
-                $assertion = Assertion::firstOrCreate([
-                    'question_id' => $enregistrment['question_id'],
-                    'assertion' => $value["name"],
-                    'ponderation' => $bonneAssertion,
-                    'statut' => "ok"
-                ]);
-                $bonneAssertion = 0;
+
+                $data['assertion']=$value;
+                if($value != null || $value !=""){
+                    $assertion = Assertion::create($data);
+                }
+                $data['ponderation']=0;
             }
-            // dd($bonneAssertion, $nameAsse, "autres assertion",$autreAssertion);
-            $verif = QuestionPhase::all()->where("phase_id", $request->phase_id); //on recupere tout dans question phase et on verifie si l'enregistrement existe deja
-            $tabQuestion = array();
-            foreach ($verif as $key => $value) {
-                $verif2 = $value->question_id;
-                array_push($tabQuestion, $verif2);
-            }
-            if (in_array($request->question_id, $tabQuestion)) {
+
+            $verif = QuestionPhase::where("phase_id", $request->phase)->where('question_id',$question->id)->count(); //on recupere tout dans question phase et on verifie si l'enregistrement existe deja
+           
+            if ($verif > 0) {
                 return back()->with("echec", "Question existe dja dans cette phase");
             } else {
                 $questionPhase = QuestionPhase::firstOrCreate([
-                    "phase_id" => $enregistrment['phase_id'],
-                    "question_id" => $enregistrment['question_id'],
-                    "ponderation" => $enregistrment['ponderation']
+                    "phase_id" => $request->phase,
+                    "question_id" => $question->id,
+                    "ponderation" => $request->ponderation
                 ]);
                 return back()->with("success", "Question enregistrée avec succes");
             }
