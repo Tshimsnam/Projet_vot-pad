@@ -15,9 +15,9 @@ class SendIntervenantMail implements ShouldQueue
 {
     use Dispatchable, Queueable;
 
-    protected $intervenant, $phase, $dateTest, $heureTest, $isVote, $lien;
+    protected $intervenant, $phase, $dateTest, $heureTest, $isVote, $lien, $objet;
 
-    public function __construct($intervenant, $phase, $dateTest, $heureTest, $isVote, $lien)
+    public function __construct($intervenant, $phase, $dateTest, $heureTest, $isVote, $lien, $objet)
     {
         $this->intervenant = $intervenant;
         $this->phase = $phase;
@@ -25,13 +25,14 @@ class SendIntervenantMail implements ShouldQueue
         $this->heureTest = $heureTest;
         $this->isVote = $isVote;
         $this->lien = $lien;
+        $this->objet = $objet;
     }
 
     public function handle()
     {
         $intervenant = $this->intervenant;
         $phase = $this->phase;
-        $objetTest = $phase->nom;
+        $objetTest = $this->objet;
         $nonPresent = 'exterieur';
         $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenant->id)
             ->where('phase_id', $phase->id)

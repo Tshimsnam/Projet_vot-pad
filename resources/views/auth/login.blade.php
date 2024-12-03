@@ -117,7 +117,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <x-primary-button class="ms-4">
+                <x-primary-button class="">
                     {{ __('Inscription') }}
                 </x-primary-button>
             </div>
@@ -155,34 +155,38 @@
 
             loginButton.addEventListener('click', function() {
                 // Transition vers la vue de connexion
-                const loginClasses = loginButton.className;
-                loginButton.className = registerButton.className;
-                registerButton.className = loginClasses;
+                if (viewLogin.style.display != 'block') {
+                    const loginClasses = loginButton.className;
+                    loginButton.className = registerButton.className;
+                    registerButton.className = loginClasses;
 
-                viewRegister.style.opacity = '0';
-                setTimeout(() => {
-                    viewRegister.style.display = 'none';
-                    viewLogin.style.display = 'block';
+                    viewRegister.style.opacity = '0';
                     setTimeout(() => {
-                        viewLogin.style.opacity = '1';
-                    }, 10);
-                }, 500);
+                        viewRegister.style.display = 'none';
+                        viewLogin.style.display = 'block';
+                        setTimeout(() => {
+                            viewLogin.style.opacity = '1';
+                        }, 10);
+                    }, 500);
+                }
             });
 
             registerButton.addEventListener('click', function() {
                 // Transition vers la vue d'inscription
-                const registerClasses = registerButton.className;
-                registerButton.className = loginButton.className;
-                loginButton.className = registerClasses;
+                if (viewRegister.style.display != 'block') {
+                    const registerClasses = registerButton.className;
+                    registerButton.className = loginButton.className;
+                    loginButton.className = registerClasses;
 
-                viewLogin.style.opacity = '0';
-                setTimeout(() => {
-                    viewLogin.style.display = 'none';
-                    viewRegister.style.display = 'block';
+                    viewLogin.style.opacity = '0';
                     setTimeout(() => {
-                        viewRegister.style.opacity = '1';
-                    }, 10);
-                }, 500);
+                        viewLogin.style.display = 'none';
+                        viewRegister.style.display = 'block';
+                        setTimeout(() => {
+                            viewRegister.style.opacity = '1';
+                        }, 10);
+                    }, 500);
+                }
             });
         });
     </script>

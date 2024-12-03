@@ -15,7 +15,7 @@
                             @csrf
                             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                                 <h2 class="text-2xl font-bold leading-tight tracking-tight dark:text-white">
-                                    Login Evaluation
+                                    Evaluation Connexion
                                 </h2>
                                 @if (session('unsuccess'))
                                     <div id="alert-2" class="flex items-center text-[#ff0000] rounded-lg" role="alert">
@@ -35,7 +35,7 @@
                                         class="block mb-2 text-sm font-medium dark:text-white">Email</label>
                                     <input type="email" autocomplete="off" id="email" name="email"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-white-500 focus:border-white-500 block w-full p-2.5"
-                                        placeholder="names@gmail.com" required />
+                                        placeholder="momekano@gmail.com" required />
                                 </div>
                                 <div class="mb-5">
                                     <label for="coupon"
@@ -46,7 +46,7 @@
                                 </div>
                                 <button type="submit"
                                     class="text-white bg-gray-900 border border-gray-700 hover:bg-gray-800 hover:border-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-500 font-bold rounded-lg text-sm w-full sm:w-40 h-10 text-center dark:bg-white dark:text-black dark:border-gray-300 dark:hover:bg-gray-200 dark:hover:border-gray-200 dark:text-gray-900 dark:border dark:border-red">
-                                    Login
+                                    Connexion
                                 </button>
 
                             </div>
@@ -56,7 +56,7 @@
                             @csrf
                             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                                 <h2 class="text-2xl font-bold leading-tight tracking-tight dark:text-white">
-                                    Vote Login
+                                    Vote Connexion
                                 </h2>
                                 @if (session('unsuccessJury'))
                                     <div id="alert-2" class="flex items-center text-[#ff0000] rounded-lg" role="alert">
@@ -80,7 +80,7 @@
                                 </div>
                                 <button type="submit"
                                     class="text-white bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-500 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-white dark:text-black dark:hover:bg-gray-200">
-                                    Login
+                                    Connexion
                                 </button>
                         </form>
                     </div>
@@ -89,7 +89,7 @@
                 <div class="panels-container">
                     <div class="panel left-panel">
                         <div class="content">
-                            <h3>Login Vote</h3>
+                            <h3>Vote Connexion</h3>
                             <p>
                                 Cette section est dédiée à l'authentification des jurys.<br> Elle gère les processus de
                                 vérification et de validation des informations fournies par les jurés.
@@ -103,7 +103,7 @@
                     </div>
                     <div class="panel right-panel">
                         <div class="content">
-                            <h3>Login evaluation</h3>
+                            <h3>Evaluation Connexion</h3>
                             <p>
                                 Cette section concerne l'authentification des candidats avant leur évaluation.<br> Elle
                                 vérifie

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 /**
      * @OA\Info(
      *      version="1.0.0",
-     *      title="VotePad2",
-     *      description="Api Swagger pour VotePad",
+     *      title="Momekano",
+     *      description="Api Swagger pour Momekano",
      *      @OA\Contact(
      *          email="admin@admin.com"
      *      ),
@@ -23,12 +23,12 @@ namespace App\Http\Controllers;
      * )
      * @OA\Server(
      *      url=L5_SWAGGER_CONST_HOST,
-     *      description="API Server VotePad2"
+     *      description="API Server Momekano"
      * )
      *
      * @OA\Tag(
-     *     name="VotePad2",
-     *     description="API Endpoints of VotePad2"
+     *     name="Momekano",
+     *     description="API Endpoints of Momekano"
      * )
      */
 abstract class Controller

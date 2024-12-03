@@ -137,6 +137,7 @@ class IntervenantPhaseController extends Controller
         $dateTest = $request->dateTest;
         $heureTest = $request->heureTest;
         $isVote = $request->isVote;
+        $objet = $request->objet;
 
         $phase = Phase::find($phase_id);
         if (!$phase) {
@@ -154,7 +155,7 @@ class IntervenantPhaseController extends Controller
             foreach ($intervenantsSelected as $intervenantData) {
                 $intervenant = Intervenant::find($intervenantData['id']);
                 if ($intervenant) {
-                    SendIntervenantMail::dispatch($intervenant, $phase, $dateTest, $heureTest, $isVote, $lien);
+                    SendIntervenantMail::dispatch($intervenant, $phase, $dateTest, $heureTest, $isVote, $lien, $objet);
                 }
             }
             return response()->json(['message' => 'Mails envoyés avec succès en arrière-plan.'], 200);
