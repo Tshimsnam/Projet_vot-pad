@@ -22,6 +22,8 @@ class IntervenantPhaseResource extends JsonResource
                 'evenement_nom' => $this->evenement_nom,
                 'phase_nom' => $this->phase_nom,
                 'email' => $this->email,
+                'noms' => $this->noms,
+                'image' => $this->image,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
                 'token' => $this->intervenantToken,

@@ -112,7 +112,7 @@
                     </div>
                 </div>
 
-                <div id="entretien">
+                <div id="entretien" style="display: none">
                     <div id="">
                         <label  for="noms"
                             class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">
