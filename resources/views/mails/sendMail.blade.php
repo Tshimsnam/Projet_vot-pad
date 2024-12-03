@@ -17,54 +17,7 @@
                     </h2>
                 </div>
             </div>
-            <div>
-                <form action="">
-                    <div class="flex gap-2" id="">
-                        <div>
-                            <label id="dateLabel" for="dateTest"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de
-                                l'evaluation</label>
-                            <div class="relative mb-3">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                                    </svg>
-                                </div>
-                                <input id="dateTest" datepicker datepicker-autohide datepicker-orientation="bottom"
-                                    datepicker-format="dd/mm/yyyy" type="text" name="dateTest"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Select date" autocomplete="off" required>
-                            </div>
-                        </div>
 
-                        <div>
-                            <label for="heureTest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Heure de l'evaluation
-                            </label>
-                            <div class="relative">
-                                <div
-                                    class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                            d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <input type="time" id="heureTest" name="heureTest"
-                                    class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    min="00:00" max="24:00" value="08:00" />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <button id="submitButton" type="submit" hidden>Submit</button>
-                </form>
-
-            </div>
         </div>
         {{-- <div class="flex justify-end">
             <div
@@ -134,8 +87,8 @@
         <div id="alertMail"
             class="flex items-center p-4 mb-4 text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
             role="alert" style="display: none">
-            <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor" viewBox="0 0 20 20">
+            <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                viewBox="0 0 20 20">
                 <path
                     d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
             </svg>
@@ -153,6 +106,61 @@
                         d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                 </svg>
             </button>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 shadow p-2 mb-3">
+            <form class="flex justify-between " action="">
+                <div class="mb-3">
+                    <label for="objet" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Objet du
+                        mail</label>
+                    <input type="text" id="objet" name="objet"
+                        class="w-96 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Saisissez l'objet du mail" required />
+                </div>
+                <div class="flex gap-2" id="">
+                    <div>
+                        <label id="dateLabel" for="dateTest"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date_Fin de
+                            l'evaluation</label>
+                        <div class="relative mb-3">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                </svg>
+                            </div>
+                            <input id="dateTest" datepicker datepicker-autohide datepicker-orientation="bottom"
+                                datepicker-format="dd/mm/yyyy" type="text" name="dateTest"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Select date" autocomplete="off" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="heureTest" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Heure_Fin de l'evaluation
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                        d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input type="time" id="heureTest" name="heureTest"
+                                class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                min="00:00" max="24:00" value="08:00" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <button id="submitButton" type="submit" hidden>Submit</button>
+            </form>
+
         </div>
 
         <div class="pb-5 flex justify-between items-center">
@@ -454,8 +462,9 @@
             const phaseId = @json($phase_id);
             const dateTest = document.getElementById('dateTest');
             const heureTest = document.getElementById('heureTest');
+            const objet = document.getElementById('objet');
 
-            if (!dateTest.value || !heureTest.value) {
+            if (!dateTest.value || !heureTest.value || !objet.value) {
                 $('#submitButton').click();
                 return;
             }
@@ -497,6 +506,7 @@
                         phase_id: phaseId,
                         dateTest: dateTest.value,
                         heureTest: heureTest.value,
+                        objet: objet.value,
                         isVote: 0
                     })
                 })
