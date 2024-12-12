@@ -70,43 +70,41 @@
                     class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">Importer</button>
             </div>
             <div id="divManuelQuestion" style="display: none" class="m-5 mr-5" style="padding-left: 20px; margin:5px">
-                    <div id="" class="mb-5">
-                        <label id="" for="questionInput"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Question</label>
-                        <input type="text" id="questionInput" name="question"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Libele de la question" />
-                    </div>
-                    <div id="" class="mb-5">
-                        <label i for="ponderationQuestion"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pondération</label>
-                        <input type="number" id="ponderationQuestion" name="ponderation" max="99" min="0"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="0" />
-                    </div>
-
-                    @for($i=1; $i<=5;$i++)    
-                        <div id="" class="mb-5">
-                            <label for="assertionInput{{$i}}"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Assertion {{ $i}} 
-                                <input type="radio" name="bonneReponse" value="{{$i}}"
-                                    class="w-4 h-4 ml-5 text-green-600 bg-gray-100 border-gray-300 rounded-full focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                            </label>
-                            
-                            <input type="text" id="assertionInput{{$i}}" name="assertions[{{$i}}]"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Libele de assertion {{$i}} "  required />
-                        </div>  
-                    @endfor
- 
-                    <div class="flex justify-between items-center mt-4 sm:mt-6">
-                        <button id="valider" type="submit"
-                            class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
-                            Valider
-                        </button>
-                    </div>
+            
+                <div class="mb-5">
+                    <label for="questionInput"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Question</label>
+                    <textarea id="questionInput" rows="5" class="dynamic-input block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Editer la question"
+                        name="question"></textarea>
                 </div>
+                <div id="" class="mb-5">
+                    <label i for="ponderationQuestion"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pondération</label>
+                     <input type="number" id="ponderationQuestion" name="ponderation" max="99" min="0"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="0" />
+                </div>
+    
+                <div id="dynamicForm" class="mb-5">
+                    <div class="input-container mb-5">
+                        <label for="assertionInput1"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Assertion 1 
+                            <input type="radio" name="bonneReponse" value="1"
+                                class="w-4 h-4 ml-5 text-green-600 bg-gray-100 border-gray-300 rounded-full focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                        </label>
+                        <textarea id="assertionInput1" rows="4" class="dynamic-input block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Editer l'assertion"
+                        name="assertions[1]" ></textarea>
+                    </div>
+                </div> 
+   
+                <div class="flex justify-between items-center mt-4 sm:mt-6">
+                    <button id="valider" type="submit"
+                        class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
+                        Valider
+                    </button>
+                </div>
+            </div>
         </form>
 
     </div>
@@ -120,6 +118,7 @@
         const questionInput = document.getElementById('questionInput');
         const fichierInput = document.getElementById('fichierInput');
         const ponderationQuestion = document.getElementById('ponderationQuestion');
+        const assertion1 = document.getElementById('assertionInput1');
 
         const actionImport = @json(route('importQuestion'));
         const actionManuel = @json(route('questions.store'));
@@ -135,12 +134,10 @@
                 fichierInput.required = true;
                 questionInput.required= false
                 ponderationQuestion.required=false
+                assertion1.required=false
                 
-                for(let i=1; i<=5;i++){
-                    formInput[`assertion${i}`] = document.getElementById(`assertionInput${i}`).required = false;
-                }
-                console.log(formInput)
-                console.log(actionImport)
+                // console.log(formInput)
+                // console.log(actionImport)
             } 
         });
         
@@ -153,14 +150,48 @@
                 fichierInput.required = false;
                 ponderationQuestion.required=true
                 questionInput.required= true
-
-                for(let i=1; i<=5;i++){
-                    formInput[`assertion${i}`] = document.getElementById(`assertionInput${i}`).required = true;
-                }
+                assertion1.required=true
                 
-                console.log(formInput)
-                console.log(actionManuel)
+                // console.log(formInput)
+                // console.log(actionManuel)
+            }
+        });
 
+
+        const form = document.getElementById('dynamicForm');
+
+        form.addEventListener('input', function(event) {
+            const inputs = document.querySelectorAll('.dynamic-input');
+            const lastInput = inputs[inputs.length - 1];
+            const num= inputs.length;
+
+        
+            if (lastInput.value !== '') {
+                
+                const newInputContainer = document.createElement('div');
+                newInputContainer.className="mb-5";
+                newInputContainer.classList.add('input-container');
+
+                const newInput = document.createElement('textarea');
+                newInput.className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+                newInput.classList.add('dynamic-input');
+                newInput.placeholder = 'Saisir l"assertion ';
+                newInput.name= `assertions[${num}]`
+                newInput.rows="4"
+
+                const labelAssertion = document.createElement('label');
+                labelAssertion.className="block mb-2 text-sm font-medium text-gray-900 dark:text-white";
+                labelAssertion.textContent = `Assertion ${num}`
+                const radioReponse = document.createElement('input');
+                radioReponse.type='radio';
+                radioReponse.className="w-4 h-4 ml-5 text-green-600 bg-gray-100 border-gray-300 rounded-full focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500";           
+                radioReponse.value = `${num}`;
+                radioReponse.name="bonneReponse";
+
+                labelAssertion.appendChild(radioReponse);
+                newInputContainer.appendChild(labelAssertion);
+                newInputContainer.appendChild(newInput);
+                form.appendChild(newInputContainer);
             }
         });
     </script>
