@@ -36,7 +36,6 @@ class PhaseController extends Controller
         return view("phases.index", compact("phase"));
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
@@ -53,7 +52,7 @@ class PhaseController extends Controller
     {
         $request->validated([
             'nom' => 'require [ max:50 | min:3',
-            'description' => 'require'
+            'description' => 'require',
         ]);
         $evenement_id = $request->evenement_id;
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -79,7 +78,7 @@ class PhaseController extends Controller
                 'duree' => $request->duree,
                 'date_debut' => $request->date_debut,
                 'date_fin' => $request->date_fin,
-                'evenement_id' => $evenement_id
+                'evenement_id' => $evenement_id,
             ]
 
         );
@@ -123,7 +122,7 @@ class PhaseController extends Controller
             'description' => $request->description,
             'date_debut' => $request->date_debut,
             'date_fin' => $request->date_fin,
-            'duree' => $request->duree
+            'duree' => $request->duree,
         ]);
         $evenement = Evenement::find($phase->evenement_id);
         session(['breadEvenement' => $evenement->id]);
@@ -241,8 +240,7 @@ class PhaseController extends Controller
             // module phase vote
 
             //recuperer les intervenats liés à une phase
-            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->paginate(10, ['*'], 'intervenant_page');
-            $page = $intervenantPhases->currentPage();
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
             $intervenantPhasesAll = IntervenantPhase::where('phase_id', $phase_id)->latest()->get();
             $intervenantAll = [];
             $intervenants = [];
@@ -253,7 +251,6 @@ class PhaseController extends Controller
                 $intervenant->mail_send = $intervenantPhase->mail_send;
                 $intervenants[] = $intervenant;
             }
-            $totalIntervenants = $intervenantPhases->total();
 
             foreach ($intervenantPhasesAll as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
@@ -354,7 +351,7 @@ class PhaseController extends Controller
                 return strtolower($a->noms) <=> strtolower($b->noms);
             });
             $phaseExist = Phase::findOrFail($phase_id);
-            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants', 'intervenantAll', 'page'));
+            return view('criteres.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'intervenantAll'));
         } else if ($phase_type === 'Entretien' || $phase_type === 'entretien') {
 
             // module phase entretien
@@ -481,7 +478,7 @@ class PhaseController extends Controller
         } else {
             // module phase evaluation
             $phases = $phaseShow;
-            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->latest()->paginate(10, ['*'], 'intervenant_page');
+            $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
             $intervenantPhasesAll = IntervenantPhase::where('phase_id', $phase_id)->latest()->get();
             $intervenantAll = [];
 
@@ -498,10 +495,10 @@ class PhaseController extends Controller
                     } else {
                         $intervenant->is_use = 1;
                     }
+                    $intervenant->noms = strtolower($intervenant->noms);
                     $intervenants[] = $intervenant;
                 }
             }
-
             foreach ($intervenantPhasesAll as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
                 if ($intervenant) {
@@ -546,7 +543,7 @@ class PhaseController extends Controller
         return view('phases.question_phase', compact('questionPhasePagnation'));
     }
 
-    //changer le status de la phase	
+    //changer le status de la phase
 
     public function changeStatus($phaseId, $status)
     {
@@ -565,7 +562,6 @@ class PhaseController extends Controller
         } else if ($status == 'Cloturer' || $status == 'cloturer') {
 
             if ($phase->type == 'Vote' || $phase->type == 'vote') {
-
 
                 $evenementId = $phaseStart->evenement_id;
                 $passNumber = $phaseStart->passation_nombre;
@@ -782,7 +778,7 @@ class PhaseController extends Controller
                                             $passage_success = IntervenantPhase::firstOrCreate([
                                                 'intervenant_id' => $intervenantId,
                                                 'phase_id' => $next_phase->id,
-                                                'coupon' => $couponPhase
+                                                'coupon' => $couponPhase,
                                             ]);
                                         } else {
                                             $intervenant_coupon_update = DB::table('intervenant_phases')
@@ -814,7 +810,7 @@ class PhaseController extends Controller
         // dd($request->id);
         // dd(request());
         $phase = Phase::where('id', $request->id)->where('statut', '!=', 'En cours')->where('statut', '!=', 'Cloturer')->first();
-        // dd($phase); 
+        // dd($phase);
         if ($phase != null) {
             $phase_statut_update = DB::table('phases')
                 ->where('id', $phase->id)
@@ -938,7 +934,7 @@ class PhaseController extends Controller
                                     $passage_success = IntervenantPhase::firstOrCreate([
                                         'intervenant_id' => $intervenantId,
                                         'phase_id' => $next_phase->id,
-                                        'coupon' => $couponPhase
+                                        'coupon' => $couponPhase,
                                     ]);
                                 } else {
                                     $intervenant_coupon_update = DB::table('intervenant_phases')
@@ -972,7 +968,7 @@ class PhaseController extends Controller
 
         $phaseEdit = DB::table('evenements')
             ->join('phases', "evenements.id", "=", "phases.evenement_id")
-            // ->select('evenements.*', 'phases.*') //on recupere tout mais avec conflit de champs identitiques
+        // ->select('evenements.*', 'phases.*') //on recupere tout mais avec conflit de champs identitiques
             ->select(
                 'evenements.id as id_event',
                 'evenements.nom as nom_event',
@@ -1011,7 +1007,6 @@ class PhaseController extends Controller
         return redirect(route('phase.show', $phaseId))->with('successCand', 'La passation à la phase suivante enregistrée avec succès');
     }
 
-
     public function detailQuestion(Request $request)
     {
 
@@ -1029,14 +1024,14 @@ class PhaseController extends Controller
 
     public function updateQuestion(Request $request)
     {
-        
+
         $question = $request->question;
         $ponderation = $request->ponderation;
         $ponderation_ass = 0;
-        $newPonderation = 0 ;
+        $newPonderation = 0;
         $assertions = $request->assertions;
         $reponse = $request->bonneReponse;
-        $newBonneReponse = (int)$reponse;
+        $newBonneReponse = (int) $reponse;
         $newAssertions = $request->newAssertions;
 
         $nbre_ass_echec = 0;
@@ -1059,17 +1054,17 @@ class PhaseController extends Controller
                         }
                     }
                 }
-                
+
                 foreach ($assertions as $c => $val) {
                     $assertion_verif = Assertion::where('id', $c)->where('question_id', $k)->first();
                     if ($assertion_verif != null) {
-                        if($newBonneReponse){
+                        if ($newBonneReponse) {
                             if ($c == $reponse) {
                                 $ponderation_ass = 1;
                             }
                         }
 
-                        if($val != null || $val !=""){
+                        if ($val != null || $val != "") {
                             $assertion_update = Assertion::where('id', $c)->where('question_id', $k)->update(['assertion' => $val, 'ponderation' => $ponderation_ass]);
                             if ($assertion_update > 0) {
                                 $message_assertion = "Assertion mise à jour avec succes";
@@ -1079,39 +1074,38 @@ class PhaseController extends Controller
                                 $message_assertion = "Mise à jour de $nbre_ass_echec assertion$plus a échouée";
                             }
                             $ponderation_ass = 0;
-                        }else{
-                            $deleteAssert = Assertion::where('id',$c)->where('question_id',$k)->delete();
+                        } else {
+                            $deleteAssert = Assertion::where('id', $c)->where('question_id', $k)->delete();
                         }
                     }
                 }
 
-                if($newAssertions != null){
-                    foreach($newAssertions as $cle=>$valeur){
-                        $newBonne = preg_replace('/\D/','',$reponse);
-                        if($newBonne == $cle){
+                if ($newAssertions != null) {
+                    foreach ($newAssertions as $cle => $valeur) {
+                        $newBonne = preg_replace('/\D/', '', $reponse);
+                        if ($newBonne == $cle) {
                             $newPonderation = 1;
                         }
-                        if($valeur != null || $valeur != ""){
+                        if ($valeur != null || $valeur != "") {
                             $insert = Assertion::create([
-                                "assertion"=>$valeur,
-                                "ponderation"=>$newPonderation,
-                                "statut"=>'Valide',
-                                "question_id"=>$k
+                                "assertion" => $valeur,
+                                "ponderation" => $newPonderation,
+                                "statut" => 'Valide',
+                                "question_id" => $k,
                             ]);
                         }
-                        
-                        $newPonderation=0;
+
+                        $newPonderation = 0;
                     }
                 }
-                
-                
+
             }
         }
 
         return back()->with('success', 'Mise à jour effectué avec succes');
     }
 
-    function sendMail($phase_id)
+    public function sendMail($phase_id)
     {
         $user = Auth::user();
         $phase = Phase::find($phase_id);
@@ -1134,7 +1128,7 @@ class PhaseController extends Controller
                 $intervenant->intervenantPhaseId = $intervenantPhase->id;
                 $intervenant->coupon = $intervenantPhase->coupon;
                 $intervenant->mail_send = $intervenantPhase->mail_send;
-                $intervenant->noms = strtolower($intervenant->noms); 
+                $intervenant->noms = strtolower($intervenant->noms);
                 if ($intervenantPhase->token == 0) {
                     $intervenant->is_use = 0;
                 } else {
@@ -1147,7 +1141,6 @@ class PhaseController extends Controller
         usort($intervenants, function ($a, $b) {
             return strcmp($a->noms, $b->noms);
         });
-
 
         session(['breadPhase' => $phase_id]);
         return view('mails.sendMail', compact('phaseShow', 'phase_id', 'evenement', 'intervenants'));
