@@ -279,7 +279,7 @@
                             class="bg-orange-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-orange-100 dark:bg-gray-500 text-orange-600 dark:text-orange-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $intervenantPhases->total() }}</dt>
+                                {{ count($intervenantPhases) }}</dt>
                             <dd class="text-orange-600 dark:text-orange-300 text-sm font-medium">Tous</dd>
                         </dl>
                         <dl
@@ -294,7 +294,7 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $intervenantPhases->total() - (count($intervenantsMails) + count($intervenantStart)) }}
+                                {{ count($intervenantPhases) - (count($intervenantsMails) + count($intervenantStart)) }}
                             </dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Mails</dd>
                         </dl>
@@ -443,8 +443,7 @@
                             </svg>
                         </a>
 
-                        <a href="{{ route('mail.view', $phase_id) }}"
-                            {{-- data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat" --}}
+                        <a href="{{ route('mail.view', $phase_id) }}" {{-- data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat" --}}
                             class="px-4 py-2 text-sm font-medium text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
                             Envoyer les mails
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
@@ -466,224 +465,133 @@
                             </svg>
                         </a>
                     </div>
-                    <div class="mb-4">
-                        <input type="text" id="search" placeholder="Rechercher par nom..."
-                            class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-                    </div>
-                    <div class="">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="divPagination">
-                            @foreach ($intervenants as $i => $item)
-                                <div class="w-full">
-                                    <div
-                                        class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                                        <div class="pl-2 pr-5 float-left">
-                                            <img class="w-20 h-20 object-cover border-2 rounded-md"
-                                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
-                                                alt="">
-                                        </div>
+                    @if (count($intervenants) > 0)
+                        <div class="py-4 pb-4 flex justify-between items-center gap-96">
+                            <div class="flex-1 items-center pr-8">
+                                <input type="text" id="search" placeholder="Rechercher par nom ou email..."
+                                    class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                    autocomplete="off" />
 
-                                        <div class="flex justify-between">
-                                            <div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->noms }}
-                                                    </h3>
-                                                    @if ($item->mail_send == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->coupon }}
-                                                    </h3>
-                                                    @if ($item->is_use == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <label for="ligneParPage"
+                                    class="text-sm pr-2 text-gray-900 dark:text-gray-200">Lignes</label>
+                                <select id="ligneParPage"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option selected value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                    @endif
 
-                                                <h3 class="text-sm text-gray-900 dark:text-gray-200">
-                                                    {{ $item->email }}
+                    <div id="intervenants-list" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        @foreach ($intervenants as $i => $item)
+                            <div class="intervenant-item w-full">
+                                <div
+                                    class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800 flex items-center">
+                                    <!-- Première div (Image) -->
+                                    <div class="pl-2 pr-5">
+                                        <img class="w-16 h-16 object-cover border-2 rounded-md"
+                                            src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
+                                            alt="">
+                                    </div>
+
+                                    <!-- Deuxième div (Contenu) -->
+                                    <div class="flex-1 flex justify-between items-center">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <h3
+                                                    class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
+                                                    {{ $item->noms }}
                                                 </h3>
-                                                <div class="flex items-center space-x-4">
-                                                    <h3 id='genre-{{ $i }}'
-                                                        class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
-                                                        data-genre="{{ $item->genre }}">
-                                                    </h3>
-                                                    <h3 class="text-sm text-gray-900 dark:text-white">
-                                                        +243{{ $item->telephone }}
-                                                    </h3>
-                                                </div>
-
-                                            </div>
-                                            <div class="pr-2">
-                                                <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
-                                                    data-modal-target="intervEdit-modal"
-                                                    data-modal-toggle="intervEdit-modal" href="#"
-                                                    class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                @if ($item->mail_send == 0)
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
+                                                        fill="currentColor" class="size-7 pl-2 text-red-500">
                                                         <path
-                                                            d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
                                                         <path
-                                                            d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
                                                     </svg>
-
-
-                                                </a>
-                                                <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
-                                                    data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                                    href="#"
-                                                    class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                @else
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
-                                                        <path fill-rule="evenodd"
-                                                            d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                            clip-rule="evenodd" />
+                                                        fill="currentColor" class="size-7 pl-2 text-green-500">
+                                                        <path
+                                                            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                                        <path
+                                                            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
                                                     </svg>
-                                                </a>
+                                                @endif
                                             </div>
+                                            <h3 class="text-sm text-gray-900 dark:text-gray-200">
+                                                {{ $item->email }}
+                                            </h3>
+                                            <div class="flex items-center space-x-4">
+                                                <h3 id='genre-{{ $i }}'
+                                                    class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
+                                                    data-genre="{{ $item->genre }}">
+                                                </h3>
+                                                <h3 class="text-sm text-gray-900 dark:text-white">
+                                                    @if ($item->telephone)
+                                                        +243{{ substr($item->telephone, -9) }}
+                                                    @endif
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class="pr-2 space-y-2">
+                                            <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
+                                                data-modal-target="intervEdit-modal"
+                                                data-modal-toggle="intervEdit-modal" href="#"
+                                                class="py-1 px-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path
+                                                        d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                    <path
+                                                        d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                </svg>
+                                            </a>
+                                            <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
+                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                href="#"
+                                                class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-                        <div id="divRecherche" class="grid grid-cols-1 md:grid-cols-2 gap-2 hidden">
-                            @foreach ($intervenantAll as $i => $item)
-                                <div id="recherche" class="w-full">
-                                    <div
-                                        class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                                        <div class="pl-2 pr-5 float-left">
-                                            <img class="w-20 h-20 object-cover border-2 rounded-md"
-                                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
-                                                alt="">
-                                        </div>
-
-                                        <div class="flex justify-between">
-                                            <div>
-                                                <div class="flex items-center">
-                                                    <h3 id="h3Nom"
-                                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->noms }}
-                                                    </h3>
-                                                    @if ($item->mail_send == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->coupon }}
-                                                    </h3>
-                                                    @if ($item->is_use == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
-
-                                                <h3 class="text-sm text-gray-900 dark:text-gray-200">
-                                                    {{ $item->email }}
-                                                </h3>
-                                                <div class="flex items-center space-x-4">
-                                                    <h3 id='genre-{{ $i }}'
-                                                        class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
-                                                        data-genre="{{ $item->genre }}">
-                                                    </h3>
-                                                    <h3 class="text-sm text-gray-900 dark:text-white">
-                                                        +243{{ $item->telephone }}
-                                                    </h3>
-                                                </div>
-
-                                            </div>
-                                            <div class="pr-2">
-                                                <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
-                                                    data-modal-target="intervEdit-modal"
-                                                    data-modal-toggle="intervEdit-modal" href="#"
-                                                    class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
-                                                        <path
-                                                            d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-                                                        <path
-                                                            d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
-                                                    </svg>
-
-
-                                                </a>
-                                                <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
-                                                    data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                                    href="#"
-                                                    class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
-                                                        <path fill-rule="evenodd"
-                                                            d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
+                            </div>
+                        @endforeach
                     </div>
-                    <div id="pagination" class="p-2">
+                    @if (count($intervenants) > 0)
+                        <div id="pagination-container" class="flex justify-between items-center pt-5">
+                            <!-- Affichage des éléments de pagination -->
+                            <span class="text-sm text-gray-700 dark:text-gray-400">
+                                Showing <span class="font-semibold text-gray-900 dark:text-white"
+                                    id="from"></span>
+                                to <span class="font-semibold text-gray-900 dark:text-white" id="to"></span> of
+                                <span class="font-semibold text-gray-900 dark:text-white" id="total"></span>
+                                Entries
+                            </span>
+
+                            <nav aria-label="Page navigation example">
+                                <ul id="pagination" class="flex items-center -space-x-px h-8 text-sm">
+                                    <!-- Pagination générée dynamiquement par JavaScript -->
+                                </ul>
+                            </nav>
+                        </div>
+                    @endif
+
+                    {{-- <div id="pagination" class="p-2">
                         {{ $intervenantPhases->appends(['intervenant_page' => $intervenantPhases->currentPage()])->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -877,6 +785,123 @@
         //script pour modifier l'ordre de question
         $(function() {
             $("#sortable").sortable();
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            const ligneParPage = 10; // Nombre fixe d'éléments par page
+            const intervenantItems = document.querySelectorAll(".intervenant-item");
+            const paginationContainer = document.getElementById("pagination");
+            const fromSpan = document.getElementById("from");
+            const toSpan = document.getElementById("to");
+            const totalSpan = document.getElementById("total");
+            const searchInput = document.getElementById('search');
+
+            let currentPage = 1;
+
+            const updatePagination = (totalPages) => {
+                paginationContainer.innerHTML = ""; // Réinitialiser la pagination
+
+                // Bouton précédent
+                const prevLi = document.createElement("li");
+                prevLi.innerHTML = `
+                <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <span class="sr-only">Previous</span>
+                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                    </svg>
+                </a>`;
+                prevLi.addEventListener("click", (event) => {
+                    event.preventDefault(); // Empêcher l'action par défaut
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updateIntervenantsDisplay();
+                    }
+                });
+                paginationContainer.appendChild(prevLi);
+
+                // Pages
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<a href="#" class="flex items-center justify-center px-3 h-8 leading-tight ${
+                    i === currentPage
+                        ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                        : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                }">${i}</a>`;
+                    li.addEventListener("click", (event) => {
+                        event.preventDefault(); // Empêcher l'action par défaut
+                        currentPage = i;
+                        updateIntervenantsDisplay();
+                    });
+                    paginationContainer.appendChild(li);
+                }
+
+                // Bouton suivant
+                const nextLi = document.createElement("li");
+                nextLi.innerHTML = `
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <span class="sr-only">Next</span>
+                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                </a>`;
+                nextLi.addEventListener("click", (event) => {
+                    event.preventDefault(); // Empêcher l'action par défaut
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updateIntervenantsDisplay();
+                    }
+                });
+                paginationContainer.appendChild(nextLi);
+            };
+
+            const updateIntervenantsDisplay = () => {
+                const maxItems = ligneParPage;
+                const totalPages = Math.ceil(intervenantItems.length / maxItems);
+
+                intervenantItems.forEach((item, index) => {
+                    const start = (currentPage - 1) * maxItems;
+                    const end = currentPage * maxItems;
+                    item.style.display = index >= start && index < end ? "block" : "none";
+                });
+
+                const start = (currentPage - 1) * maxItems + 1;
+                const end = Math.min(currentPage * maxItems, intervenantItems.length);
+                fromSpan.textContent = start;
+                toSpan.textContent = end;
+                totalSpan.textContent = intervenantItems.length;
+
+                updatePagination(totalPages);
+            };
+
+            searchInput.addEventListener('input', function() {
+                const query = searchInput.value.toLowerCase();
+
+                if (query === "") {
+                    intervenantItems.forEach(function(item) {
+                        item.style.display = 'block';
+                    });
+
+                    updateIntervenantsDisplay();
+                } else {
+
+                    intervenantItems.forEach(function(item) {
+                        const name = item.querySelector('h3.text-xl').textContent.toLowerCase();
+                        const email = item.querySelector('h3.text-sm.text-gray-900').textContent
+                            .toLowerCase();
+
+                        if (name.includes(query) || email.includes(query)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+
+                    paginationContainer.innerHTML = "";
+                }
+            });
+
+
+            // Initial affichage
+            updateIntervenantsDisplay();
         });
     </script>
     <script>
