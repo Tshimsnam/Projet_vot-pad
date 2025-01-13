@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreIntervenantPhaseRequest;
 use App\Http\Requests\UpdateIntervenantPhaseRequest;
 use App\Jobs\SendIntervenantMail;
-use App\Mail\CandidatMail;
 use App\Models\Intervenant;
 use App\Models\IntervenantPhase;
 use App\Models\Phase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 
 class IntervenantPhaseController extends Controller
 {
@@ -129,7 +128,6 @@ class IntervenantPhaseController extends Controller
     //     }
     // }
 
-
     public function sendMailMany(Request $request)
     {
         $phase_id = $request->phase_id;
@@ -144,21 +142,43 @@ class IntervenantPhaseController extends Controller
             return response()->json(['error' => 'Phase introuvable.'], 404);
         }
 
-
         $currentUrl = $request->fullUrl();
         $parsedUrl = parse_url($currentUrl);
         $hostPort = $parsedUrl['host'] . (isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '');
         $protocol = $request->getScheme();
         $lien = $protocol . '://' . $hostPort . '/momekano-form';
 
+        $dispatchId = $phase_id;
+        $totalMails = count($intervenantsSelected);
+        $successCount = 0;
+        $failureCount = 0;
+
+        // Stocker les données initiales dans le cache
+        Cache::put("dispatch_{$dispatchId}_count", $totalMails);
+        Cache::put("dispatch_{$dispatchId}_success", $successCount);
+        Cache::put("dispatch_{$dispatchId}_failure", $failureCount);
+
         if ($intervenantsSelected && is_array($intervenantsSelected)) {
             foreach ($intervenantsSelected as $intervenantData) {
                 $intervenant = Intervenant::find($intervenantData['id']);
                 if ($intervenant) {
-                    SendIntervenantMail::dispatch($intervenant, $phase, $dateTest, $heureTest, $isVote, $lien, $objet);
+                    SendIntervenantMail::dispatch($intervenant->id, $phase_id, $dateTest, $heureTest, $isVote, $lien, $objet);
                 }
             }
             return response()->json(['message' => 'Mails envoyés avec succès en arrière-plan.'], 200);
         }
+    }
+
+    public function getDispatchStatus($dispatchId)
+    {
+        $total = Cache::get("dispatch_{$dispatchId}_count", 0);
+        $success = Cache::get("dispatch_{$dispatchId}_success", 0);
+        $failure = Cache::get("dispatch_{$dispatchId}_failure", 0);
+
+        return response()->json([
+            'total' => $total,
+            'success' => $success,
+            'failure' => $failure,
+        ]);
     }
 }

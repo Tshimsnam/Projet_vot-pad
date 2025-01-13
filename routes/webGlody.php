@@ -49,6 +49,7 @@ Route::get('/momekano/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}
 
 Route::post('/sendmail',  [IntervenantPhaseController::class, 'sendMail'])->name('sendMail');
 Route::post('/sendsmails',  [IntervenantPhaseController::class, 'sendMailMany'])->name('sendMailMany');
+Route::get('/dispatch-status/{dispatchId}', [IntervenantPhaseController::class, 'getDispatchStatus'])->name('dispatch.status');
 Route::get('/intro', [IntervenantPhaseController::class, 'intro']);
 
 Route::get('/vote-excel/{phase_id}', [VoteExcelController::class, 'export_excel'])->name('export_vote');

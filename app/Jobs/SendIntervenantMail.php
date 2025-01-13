@@ -2,25 +2,25 @@
 
 namespace App\Jobs;
 
+use App\Models\Phase;
 use App\Mail\CandidatMail;
-use App\Models\IntervenantPhase;
 use App\Models\Intervenant;
 use Illuminate\Bus\Queueable;
+use App\Models\IntervenantPhase;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Support\Facades\Mail;
 
 class SendIntervenantMail implements ShouldQueue
 {
     use Dispatchable, Queueable;
 
-    protected $intervenant, $phase, $dateTest, $heureTest, $isVote, $lien, $objet;
+    protected $intervenantId, $phaseId, $dateTest, $heureTest, $isVote, $lien, $objet;
 
-    public function __construct($intervenant, $phase, $dateTest, $heureTest, $isVote, $lien, $objet)
+    public function __construct($intervenantId, $phaseId, $dateTest, $heureTest, $isVote, $lien, $objet)
     {
-        $this->intervenant = $intervenant;
-        $this->phase = $phase;
+        $this->intervenantId = $intervenantId;
+        $this->phaseId = $phaseId;
         $this->dateTest = $dateTest;
         $this->heureTest = $heureTest;
         $this->isVote = $isVote;
@@ -30,10 +30,13 @@ class SendIntervenantMail implements ShouldQueue
 
     public function handle()
     {
-        $intervenant = $this->intervenant;
-        $phase = $this->phase;
+        $intervenantId = $this->intervenantId;
+        $phaseId = $this->phaseId;
         $objetTest = $this->objet;
         $nonPresent = 'exterieur';
+        $intervenant = Intervenant::find($intervenantId);
+        $phase = Phase::find($phaseId);
+
         $intervenantPhase = IntervenantPhase::where('intervenant_id', $intervenant->id)
             ->where('phase_id', $phase->id)
             ->first();
@@ -48,5 +51,12 @@ class SendIntervenantMail implements ShouldQueue
             Mail::to($email)->send(new CandidatMail($objet, $coupon, $date, $noms, $this->heureTest, $this->isVote, $this->lien, $nonPresent));
             $intervenantPhase->increment('mail_send');
         }
+    }
+
+    // Méthodes accessoires
+
+    public function getPhaseId()
+    {
+        return $this->phaseId;
     }
 }

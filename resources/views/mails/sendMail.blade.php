@@ -47,7 +47,7 @@
                 <div class="ms-3 text-sm font-medium">
                     {{ session('success') }}
                 </div>
-                <button type="button"
+                <button type="button" 
                     class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
                     data-dismiss-target="#alert-3" aria-label="Close">
                     <span class="sr-only">Close</span>
@@ -93,20 +93,24 @@
                     d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
             </svg>
             <span class="sr-only">Info</span>
-            <div class="ms-3 text-sm font-medium">
-                Vos e-mails sont actuellement en cours d'envoi.
+            <div id="alertMsg" class="ms-3 text-sm font-medium">
+                Envoi des mails en cours...
             </div>
-            <button type="button"
-                class="ms-auto -mx-1.5 -my-1.5 bg-blue-50 text-blue-500 rounded-lg focus:ring-2 focus:ring-blue-400 p-1.5 hover:bg-blue-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700"
-                data-dismiss-target="#alert-1" aria-label="Close">
-                <span class="sr-only">Close</span>
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                </svg>
-            </button>
+            <div class="flex ms-auto ">
+                <div id="alertStats" class="ms-auto text-sm font-medium"></div>
+                <button type="button" onclick="removeItem()"
+                    class="ms-auto -mx-1.5 -my-1.5 bg-blue-50 text-blue-500 rounded-lg focus:ring-2 focus:ring-blue-400 p-1.5 hover:bg-blue-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700"
+                    data-dismiss-target="#alertMail" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
         </div>
+
 
         <div class="bg-white dark:bg-gray-800 shadow p-2 mb-3">
             <form class="flex justify-between gap-36" action="">
@@ -511,30 +515,93 @@
                     })
                 })
                 .then(response => {
-
-
                     return response.json();
                 })
                 .then(data => {
-                    alertMail.style.display = 'flex';
-                    setTimeout(function() {
-                        let alerts = document.querySelectorAll('[role="alert"]');
-                        alerts.forEach(function(alert) {
-                            alert.style.transition = "opacity 0.5s ease";
-                            alert.style.opacity = "0";
-                            setTimeout(function() {
-                                alert.remove();
-                            }, 500);
-                        });
-                    }, 5000);
-                    $('input[type="checkbox"]').prop('checked', false); // Décocher toutes les cases
                     console.log('Réponse:', data);
+                    let keyname = 'mailEnCours' + phaseId;
+                    localStorage.setItem(keyname, true);
+
+                    $('input[type="checkbox"]').prop('checked', false); // Décocher toutes les cases
+
+                    window.location.reload();
                 })
                 .catch(error => {
                     console.error('Erreur:', error);
 
                 });
         });
+
+        //Affichage messages d'envoies
+
+        $(document).ready(function() {
+            const phaseId = @json($phase_id);
+            let keyname = 'mailEnCours' + phaseId;
+            let checkMail = localStorage.getItem(keyname);
+            
+
+            function checkStatus() {
+                let checkMail = localStorage.getItem(keyname);
+                let success = parseInt(localStorage.getItem(`success${phaseId}`)) || 0;
+                let failure = parseInt(localStorage.getItem(`failure${phaseId}`)) || 0;
+                let total = parseInt(localStorage.getItem(`total${phaseId}`)) || 0;
+                if (checkMail == 'true') {
+                    updateAlertStats(success, failure, total);
+                    alertMail.style.display = 'flex';
+                    checkDispatchStatus(phaseId);
+                } else if (checkMail == 'false') {
+                    updateAlertStats(success, failure, total);
+                    alertMail.style.display = 'flex';
+                } else {
+                    alertMail.style.display = 'none';
+                }
+            }
+
+            checkStatus();
+            setInterval(checkStatus, 5000);
+        });
+
+
+        function checkDispatchStatus(dispatchId) {
+            const phaseId = @json($phase_id);
+            let keyname = 'mailEnCours' + phaseId;
+            fetch(`/dispatch-status/${dispatchId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const {
+                        success,
+                        failure,
+                        total
+                    } = data;
+                    localStorage.setItem(`success${phaseId}`, success);
+                    localStorage.setItem(`failure${phaseId}`, failure);
+                    localStorage.setItem(`total${phaseId}`, total);
+
+                })
+                .catch(error => console.error('Erreur lors de la récupération du statut :', error));
+        }
+
+        function updateAlertStats(success, failure, total) {
+            const alertStats = document.getElementById('alertStats');
+            const alertMsg = document.getElementById('alertMsg');
+            const phaseId = @json($phase_id);
+            let keyname = 'mailEnCours' + phaseId;
+            if ((success + failure === total) && total > 0) {
+                localStorage.setItem(keyname, 'false');
+                alertMsg.textContent = `Envoi des mails terminé avec succès : ${success} succès sur ${total}`;
+            } else if(total > 0) {
+                alertMsg.textContent = `Envoi des mails en cours : ${success} succès sur ${total}`;
+            }
+        }
+
+        function removeItem(){
+            const phaseId = @json($phase_id);
+            let keyname = 'mailEnCours' + phaseId;
+            localStorage.removeItem(keyname);
+            localStorage.removeItem(`success${phaseId}`);
+            localStorage.removeItem(`failure${phaseId}`);
+            localStorage.removeItem(`total${phaseId}`);
+        }
     </script>
 
 </x-app-layout>
