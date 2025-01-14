@@ -399,8 +399,8 @@
                         </svg>
                     </a>
 
-                    <a href="#" onclick="sendMail(event, '{{ $phase_id }}')"
-                        data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat"
+                    <a href="{{ route('mail.view', $phase_id) }}" {{-- data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat" --}}
+                            
                         class="px-4 py-2 text-sm font-medium text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
                         Envoyer les mails
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
@@ -888,16 +888,6 @@
             initial("{{ $status_phase }}");
             printCheck("{{ $type_vote }}");
 
-            let pageCandidat = localStorage.getItem('page-candidat-vote');
-            const divView = document.querySelector('a[data-target="view-content"]')
-            const divCandidat = document.querySelector('a[data-target="candidat-content"]')
-
-
-            if (pageCandidat) {
-                divView.removeAttribute('aria-current');
-                divCandidat.setAttribute('aria-current', 'page');
-            }
-            pagination();
         };
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -1402,13 +1392,14 @@
 
 
         document.addEventListener("DOMContentLoaded", () => {
-            const ligneParPage = 10; // Nombre fixe d'éléments par page
+            let ligneParPage = 10; // Nombre fixe d'éléments par page
             const intervenantItems = document.querySelectorAll(".intervenant-item");
             const paginationContainer = document.getElementById("pagination");
             const fromSpan = document.getElementById("from");
             const toSpan = document.getElementById("to");
             const totalSpan = document.getElementById("total");
             const searchInput = document.getElementById('search');
+            const ligneParPageSelect = document.getElementById('ligneParPage');
 
             let currentPage = 1;
 
@@ -1467,7 +1458,13 @@
                 });
                 paginationContainer.appendChild(nextLi);
             };
+            // Écouteur d'événements pour le changement de ligne par page
+            ligneParPageSelect.addEventListener('change', function() {
 
+                ligneParPage = parseInt(this.value);
+                currentPage = 1;
+                updateIntervenantsDisplay();
+            });
             const updateIntervenantsDisplay = () => {
                 const maxItems = ligneParPage;
                 const totalPages = Math.ceil(intervenantItems.length / maxItems);

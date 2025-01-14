@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreIntervenantPhaseRequest;
@@ -130,26 +129,32 @@ class IntervenantPhaseController extends Controller
 
     public function sendMailMany(Request $request)
     {
-        $phase_id = $request->phase_id;
+        $phase_id             = $request->phase_id;
         $intervenantsSelected = $request->intervenants;
-        $dateTest = $request->dateTest;
-        $heureTest = $request->heureTest;
-        $isVote = $request->isVote;
-        $objet = $request->objet;
+        $dateTest             = $request->dateTest;
+        $heureTest            = $request->heureTest;
+        $isVote               = $request->isVote;
+        $objet                = $request->objet;
 
         $phase = Phase::find($phase_id);
-        if (!$phase) {
+        if (! $phase) {
             return response()->json(['error' => 'Phase introuvable.'], 404);
         }
 
-        $currentUrl = $request->fullUrl();
-        $parsedUrl = parse_url($currentUrl);
-        $hostPort = $parsedUrl['host'] . (isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '');
-        $protocol = $request->getScheme();
-        $lien = $protocol . '://' . $hostPort . '/momekano-form';
+        if ($phase->type == 'Evaluation' || $phase->type == 'evaluation') {
+            $isVote = 0;
+        } else {
+            $isVote = 1;
+        }
 
-        $dispatchId = $phase_id;
-        $totalMails = count($intervenantsSelected);
+        $currentUrl = $request->fullUrl();
+        $parsedUrl  = parse_url($currentUrl);
+        $hostPort   = $parsedUrl['host'] . (isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '');
+        $protocol   = $request->getScheme();
+        $lien       = $protocol . '://' . $hostPort . '/momekano-form';
+
+        $dispatchId   = $phase_id;
+        $totalMails   = count($intervenantsSelected);
         $successCount = 0;
         $failureCount = 0;
 
@@ -171,12 +176,12 @@ class IntervenantPhaseController extends Controller
 
     public function getDispatchStatus($dispatchId)
     {
-        $total = Cache::get("dispatch_{$dispatchId}_count", 0);
+        $total   = Cache::get("dispatch_{$dispatchId}_count", 0);
         $success = Cache::get("dispatch_{$dispatchId}_success", 0);
         $failure = Cache::get("dispatch_{$dispatchId}_failure", 0);
 
         return response()->json([
-            'total' => $total,
+            'total'   => $total,
             'success' => $success,
             'failure' => $failure,
         ]);

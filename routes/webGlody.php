@@ -56,13 +56,13 @@ Route::get('/vote-excel/{phase_id}', [VoteExcelController::class, 'export_excel'
 Route::get('/evaluation-excel/{phase_id}', [EvaluationExcelController::class, 'export_excel'])->name('export_evaluation');
 
 Route::get('/question_format', function () {
-    $filePath = public_path('fichiers/format_question.xlsx');
-    return Response::download($filePath, 'format_question.xlsx');
+    $filePath = public_path('fichiers/format_question.csv');
+    return Response::download($filePath, 'format_question.csv');
 })->name('question_format');
 
 Route::get('/candidat_format', function () {
-    $filePath = public_path('fichiers/format_candidat.xlsx');
-    return Response::download($filePath, 'format_candidat.xlsx');
+    $filePath = public_path('fichiers/format_candidat.csv');
+    return Response::download($filePath, 'format_candidat.csv');
 })->name('candidat_format');
 
 Route::post('/creationStep', [EvenementController::class, 'creationStep'])->name('creationStep');
