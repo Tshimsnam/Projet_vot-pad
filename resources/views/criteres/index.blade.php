@@ -283,7 +283,7 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ count($intervenants) - count($intervenantsMails) }}</dt>
+                                {{ count($intervenantPhases) - count($intervenantPhases->where('mail_send', 0)) }}</dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Mails</dd>
                         </dl>
                     </div>
@@ -400,7 +400,6 @@
                     </a>
 
                     <a href="{{ route('mail.view', $phase_id) }}" {{-- data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat" --}}
-                            
                         class="px-4 py-2 text-sm font-medium text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
                         Envoyer les mails
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"

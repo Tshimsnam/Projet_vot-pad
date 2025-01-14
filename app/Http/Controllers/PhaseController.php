@@ -219,7 +219,7 @@ class PhaseController extends Controller
         $question = Question::latest()->get();
 
         $questionPhase0 = QuestionPhase::orderBy('id')->where("phase_id", $id)->get();
-        $questionPhasePagnation = QuestionPhase::orderBy('id')->where("phase_id", $id)->paginate(5, ['*'], 'question_page');
+        $questionPhasePagnation = QuestionPhase::orderBy('id')->where("phase_id", $id)->get();
         // dd($questionPhase0[0]->question->question);
 
         $tabAssertion = array();
@@ -518,7 +518,7 @@ class PhaseController extends Controller
             $intervenantsFeminin = array_filter($intervenantAll, function ($intervenant) {
                 return strtolower($intervenant->genre) === 'f';
             });
-            $totalQuestions = $questionPhasePagnation->total();
+            // $totalQuestions = $questionPhasePagnation->total();
             $intervenantStart = [];
             foreach ($intervenantAll as $intervenant) {
                 $intervenantPhaseMail = IntervenantPhase::where('phase_id', $phase_id)->where('intervenant_id', $intervenant->id)->first();
