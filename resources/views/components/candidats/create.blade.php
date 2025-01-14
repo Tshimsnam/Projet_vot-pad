@@ -98,7 +98,7 @@
                     <p class="flex items-center pl-1 mb-2 text-xl font-medium text-gray-900 dark:text-white">
                         Sélectionnez un fichier CSV
                         (.csv) <button data-popover-target="popover-candidat" data-popover-placement="right"
-                            type="button"><svg class="w-4 h-4 ms-2 text-gray-400 hover:text-gray-500"
+                            type="button"><svg class="w-5 h-5  ms-2 text-gray-400 hover:text-gray-500"
                                 aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -108,12 +108,12 @@
                     <div data-popover id="popover-candidat" role="tooltip"
                         class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
                         <div class="p-3 space-y-2">
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Details du fichier et du format
+                            <h3 class="font-semibold text-gray-900 dark:text-white">Details du fichier
                             </h3>
-                            <p>Pour importer des candidats, veuillez télécharger le fichier ci-dessous et l'enregistrer
-                                au format CSV UTF-8. le fichier doit avoir l'extenseion .csv <br>Veuillez
+                            <p>Pour importer des candidats, veuillez télécharger ce modèle <br>Veuillez
                                 cliquer <a href="{{ route('candidat_format') }}"
-                                    class="font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline"><strong>ici</strong></a>
+                                    class="font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline"><strong
+                                        class="text-xl"> ici</strong></a>
                                 pour télécharger</p>
                         </div>
                         <div data-popper-arrow></div>
