@@ -382,7 +382,7 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $questionPhasePagnation->total() ?? 'ND' }}
+                                {{-- {{ count($questionPhasePagnation )?? 'ND' }} --}}
                             </dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Nombre</dd>
                         </dl>
@@ -465,7 +465,7 @@
                             </svg>
                         </a>
                     </div>
-                    @if (count($intervenants) > 0)
+                    @if (count($intervenants) > 10)
                         <div class="py-4 pb-4 flex justify-between items-center gap-96">
                             <div class="flex-1 items-center pr-8">
                                 <input type="text" id="search" placeholder="Rechercher par nom ou email..."
@@ -570,7 +570,7 @@
                             </div>
                         @endforeach
                     </div>
-                    @if (count($intervenants) > 0)
+                    @if (count($intervenants) > 10)
                         <div id="pagination-container" class="flex justify-between items-center pt-5">
                             <!-- Affichage des éléments de pagination -->
                             <span class="text-sm text-gray-700 dark:text-gray-400">
@@ -658,14 +658,102 @@
                             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                 </a>
+                @if (count($questionPhasePagnation) > 10)
+                    <div class="py-4 pb-4 flex justify-between items-center gap-96">
+                        <div class="flex items-center">
+                            <label for="ligneParPage-question"
+                                class="text-sm pr-2 text-gray-900 dark:text-gray-200">Lignes</label>
+                            <select id="ligneParPage-question"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-                <div class="">
-                    @php
-                        $i = ($questionPhasePagnation->currentPage() - 1) * $questionPhasePagnation->perPage() + 1;
-                    @endphp
+
+                <div id="questions-list" class="">
+                    @foreach ($questionPhasePagnation as $i => $item)
+                        <div class="question-item w-full">
+                            <div
+                                class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
+                                <div class="flex justify-between pl-3 relative">
+                                    <div>
+                                        <div class="flex items-center flex-wrap">
+                                            <h3
+                                                class="text-sm font-bold text-gray-900 dark:text-white capitalize dark:text-gray-300 flex-1 overflow-hidden">
+                                                Question {{ $i++ }} : {!! nl2br(e($item->question->question)) !!}
+                                            </h3>
+                                            <div class="ml-14 flex-shrink-0">
+                                            </div>
+                                        </div>
+
+                                        <h3 class="text-sm text-gray-900 dark:text-gray-200">
+                                            Pondération: {{ $item->ponderation }}
+                                        </h3>
+                                        <div class="flex items-center space-x-4">
+                                            <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300">
+                                                Nombre assertions :
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="pr-2 absolute right-0">
+                                        <a href="{{ route('question.phase', ['id' => $item->question->id, 'phase_id' => $phase_id]) }}"
+                                            class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                fill="currentColor" class="size-4">
+                                                <path
+                                                    d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                <path
+                                                    d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                            </svg>
+                                        </a>
+                                        <a href=""
+                                            onclick="supprimer(event, '{{ route('questions.destroy', $item->question->id) }}')"
+                                            data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                            class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                fill="currentColor" class="size-4">
+                                                <path fill-rule="evenodd"
+                                                    d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    @endforeach
+                </div>
+
+                @if (count($questionPhasePagnation) > 10)
+                    <div id="pagination-container-question" class="flex justify-between items-center pt-5">
+                        <!-- Affichage des éléments de pagination -->
+                        <span class="text-sm text-gray-700 dark:text-gray-400">
+                            Showing <span class="font-semibold text-gray-900 dark:text-white"
+                                id="from-question"></span> to <span
+                                class="font-semibold text-gray-900 dark:text-white" id="to-question"></span> of
+                            <span class="font-semibold text-gray-900 dark:text-white" id="total-question"></span>
+                            Entries
+                        </span>...
+                        <nav aria-label="Page navigation example">
+                            <ul id="pagination-question" class="flex items-center -space-x-px h-8 text-sm">
+                                <!-- Pagination générée dynamiquement par JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                @endif
+
+                {{-- <div class="">
+                    
                     @foreach ($questionPhasePagnation as $item)
-                        <div class="w-full">
+                        <div class="question-item w-full">
                             <div
                                 class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
                                 <div class="flex justify-between pl-3 relative">
@@ -719,8 +807,8 @@
                     @endforeach
                 </div>
                 <div class="p-2">
-                    {{ $questionPhasePagnation->appends(['question_page' => $questionPhasePagnation->currentPage()])->links() }}
-                </div>
+                    
+                </div> --}}
             </div>
         </div>
     </div>
@@ -912,6 +1000,106 @@
 
             // Initial affichage
             updateIntervenantsDisplay();
+        });
+
+        //pagination question:
+        document.addEventListener("DOMContentLoaded", () => {
+            let lignesParPageQuestion = 10; // Nombre fixe d'éléments par page
+            const questionItems = document.querySelectorAll(".question-item");
+            const paginationContainerQuestion = document.getElementById("pagination-question");
+            const fromSpanQuestion = document.getElementById("from-question");
+            const toSpanQuestion = document.getElementById("to-question");
+            const totalSpanQuestion = document.getElementById("total-question");
+            const ligneParPageSelectQuestion = document.getElementById('ligneParPage-question');
+
+            let currentPageQuestion = 1;
+
+            const updatePaginationQuestion = (totalPages) => {
+                paginationContainerQuestion.innerHTML = ""; // Réinitialiser la pagination
+
+                // Bouton Précédent
+                const prevLi = document.createElement("li");
+                prevLi.innerHTML =
+                    `<button class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <span class="sr-only">Previous</span>
+                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                    </svg>
+                    </button>`;
+                prevLi.firstChild.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    if (currentPageQuestion > 1) {
+                        currentPageQuestion--;
+                        updateQuestionsDisplay();
+                    }
+                });
+                paginationContainerQuestion.appendChild(prevLi);
+
+                // Numéros de page
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.innerHTML =
+                        `<button class="flex items-center justify-center px-3 h-8 ${i === currentPageQuestion ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                        : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        }">${i}</button>`;
+                    li.firstChild.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        currentPageQuestion = i;
+                        updateQuestionsDisplay();
+                    });
+                    paginationContainerQuestion.appendChild(li);
+                }
+
+                // Bouton Suivant
+                const nextLi = document.createElement("li");
+                nextLi.innerHTML =
+                    `<button class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <span class="sr-only">Next</span>
+                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    </button>`;
+                nextLi.firstChild.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    if (currentPageQuestion < totalPages) {
+                        currentPageQuestion++;
+                        updateQuestionsDisplay();
+                    }
+                });
+                paginationContainerQuestion.appendChild(nextLi);
+            };
+
+            // Vérification de l'élément avant d'ajouter l'écouteur d'événements
+            if (ligneParPageSelectQuestion) {
+                ligneParPageSelectQuestion.addEventListener('change', function() {
+                    lignesParPageQuestion = parseInt(this.value);
+                    currentPageQuestion = 1;
+                    updateQuestionsDisplay();
+                });
+            } else {
+                console.error("Element with ID 'ligneParPage-question' not found.");
+            }
+
+            const updateQuestionsDisplay = () => {
+                const maxItems = lignesParPageQuestion;
+                const totalItems = questionItems.length;
+
+                questionItems.forEach((item, index) => {
+                    const start = (currentPageQuestion - 1) * maxItems;
+                    item.style.display = index >= start && index < start + maxItems ? "block" : "none";
+                });
+
+                const startIndex = (currentPageQuestion - 1) * maxItems + 1;
+                const endIndex = Math.min(currentPageQuestion * maxItems, totalItems);
+
+                fromSpanQuestion.textContent = startIndex;
+                toSpanQuestion.textContent = endIndex;
+                totalSpanQuestion.textContent = totalItems;
+
+                updatePaginationQuestion(Math.ceil(totalItems / maxItems));
+            };
+            // Affichage initial
+            updateQuestionsDisplay();
         });
     </script>
     <script>
