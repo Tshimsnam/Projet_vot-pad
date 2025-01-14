@@ -294,7 +294,7 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ count($intervenantPhases) - count($intervenantsMails) }}
+                                {{ count($intervenantPhases) - count($intervenantPhases->where('mail_send', 0)) }}
                             </dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Mails</dd>
                         </dl>
@@ -857,10 +857,10 @@
 
             // Écouteur d'événements pour le changement de ligne par page
             ligneParPageSelect.addEventListener('change', function() {
-                
+
                 ligneParPage = parseInt(this.value);
-                currentPage = 1; 
-                updateIntervenantsDisplay(); 
+                currentPage = 1;
+                updateIntervenantsDisplay();
             });
 
             const updateIntervenantsDisplay = () => {
