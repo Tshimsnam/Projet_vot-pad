@@ -11,7 +11,7 @@ class BreadcrumbComposer
         $breadcrumbs = [];
         $evenement   = session('breadEvenement');
         $phase       = session('breadPhase');
-
+        
         $routeName  = Route::currentRouteName();
         $parameters = Route::current()->parameters();
 
@@ -80,6 +80,24 @@ class BreadcrumbComposer
                 }
                 break;
 
+            case 'restultatDetatil':
+                if (! isset($parameters['interv_id'])) {
+                    return redirect()->route('dashboard');
+                }
+                $intervId = $parameters['interv_id'];
+
+                if (isset($phase)) {
+                    $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
+                    $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])];
+                    $breadcrumbs[] = ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])];
+                    $breadcrumbs[] = ['title' => 'Résultat', 'url' => route('resultats.show', ['resultat' => $phase])];
+                    $breadcrumbs[] = [
+                        'title' => 'Résultats Détail',
+                        'url'   => route('restultatDetatil', ['phase_id' => $phase, 'interv_id' => $intervId]),
+                    ];
+                }
+                break;
+
             case 'mail.view':
                 if (! isset($phase)) {
                     return redirect()->route('dashboard');
@@ -95,7 +113,7 @@ class BreadcrumbComposer
         }
 
         // Passer les breadcrumbs à la vue
-        $view->with('breadcrumbs', $breadcrumbs);
+        $view->with('breadcrumbs', $breadcrumbs ?? []);
     }
 
 }
