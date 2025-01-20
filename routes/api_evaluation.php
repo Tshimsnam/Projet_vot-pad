@@ -12,3 +12,4 @@ use Illuminate\Support\Facades\Route;
  Route::apiResource('/question_phase', QuestionController::class, ['as'=> 'api']);
  Route::apiResource('/reponses', ReponseController::class, ['as'=> 'api']);
  Route::get('question_phases/{phase_id}/{intervenant_id}', [QuestionPhaseController::class,'shows'])->name('question_phases');
+ Route::post('/reponse-by-intervenant', [ReponseController::class, 'reponseByIntervenant']);
