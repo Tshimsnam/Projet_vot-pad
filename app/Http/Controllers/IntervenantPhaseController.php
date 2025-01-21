@@ -186,4 +186,19 @@ class IntervenantPhaseController extends Controller
             'failure' => $failure,
         ]);
     }
+
+    public function bloquerEvaluation(Request $request)
+    {
+                                                           // Récupérer les données du corps de la requête
+        $intervenantId = $request->input('intervenantId'); // Récupère 'intervenantId'
+        $phaseId       = $request->input('phaseId');
+        $intervenantPhase = IntervenantPhase::where('phase_id', $phaseId)->where('intervenant_id', $intervenantId)->first();
+        $intervenantPhase->terminer = 'bloquer';
+        $intervenantPhase->save();
+
+
+        return response()->json([
+            'status'       => 'succès',
+        ], 200);
+    }
 }

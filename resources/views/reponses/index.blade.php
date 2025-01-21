@@ -443,6 +443,54 @@
             </div>
         @endif
 
+        {{-- modal d'alert  --}}
+
+        <div id="detect-modal" tabindex="-1"
+            class="hidden fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+            <div class="relative p-4 w-full max-w-md max-h-full">
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="p-4 md:p-5 text-center">
+                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Attention, <br> Ne changez
+                            pas de page ou réduisez la fenêtre. Cela pourrait annuler votre évaluation, et seules vos
+                            réponses actuelles seront prises en compte.</h3>
+                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400" id="nombreTente"></h3>
+                        <button data-modal-hide="detect-modal" type="button" onclick="closeModalDetect()"
+                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-[#FF7900] rounded-lg border border-[#FF7900]-200 hover:bg-[#FF7900]-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-[#FF7900]-100 dark:focus:ring-[#FF7900]-700 dark:bg-[#FF7900]-800 dark:text-[#FF7900]-400 dark:border-[#FF7900] dark:hover:text-white dark:hover:bg-[#FF7900]">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tenta-modal" tabindex="-1"
+            class="hidden fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+            <div class="relative p-4 w-full max-w-md max-h-full">
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="p-4 md:p-5 text-center">
+                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                            Votre évaluation a pris fin.<br>Nous comprenons que vous souhaitiez continuer, mais le temps
+                            imparti ou les conditions de l'évaluation sont arrivés à leur terme.<br>Merci pour votre
+                            compréhension.
+                        </h3>
+                        <button data-modal-hide="tenta-modal" type="button" onclick="closeModalTenta()"
+                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-[#FF7900] rounded-lg border border-[#FF7900]-200 hover:bg-[#FF7900]-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-[#FF7900]-100 dark:focus:ring-[#FF7900]-700 dark:bg-[#FF7900]-800 dark:text-[#FF7900]-400 dark:border-[#FF7900] dark:hover:text-white dark:hover:bg-[#FF7900]">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input type="text" id="valuePhaseId" class="hidden" value="{{ session()->get('phaseId') }}">
+        <input type="text" id="valueIntervenantId" class="hidden" value="{{ session()->get('intervenantId') }}">
+
     </section>
     <script>
         function getDarkMode() {
@@ -606,10 +654,18 @@
                         .then((response) => response.json())
                         .then((data) => {
                             console.log('Server response:', data);
+
+                            let bloquer = data.bloquer;
+
+                            if (bloquer === true) {
+                                console.log("L'accès est bloqué.");
+                                showModalTenta()
+                            }
                         })
                         .catch((error) => {
-                            console.error('Error sending data:', error);
+                            console.error('Erreur lors de la requête:', error);
                         });
+
                 } else {
                     console.log("No change detected");
                 }
@@ -805,5 +861,85 @@
                 startCountDown(--duration, element);
             }
         };
+
+        //detetion de l'onglet
+        document.addEventListener("visibilitychange", () => {
+            const intervenantId = document.getElementById("valueIntervenantId").value;
+            const phaseId = document.getElementById("valuePhaseId").value;
+            const nombreTente = document.getElementById("nombreTente");
+            let nombreTentation = 5;
+
+            if (document.hidden) {
+                console.log("Vous avez changé d'onglet ou réduit la fenêtre !");
+            } else {
+                let attempts = localStorage.getItem(`attempts${intervenantId}Ph${phaseId}`);
+
+                if (attempts === null) {
+                    attempts = 0;
+                } else {
+                    attempts = parseInt(attempts);
+                }
+
+                attempts++;
+
+                localStorage.setItem(`attempts${intervenantId}Ph${phaseId}`, attempts);
+                nombreTente.textContent = "Attention, il vous reste " + (nombreTentation - attempts) +
+                    " tentative(s)";
+
+                if (attempts > nombreTentation) {
+                    console.log("Vous avez atteint le nombre maximum de tentatives !");
+                    localStorage.removeItem(`attempts${intervenantId}Ph${phaseId}`);
+                    const url = '/bloquerEvaluation'; // Adjust the URL as necessary
+                    fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    .getAttribute(
+                                        'content')
+                            },
+                            body: JSON.stringify({
+                                intervenantId,
+                                phaseId
+                            })
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            console.log('Server response:', data);
+                            showModalTenta();
+
+                        })
+                        .catch((error) => {
+                            console.error('Error sending data:', error);
+                        });
+
+                } else {
+                    showModalDetect();
+                }
+            }
+        });
+
+
+        function showModalDetect() {
+            const modal = document.getElementById('detect-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModalDetect() {
+            const modal = document.getElementById('detect-modal');
+            modal.classList.add('hidden');
+        }
+
+        function showModalTenta() {
+            const modal = document.getElementById('tenta-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModalTenta() {
+            const modal = document.getElementById('tenta-modal');
+            modal.classList.add('hidden');
+            localStorage.removeItem(`attempts${intervenantId}Ph${phaseId}`);
+            window.location.href = '/intervenant-logout';
+        }
     </script>
 @endsection

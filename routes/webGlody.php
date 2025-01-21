@@ -66,3 +66,4 @@ Route::get('/candidat_format', function () {
 })->name('candidat_format');
 
 Route::post('/creationStep', [EvenementController::class, 'creationStep'])->name('creationStep');
+Route::post('/bloquerEvaluation', [IntervenantPhaseController::class, 'bloquerEvaluation'])->name('bloquerEvaluation');

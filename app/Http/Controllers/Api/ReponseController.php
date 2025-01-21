@@ -130,6 +130,14 @@ class ReponseController extends Controller
         if ($veri_phase) {
             $verif_interv_affectation = IntervenantPhase::where('phase_id', $veri_phase->phase_id)->where('intervenant_id', $intervenantId)->first();
             if ($verif_interv_affectation) {
+
+                if($verif_interv_affectation->terminer != null){
+                    return response()->json([
+                        'status'    => 'success',
+                        'bloquer' => true
+                    ], 200);
+                }
+
                 $questionPhase   = QuestionPhase::where('phase_id', $phaseId)->where('question_id', $questionId)->first();
                 $assertionSelect = Assertion::findOrFail($assertionId);
 
@@ -152,6 +160,7 @@ class ReponseController extends Controller
         }
         return response()->json([
             'status'    => 'success',
+            'bloquer' => false,
         ], 200);
     }
 }
