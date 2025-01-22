@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\ViewComposers;
 
+use App\Exceptions\BreadcrumbException;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
@@ -11,82 +12,104 @@ class BreadcrumbComposer
         $breadcrumbs = [];
         $evenement   = session('breadEvenement');
         $phase       = session('breadPhase');
-        
-        $routeName  = Route::currentRouteName();
-        $parameters = Route::current()->parameters();
 
-        switch ($routeName) {
-            case 'dashboard':
-                $breadcrumbs[] = ['title' => 'Dashboard', 'url' => route('dashboard')];
-                break;
+        try {
+            switch (Route::currentRouteName()) {
+                case 'dashboard':
+                    $breadcrumbs = [
+                        ['title' => 'Dashboard', 'url' => route('dashboard')],
+                    ];
+                    break;
 
-            case 'evenements.index':
-                $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                break;
+                case 'evenements.index':
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                    ];
+                    break;
 
-            case 'evenements.show':
-                $evenementId = $parameters['evenement'] ?? null;
-                if ($evenementId) {
-                    $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                    $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenementId])];
-                }
-                break;
+                case 'evenements.show':
+                    $evenement = Route::current()->parameter('evenement');
+                    if (! $evenement) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                    ];
+                    break;
 
-            case 'phase.show':
-                if (! isset($parameters['id'])) {
-                    return redirect()->route('dashboard');
-                }
-                $phaseId = $parameters['id'];
-                if (isset($evenement)) {
-                    $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                    $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])];
-                    $breadcrumbs[] = ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phaseId])];
-                }
-                break;
+                case 'phase.show':
+                    $phase = Route::current()->parameter('id');
+                    if (! $evenement) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                        ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])],
+                    ];
+                    break;
 
-            case 'evenements.create':
-                $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                $breadcrumbs[] = ['title' => 'Configuration', 'url' => route('evenements.create')];
-                break;
+                case 'evenements.create':
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Configuration', 'url' => route('evenements.create')],
+                    ];
+                    break;
 
-            case 'evenements.edit':
-                if (! isset($evenement)) {
-                    return redirect()->route('dashboard');
-                }
-                $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])];
-                $breadcrumbs[] = ['title' => 'Modifier Evénement', 'url' => route('evenements.edit', ['evenement' => $evenement])];
-                break;
+                case 'evenements.edit':
+                    if (! $evenement) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                        ['title' => 'Modifier Evénement', 'url' => route('evenements.edit', ['evenement' => $evenement])],
+                    ];
+                    break;
 
-            case 'phase.create':
-                if (! isset($evenement)) {
-                    return redirect()->route('dashboard');
-                }
-                $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])];
-                $breadcrumbs[] = ['title' => 'Créer Phase', 'url' => route('phase.create', ['evenement_id' => $evenement])];
-                break;
+                case 'phase.create':
+                    if (! $evenement) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                        ['title' => 'Créer Phase', 'url' => route('phase.create', ['evenement_id' => $evenement])],
+                    ];
+                    break;
 
-            case 'resultats.show':
-                if (! isset($parameters['resultat'])) {
-                    return redirect()->route('dashboard');
-                }
-                $resultatId = $parameters['resultat'];
-                if (isset($phase)) {
-                    $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                    $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])];
-                    $breadcrumbs[] = ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])];
-                    $breadcrumbs[] = ['title' => 'Résultat', 'url' => route('resultats.show', ['resultat' => $resultatId])];
-                }
-                break;
+                case 'resultats.show':
+                    $resultat = Route::current()->parameter('resultat');
+                    if (! $evenement || ! $phase) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                        ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])],
+                        ['title' => 'Résultat', 'url' => route('resultats.show', ['resultat' => $resultat])],
+                    ];
+                    break;
 
-            case 'restultatDetatil':
-                if (! isset($parameters['interv_id'])) {
-                    return redirect()->route('dashboard');
-                }
-                $intervId = $parameters['interv_id'];
+                case 'results':
+                    $resultat = Route::current()->parameter('phase');
+                    if (! $evenement || ! $phase) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                        ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])],
+                        ['title' => 'Résultat', 'url' => route('resultats.show', ['resultat' => $resultat])],
+                    ];
+                    break;
 
-                if (isset($phase)) {
+                case 'restultatDetatil':
+                    $intervId = Route::current()->parameter('interv_id');
+                    if (! $evenement || ! $phase) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
                     $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
                     $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])];
                     $breadcrumbs[] = ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])];
@@ -95,25 +118,25 @@ class BreadcrumbComposer
                         'title' => 'Résultats Détail',
                         'url'   => route('restultatDetatil', ['phase_id' => $phase, 'interv_id' => $intervId]),
                     ];
-                }
-                break;
+                    break;
 
-            case 'mail.view':
-                if (! isset($phase)) {
-                    return redirect()->route('dashboard');
-                }
-                $breadcrumbs[] = ['title' => 'Evénements', 'url' => route('evenements.index')];
-                $breadcrumbs[] = ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])];
-                $breadcrumbs[] = ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])];
-                $breadcrumbs[] = ['title' => 'Gestion des mails', 'url' => route('mail.view', ['phase_id' => $phase])];
-                break;
+                case 'mail.view':
+                    if (! $evenement || ! $phase) {
+                        throw new BreadcrumbException('Erreur de breadcrumbs');
+                    }
+                    $breadcrumbs = [
+                        ['title' => 'Evénements', 'url' => route('evenements.index')],
+                        ['title' => 'Phases', 'url' => route('evenements.show', ['evenement' => $evenement])],
+                        ['title' => 'Détail Phase', 'url' => route('phase.show', ['id' => $phase])],
+                        ['title' => 'Gestion des mails', 'url' => route('mail.view', ['phase_id' => $phase])],
+                    ];
+                    break;
+            }
 
-            default:
-                return redirect()->route('dashboard'); // Redirection par défaut vers le dashboard
+            $view->with('breadcrumbs', $breadcrumbs);
+        } catch (BreadcrumbException $e) {
+            // L'exception sera gérée par le render() défini dans BreadcrumbException
+            throw $e;
         }
-
-        // Passer les breadcrumbs à la vue
-        $view->with('breadcrumbs', $breadcrumbs ?? []);
     }
-
 }
