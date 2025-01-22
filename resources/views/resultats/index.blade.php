@@ -2,8 +2,7 @@
     <x-slot name="header">
         <div class="">
             <h3 class="text-2xl font-extrabold dark:text-white">
-                {{ $evenement
-                ->nom }}
+                {{ $evenement->nom }}
             </h3>
             <h3 class="text-1xl font-extrabold dark:text-white">
                 {{ $phase[0]->nom }}
@@ -79,6 +78,9 @@
                         Emails
                     </th>
                     <th scope="col" class="px-6 py-3 bg-slate-700">
+                        Sexe
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-slate-700">
                         Pourcentages
                     </th>
                     <th scope="col" class="px-6 py-3 bg-slate-700">
@@ -97,6 +99,9 @@
                         <th scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $item['email'] }}</th>
+                        <th scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ $item['genre'] }}</th>
 
                         <td class="px-6 py-4">
                             @if ($item['evaluee'] == null)

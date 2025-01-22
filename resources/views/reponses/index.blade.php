@@ -938,6 +938,7 @@
         function closeModalTenta() {
             const modal = document.getElementById('tenta-modal');
             modal.classList.add('hidden');
+            cleanstorage()
             window.location.href = '/intervenant-logout';
             localStorage.removeItem(`attempts${intervenantId}Ph${phaseId}`);
         }

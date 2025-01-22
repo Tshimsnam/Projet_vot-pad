@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Assertion;
@@ -23,14 +22,16 @@ class ResultatController extends Controller
     public function index()
     {
 
+        return redirect()->route('dashboard');
+
         $phase = Phase::where('type', '=', 'evaluation')->get(); //recuper phase du type evaluation
 
-        $intervenant_phase = array();
-        $tableau = array();
+        $intervenant_phase = [];
+        $tableau           = [];
         foreach ($phase as $key => $value) {
-            $intervant = IntervenantPhase::where('phase_id', '=', $value->id)->count();
+            $intervant        = IntervenantPhase::where('phase_id', '=', $value->id)->count();
             $tableau['phase'] = ['nom' => $value->nom, 'id' => $value->id]; //tabeau pour renseigner phase
-            $tableau['inter'] = [$intervant]; //tabeau pour rensiegner le nombre d'intervenant
+            $tableau['inter'] = [$intervant];                               //tabeau pour rensiegner le nombre d'intervenant
             array_push($intervenant_phase, $tableau);
         }
         //    dd($intervenant_phase);
@@ -58,7 +59,7 @@ class ResultatController extends Controller
      */
     public function show(string $id)
     {
-        $user = Auth::user();
+        $user        = Auth::user();
         $phase_verif = Phase::where('id', '=', $id)->where('type', '=', 'evaluation')->get();
 
         $evenement = Evenement::findOrFail($phase_verif[0]->evenement_id);
@@ -70,10 +71,9 @@ class ResultatController extends Controller
             return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
         }
 
-
         if ($phase) {
 
-            $question = QuestionPhase::where('phase_id', '=', $phase[0]->id)->get();
+            $question                = QuestionPhase::where('phase_id', '=', $phase[0]->id)->get();
             $somme_ponderation_phase = 0;
             foreach ($question as $cle => $valeur) {
                 $ponde = $valeur->ponderation;
@@ -82,21 +82,22 @@ class ResultatController extends Controller
             $somme_ponderation_phase;
             if ($somme_ponderation_phase > 0) {
 
-                $intervenant_resultat = array();
-                $tableau = array();
-                $intervants = DB::table('intervenants')
+                $intervenant_resultat = [];
+                $tableau              = [];
+                $intervants           = DB::table('intervenants')
                     ->join('intervenant_phases', "intervenant_phases.intervenant_id", "=", "intervenants.id")
                     ->select(
                         'intervenants.id as id',
                         'intervenants.email as email',
                         'intervenants.noms as noms',
+                        'intervenants.genre as genre',
                     )
                     ->where("intervenant_phases.phase_id", "=", $phase[0]->id)
                     ->get();
 
                 foreach ($intervants as $key => $value) {
                     $point_inter = 0;
-                    $cote = Reponse::where('phase_id', '=', $phase[0]->id)->where('intervenant_id', '=', $value->id)->get();
+                    $cote        = Reponse::where('phase_id', '=', $phase[0]->id)->where('intervenant_id', '=', $value->id)->get();
                     if (count($cote) > 0) {
                         $msg = 1;
                     } else {
@@ -109,12 +110,20 @@ class ResultatController extends Controller
                     $pourcentage_interv = ($point_inter / $somme_ponderation_phase) * 100;
 
                     $pourcentage = round($pourcentage_interv, 2);
+                    if($value->genre == 'm' || $value->genre == 'M'){
+                        $sexe = 'Masculine';
+                    } else if($value->genre == 'f' || $value->genre == 'F'){
+                        $sexe = 'Féminine';
+                    }else{
+                        $sexe = 'Non précisé';
+                    }
 
-                    $tableau['id'] = $value->id;
-                    $tableau['email'] = $value->email;
-                    $tableau['noms'] = $value->noms;
+                    $tableau['id']          = $value->id;
+                    $tableau['email']       = $value->email;
+                    $tableau['noms']        = $value->noms;
                     $tableau['pourcentage'] = $pourcentage;
-                    $tableau['evaluee'] = $msg;
+                    $tableau['evaluee']     = $msg;
+                    $tableau['genre']       = $sexe;
                     array_push($intervenant_resultat, $tableau);
                 }
                 // dd($intervenant_resultat);
@@ -161,10 +170,10 @@ class ResultatController extends Controller
         if ($phase) {
 
             $question_phases = QuestionPhase::where('phase_id', '=', $phase[0]->id)->get(); //recupere les question de la phase
-            $questions = $question_phases;
+            $questions       = $question_phases;
 
             $somme_ponderation_phase = 0;
-            $tab_question_detail = [];
+            $tab_question_detail     = [];
             foreach ($question_phases as $cle => $valeur) {
 
                 $ponde = $valeur->ponderation;
@@ -172,16 +181,14 @@ class ResultatController extends Controller
 
                 $reponse = Reponse::where('question_phase_id', '=', $valeur->id)->where('intervenant_id', '=', $interv_id)->first();
                 if ($reponse != null) {
-                    $questions[$cle]->assertion = (!empty($reponse->assertion->assertion)) ? $reponse->assertion->assertion : "assertion inexistante";
-                    $questions[$cle]->cote = $reponse->cote;
+                    $questions[$cle]->assertion    = (! empty($reponse->assertion->assertion)) ? $reponse->assertion->assertion : "assertion inexistante";
+                    $questions[$cle]->cote         = $reponse->cote;
                     $questions[$cle]->assertion_id = $reponse->assertion_id;
                 } else {
                     $questions[$cle]->assertion = "N'a pas repondu ";
-                    $questions[$cle]->cote = 0;
+                    $questions[$cle]->cote      = 0;
                 }
                 $questions[$cle]->question = $valeur->question->question;
-
-
 
                 // $point = 0;
                 // $assertion = "N'a pas repondu ";
@@ -197,7 +204,7 @@ class ResultatController extends Controller
                 //     }
                 // }
 
-                // array_push($tab_question_detail, 
+                // array_push($tab_question_detail,
                 // [
                 //     "libele" => $valeur->question->question,
                 //     "assertion"=>$assertion,
@@ -207,8 +214,7 @@ class ResultatController extends Controller
             }
             // dd($somme_ponderation_phase,$questions);
 
-
-            $cote = Reponse::where('phase_id', '=', $phase[0]->id)->where('intervenant_id', '=', $interv_id)->get();
+            $cote        = Reponse::where('phase_id', '=', $phase[0]->id)->where('intervenant_id', '=', $interv_id)->get();
             $point_inter = 0;
             foreach ($cote as $k => $v) {
                 $point_inter += $v->cote;
@@ -220,9 +226,9 @@ class ResultatController extends Controller
 
             $tab_synthese = [
                 "total_obtenu" => $point_inter,
-                "total_phase" => $somme_ponderation_phase,
-                "pourcentage" => $pourcentage,
-                "intervenant" => $cote[0]->intervenant->email
+                "total_phase"  => $somme_ponderation_phase,
+                "pourcentage"  => $pourcentage,
+                "intervenant"  => $cote[0]->intervenant->email,
             ];
 
             return view('resultats.show', compact('questions', 'phase', 'tab_synthese'));
