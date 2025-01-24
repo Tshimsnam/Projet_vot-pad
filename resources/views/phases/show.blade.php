@@ -534,7 +534,7 @@
                         </a>
                     </div>
                     @if (count($intervenants) > 10)
-                        <div class="py-4 pb-4 flex justify-between items-center gap-96">
+                        <div class="py-4 pb-4 flex justify-between items-center md:gap-96">
                             <div class="flex-1 items-center pr-8">
                                 <input type="text" id="search" placeholder="Rechercher par nom ou email..."
                                     class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
@@ -639,9 +639,11 @@
                         @endforeach
                     </div>
                     @if (count($intervenants) > 10)
-                        <div id="pagination-container" class="flex justify-between items-center pt-5">
+                        <div id="pagination-container"
+                            class="flex flex-col items-center md:flex-row justify-between pt-5 mb-5">
                             <!-- Affichage des éléments de pagination -->
-                            <span class="text-sm text-gray-700 dark:text-gray-400">
+                            <span
+                                class="text-sm text-gray-700 dark:text-gray-400 w-full md:w-auto mb-2 md:mb-0 text-center md:text-left">
                                 Showing <span class="font-semibold text-gray-900 dark:text-white"
                                     id="from"></span>
                                 to <span class="font-semibold text-gray-900 dark:text-white" id="to"></span> of
@@ -649,8 +651,9 @@
                                 Entries
                             </span>
 
-                            <nav aria-label="Page navigation example">
-                                <ul id="pagination" class="flex items-center -space-x-px h-8 text-sm">
+                            <nav aria-label="Page navigation example" class="w-full md:w-auto">
+                                <ul id="pagination"
+                                    class="flex items-center -space-x-px h-8 text-sm justify-center md:justify-start">
                                     <!-- Pagination générée dynamiquement par JavaScript -->
                                 </ul>
                             </nav>
@@ -801,15 +804,15 @@
                 </div>
 
                 @if (count($questionPhasePagnation) > 10)
-                    <div id="pagination-container-question" class="flex justify-between items-center pt-5">
+                    <div id="pagination-container-question" class="flex flex-col items-center md:flex-row justify-between pt-5 mb-5">
                         <!-- Affichage des éléments de pagination -->
-                        <span class="text-sm text-gray-700 dark:text-gray-400">
+                        <span class="text-sm text-gray-700 dark:text-gray-400 w-full md:w-auto mb-2 md:mb-0 text-center md:text-left">
                             Showing <span class="font-semibold text-gray-900 dark:text-white"
                                 id="from-question"></span> to <span
                                 class="font-semibold text-gray-900 dark:text-white" id="to-question"></span> of
                             <span class="font-semibold text-gray-900 dark:text-white" id="total-question"></span>
                             Entries
-                        </span>...
+                        </span>
                         <nav aria-label="Page navigation example">
                             <ul id="pagination-question" class="flex items-center -space-x-px h-8 text-sm">
                                 <!-- Pagination générée dynamiquement par JavaScript -->
@@ -949,115 +952,146 @@
             const fromSpan = document.getElementById("from");
             const toSpan = document.getElementById("to");
             const totalSpan = document.getElementById("total");
-            const searchInput = document.getElementById('search');
-            const ligneParPageSelect = document.getElementById('ligneParPage');
+            const searchInput = document.getElementById("search");
+            const ligneParPageSelect = document.getElementById("ligneParPage");
 
+            let currentPageCand = 1;
 
-            let currentPage = 1;
-
-            const updatePagination = (totalPages) => {
+            const createPagination = (totalPages) => {
                 paginationContainer.innerHTML = ""; // Réinitialiser la pagination
+
+                const createPageItem = (page, isActive = false) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<a href="#" class="flex items-center justify-center px-3 h-8 leading-tight ${
+                isActive
+                    ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                    : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            }">${page}</a>`;
+                    li.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        currentPageCand = page;
+                        updateIntervenantsDisplay();
+                    });
+                    return li;
+                };
+
+                const createEllipsis = () => {
+                    const li = document.createElement("li");
+                    li.innerHTML =
+                        `<span class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">...</span>`;
+                    return li;
+                };
 
                 // Bouton précédent
                 const prevLi = document.createElement("li");
                 prevLi.innerHTML = `
-                <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <span class="sr-only">Previous</span>
-                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-                    </svg>
-                </a>`;
+            <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Previous</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                </svg>
+            </a>`;
                 prevLi.addEventListener("click", (event) => {
-                    event.preventDefault(); // Empêcher l'action par défaut
-                    if (currentPage > 1) {
-                        currentPage--;
+                    event.preventDefault();
+                    if (currentPageCand > 1) {
+                        currentPageCand--;
                         updateIntervenantsDisplay();
                     }
                 });
                 paginationContainer.appendChild(prevLi);
 
-                // Pages
-                for (let i = 1; i <= totalPages; i++) {
-                    const li = document.createElement("li");
-                    li.innerHTML = `<a href="#" class="flex items-center justify-center px-3 h-8 leading-tight ${
-                    i === currentPage
-                        ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-                        : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                }">${i}</a>`;
-                    li.addEventListener("click", (event) => {
-                        event.preventDefault(); // Empêcher l'action par défaut
-                        currentPage = i;
-                        updateIntervenantsDisplay();
-                    });
-                    paginationContainer.appendChild(li);
+                // Gestion des pages et ellipses
+                if (totalPages <= 7) {
+                    // Affiche toutes les pages si leur nombre est limité
+                    for (let i = 1; i <= totalPages; i++) {
+                        paginationContainer.appendChild(createPageItem(i, i === currentPageCand));
+                    }
+                } else {
+                    // Première page toujours affichée
+                    paginationContainer.appendChild(createPageItem(1, currentPageCand === 1));
+
+                    if (currentPageCand > 4) {
+                        paginationContainer.appendChild(createEllipsis());
+                    }
+
+                    // Pages autour de la page actuelle
+                    const start = Math.max(2, currentPageCand - 1);
+                    const end = Math.min(totalPages - 1, currentPageCand + 1);
+                    for (let i = start; i <= end; i++) {
+                        paginationContainer.appendChild(createPageItem(i, i === currentPageCand));
+                    }
+
+                    if (currentPageCand < totalPages - 3) {
+                        paginationContainer.appendChild(createEllipsis());
+                    }
+
+                    // Dernière page toujours affichée
+                    paginationContainer.appendChild(createPageItem(totalPages, currentPageCand === totalPages));
                 }
 
                 // Bouton suivant
                 const nextLi = document.createElement("li");
                 nextLi.innerHTML = `
-                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <span class="sr-only">Next</span>
-                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                    </svg>
-                </a>`;
+            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Next</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+            </a>`;
                 nextLi.addEventListener("click", (event) => {
-                    event.preventDefault(); // Empêcher l'action par défaut
-                    if (currentPage < totalPages) {
-                        currentPage++;
+                    event.preventDefault();
+                    if (currentPageCand < totalPages) {
+                        currentPageCand++;
                         updateIntervenantsDisplay();
                     }
                 });
                 paginationContainer.appendChild(nextLi);
             };
 
-            // Écouteur d'événements pour le changement de ligne par page
-            ligneParPageSelect.addEventListener('change', function() {
-
-                ligneParPage = parseInt(this.value);
-                currentPage = 1;
-                updateIntervenantsDisplay();
-            });
-
             const updateIntervenantsDisplay = () => {
                 const maxItems = ligneParPage;
                 const totalPages = Math.ceil(intervenantItems.length / maxItems);
 
                 intervenantItems.forEach((item, index) => {
-                    const start = (currentPage - 1) * maxItems;
-                    const end = currentPage * maxItems;
+                    const start = (currentPageCand - 1) * maxItems;
+                    const end = currentPageCand * maxItems;
                     item.style.display = index >= start && index < end ? "block" : "none";
                 });
 
-                const start = (currentPage - 1) * maxItems + 1;
-                const end = Math.min(currentPage * maxItems, intervenantItems.length);
+                const start = (currentPageCand - 1) * maxItems + 1;
+                const end = Math.min(currentPageCand * maxItems, intervenantItems.length);
                 fromSpan.textContent = start;
                 toSpan.textContent = end;
                 totalSpan.textContent = intervenantItems.length;
 
-                updatePagination(totalPages);
+                createPagination(totalPages);
             };
 
-            searchInput.addEventListener('input', function() {
+            ligneParPageSelect.addEventListener("change", function() {
+                ligneParPage = parseInt(this.value);
+                currentPageCand = 1;
+                updateIntervenantsDisplay();
+            });
+
+            searchInput.addEventListener("input", function() {
                 const query = searchInput.value.toLowerCase();
 
                 if (query === "") {
                     intervenantItems.forEach(function(item) {
-                        item.style.display = 'block';
+                        item.style.display = "block";
                     });
 
                     updateIntervenantsDisplay();
                 } else {
-
                     intervenantItems.forEach(function(item) {
-                        const name = item.querySelector('h3.text-xl').textContent.toLowerCase();
-                        const email = item.querySelector('h3.text-sm.text-gray-900').textContent
+                        const name = item.querySelector("h3.text-xl").textContent.toLowerCase();
+                        const email = item.querySelector("h3.text-sm.text-gray-900").textContent
                             .toLowerCase();
 
                         if (name.includes(query) || email.includes(query)) {
-                            item.style.display = 'block';
+                            item.style.display = "block";
                         } else {
-                            item.style.display = 'none';
+                            item.style.display = "none";
                         }
                     });
 
@@ -1065,8 +1099,7 @@
                 }
             });
 
-
-            // Initial affichage
+            // Affichage initial
             updateIntervenantsDisplay();
         });
 
@@ -1078,23 +1111,45 @@
             const fromSpanQuestion = document.getElementById("from-question");
             const toSpanQuestion = document.getElementById("to-question");
             const totalSpanQuestion = document.getElementById("total-question");
-            const ligneParPageSelectQuestion = document.getElementById('ligneParPage-question');
+            const ligneParPageSelectQuestion = document.getElementById("ligneParPage-question");
 
             let currentPageQuestion = 1;
 
-            const updatePaginationQuestion = (totalPages) => {
+            const createPagination = (totalPages) => {
                 paginationContainerQuestion.innerHTML = ""; // Réinitialiser la pagination
 
-                // Bouton Précédent
+                const createPageItem = (page, isActive = false) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<a href="#" class="flex items-center justify-center px-3 h-8 leading-tight ${
+                isActive
+                    ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                    : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            }">${page}</a>`;
+                    li.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        currentPageQuestion = page;
+                        updateQuestionsDisplay();
+                    });
+                    return li;
+                };
+
+                const createEllipsis = () => {
+                    const li = document.createElement("li");
+                    li.innerHTML =
+                        `<span class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">...</span>`;
+                    return li;
+                };
+
+                // Bouton précédent
                 const prevLi = document.createElement("li");
-                prevLi.innerHTML =
-                    `<button class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <span class="sr-only">Previous</span>
-                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-                    </svg>
-                    </button>`;
-                prevLi.firstChild.addEventListener("click", (event) => {
+                prevLi.innerHTML = `
+            <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Previous</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                </svg>
+            </a>`;
+                prevLi.addEventListener("click", (event) => {
                     event.preventDefault();
                     if (currentPageQuestion > 1) {
                         currentPageQuestion--;
@@ -1103,31 +1158,46 @@
                 });
                 paginationContainerQuestion.appendChild(prevLi);
 
-                // Numéros de page
-                for (let i = 1; i <= totalPages; i++) {
-                    const li = document.createElement("li");
-                    li.innerHTML =
-                        `<button class="flex items-center justify-center px-3 h-8 ${i === currentPageQuestion ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-                        : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                        }">${i}</button>`;
-                    li.firstChild.addEventListener("click", (event) => {
-                        event.preventDefault();
-                        currentPageQuestion = i;
-                        updateQuestionsDisplay();
-                    });
-                    paginationContainerQuestion.appendChild(li);
+                // Gestion des pages et ellipses
+                if (totalPages <= 7) {
+                    // Affiche toutes les pages si leur nombre est limité
+                    for (let i = 1; i <= totalPages; i++) {
+                        paginationContainerQuestion.appendChild(createPageItem(i, i === currentPageQuestion));
+                    }
+                } else {
+                    // Première page toujours affichée
+                    paginationContainerQuestion.appendChild(createPageItem(1, currentPageQuestion === 1));
+
+                    if (currentPageQuestion > 4) {
+                        paginationContainerQuestion.appendChild(createEllipsis());
+                    }
+
+                    // Pages autour de la page actuelle
+                    const start = Math.max(2, currentPageQuestion - 1);
+                    const end = Math.min(totalPages - 1, currentPageQuestion + 1);
+                    for (let i = start; i <= end; i++) {
+                        paginationContainerQuestion.appendChild(createPageItem(i, i === currentPageQuestion));
+                    }
+
+                    if (currentPageQuestion < totalPages - 3) {
+                        paginationContainerQuestion.appendChild(createEllipsis());
+                    }
+
+                    // Dernière page toujours affichée
+                    paginationContainerQuestion.appendChild(createPageItem(totalPages, currentPageQuestion ===
+                        totalPages));
                 }
 
-                // Bouton Suivant
+                // Bouton suivant
                 const nextLi = document.createElement("li");
-                nextLi.innerHTML =
-                    `<button class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <span class="sr-only">Next</span>
-                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                    </svg>
-                    </button>`;
-                nextLi.firstChild.addEventListener("click", (event) => {
+                nextLi.innerHTML = `
+            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Next</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+            </a>`;
+                nextLi.addEventListener("click", (event) => {
                     event.preventDefault();
                     if (currentPageQuestion < totalPages) {
                         currentPageQuestion++;
@@ -1137,35 +1207,31 @@
                 paginationContainerQuestion.appendChild(nextLi);
             };
 
-            // Vérification de l'élément avant d'ajouter l'écouteur d'événements
-            if (ligneParPageSelectQuestion) {
-                ligneParPageSelectQuestion.addEventListener('change', function() {
-                    lignesParPageQuestion = parseInt(this.value);
-                    currentPageQuestion = 1;
-                    updateQuestionsDisplay();
-                });
-            } else {
-                console.error("Element with ID 'ligneParPage-question' not found.");
-            }
-
             const updateQuestionsDisplay = () => {
                 const maxItems = lignesParPageQuestion;
-                const totalItems = questionItems.length;
+                const totalPages = Math.ceil(questionItems.length / maxItems);
 
                 questionItems.forEach((item, index) => {
                     const start = (currentPageQuestion - 1) * maxItems;
-                    item.style.display = index >= start && index < start + maxItems ? "block" : "none";
+                    const end = currentPageQuestion * maxItems;
+                    item.style.display = index >= start && index < end ? "block" : "none";
                 });
 
-                const startIndex = (currentPageQuestion - 1) * maxItems + 1;
-                const endIndex = Math.min(currentPageQuestion * maxItems, totalItems);
+                const start = (currentPageQuestion - 1) * maxItems + 1;
+                const end = Math.min(currentPageQuestion * maxItems, questionItems.length);
+                fromSpanQuestion.textContent = start;
+                toSpanQuestion.textContent = end;
+                totalSpanQuestion.textContent = questionItems.length;
 
-                fromSpanQuestion.textContent = startIndex;
-                toSpanQuestion.textContent = endIndex;
-                totalSpanQuestion.textContent = totalItems;
-
-                updatePaginationQuestion(Math.ceil(totalItems / maxItems));
+                createPagination(totalPages);
             };
+
+            ligneParPageSelectQuestion.addEventListener("change", function() {
+                lignesParPageQuestion = parseInt(this.value);
+                currentPageQuestion = 1;
+                updateQuestionsDisplay();
+            });
+
             // Affichage initial
             updateQuestionsDisplay();
         });

@@ -598,9 +598,10 @@ class PhaseController extends Controller
                             array_push($intervenant_succes_fem, $item);
                         }
                     }
-                } else {
-                    return back()->with('success', "Il n'y a pas de question pour cette phase");
-                }
+                } 
+                // else {
+                //     return back()->with('success', "Il n'y a pas de question pour cette phase");
+                // }
             }
             //fin recup
             return view('phases.show', compact('phaseShow', 'phase_id', 'question', 'questionPhasePagnation', 'questionAssert', 'intervenants', 'intervenantPhases', 'intervenantsMails', 'phases', 'status_phase', 'intervenantsFeminin', 'intervenantStart', 'passPourcent', 'phaseExist', 'intervenantAll', 'intervenant_succes', 'intervenant_resultat', 'intervenant_succes_fem'));
