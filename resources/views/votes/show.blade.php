@@ -1,13 +1,23 @@
 @extends('layouts.template')
 @section('content')
     <section id="voteUser" class="px-4 md:px-8">
-        <div class="mb-5 pt-5 flex justify-center">
-            <h2
-                class="mb-4 text-4xl font-extrabold leading-none tracking-tight flex items-center mb-6 text-2xl font-semibold dark:text-white ">
-                <img class="w-10 h-10" src="{{ asset('img/momekano.png') }}" alt="logo">
-                omekano
-            </h2>
+        <div class="flex mb-5 pt-5 justify-center items-center relative">
+            <div class="flex items-center">
+                <h2
+                    class="text-4xl font-extrabold leading-none tracking-tight flex items-center text-2xl font-semibold dark:text-white">
+                    <img class="w-10 h-10 mr-2" src="{{ asset('img/momekano.png') }}" alt="logo">
+                    omekano
+                </h2>
+            </div>
+            <div class="flex items-center absolute right-0">
+                <h2
+                    class="text-xl font-extrabold leading-none tracking-tight flex items-center text-2xl font-semibold dark:text-white">
+                    <img class="w-10 h-10 mr-2 rounded-full" src="{{ asset('img/profil.jpeg') }}" alt="profil">
+                    {{ $jury->noms }}
+                </h2>
+            </div>
         </div>
+
         {{-- <h2 class="mb-1 text-4xl font-extrabold dark:text-white">{{ $evenement->nom }}</h2> --}}
         <h2 class=" text-3xl font-extrabold dark:text-white">{{ $phaseAndSpeaker->nom }}</h2>
         {{-- <p class="text-sm font-normal text-white">{{ $phaseAndSpeaker->description }}</p> --}}
@@ -68,9 +78,9 @@
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                             <path
                                                 d="M 45 90 C
-                                                                                20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
-                                                                                5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
-                                                                                -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
+                                                                                            20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
+                                                                                            5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
+                                                                                            -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
                                                 style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                 transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                         </g>
@@ -136,14 +146,14 @@
     <script>
         if (localStorage.getItem("refreshPreviousPage") === "true") {
             console.log('back succes');
-            
+
             let candidats = {{ $candidats }};
             let jury_id = {{ $jury_id }};
             let phase_id = {{ $phase_id }};
             let criteresIds = {{ $criteres }};
             let nombreUser = {{ $nombreUser }};
             getLocalStorage(phase_id, candidats, jury_id, criteresIds, nombreUser);
-            
+
             localStorage.removeItem("refreshPreviousPage");
         }
         const searchInput = document.getElementById('search');

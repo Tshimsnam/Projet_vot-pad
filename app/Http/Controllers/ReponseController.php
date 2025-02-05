@@ -132,13 +132,15 @@ class ReponseController extends Controller
             //sauvegarde dans la base de donnees
 
             $saveReponse = Reponse::firstOrCreate([
+                'assertion_id'      =>  $assertion_id ?? 0,
                 'question_phase_id' => $question_phase_id,
                 'intervenant_id'    => $intervenant,
                 'phase_id'          => (int) $phase,
+                'cote' => $cote,
             ]);
 
-            $saveReponse->assertion_id = $assertion_id;
-            $saveReponse->cote = $cote;
+            $saveReponse->assertion_id = $assertion_id ?? 0;
+            $saveReponse->cote         = $cote;
             $saveReponse->save();
         }
         session([

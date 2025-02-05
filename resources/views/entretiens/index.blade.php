@@ -253,8 +253,8 @@
                                         féminin liés à cette
                                         phase.</p>
                                     <h3 class="font-semibold text-gray-900 dark:text-white">Section Mails</h3>
-                                    <p>Dans cette section, c'est pour déterminer le nombre des candidats qui ont reçus
-                                        un mail liés à cette
+                                    <p>Dans cette section, c'est pour déterminer le nombre des candidats qui ont été
+                                        notés par les jurys dans cette
                                         phase.</p>
                                 </div>
                             </div>
@@ -283,8 +283,8 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $totalIntervenants - count($intervenantsMails) }}</dt>
-                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Mails</dd>
+                                {{ $intervenantNotes }}</dt>
+                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Notés</dd>
                         </dl>
                     </div>
                 </div>

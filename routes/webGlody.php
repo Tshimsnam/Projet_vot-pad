@@ -44,8 +44,8 @@ Route::get('/momekano-form', [IntervenantController::class, 'form'])->name('form
 Route::post('/momekano/evaluation', [IntervenantController::class, 'authenticate'])->name('authenticate');
 
 Route::get('/Del_momekano', [JuryController::class, 'form'])->name('jury-form');
-Route::post('/momekano/voting', [VoteController::class, 'authenticate'])->name('jury-authenticate');
-Route::get('/momekano/voting/success/{phase_id}/{jury_id}/{candidats}/{criteres}/{nombreUser}/{evenement}', [VoteController::class, 'show'])->name('jury.success')->middleware(JuryTokenIsValid::class);;
+Route::post('/momekano/eval', [VoteController::class, 'authenticate'])->name('jury-authenticate');
+Route::get('/momekano/eval/success/{phase_id}/{jury_id}/{candidats}/{criteres}/{nombreUser}/{evenement}', [VoteController::class, 'show'])->name('jury.success')->middleware(JuryTokenIsValid::class);;
 
 Route::post('/sendmail',  [IntervenantPhaseController::class, 'sendMail'])->name('sendMail');
 Route::post('/sendsmails',  [IntervenantPhaseController::class, 'sendMailMany'])->name('sendMailMany');

@@ -42,21 +42,26 @@
         </div>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" id="resultTable">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-2">N°</th>
                     <th scope="col" class="py-2">Nom</th>
                     <th scope="col" class="py-2">Email</th>
-                    <th scope="col" class="py-2">Image</th>
-                    <th id="priveTh" scope="col" class="py-2">
-                        Cote privé (Pond : {{ $ponderationJuryPrive }})
-                    </th>
-                    <th id="publicTh" scope="col" class="py-2">
-                        Cote public (Pond : {{ $ponderationJuryPublic }})
-                    </th>
-                    <th scope="col" class="py-2">Cote total</th>
+                    <th scope="col" class="py-2" {{ strtolower($phase->type) == 'vote' ? 'hidden' : '' }}>Sexe</th>
+                    @if (strtolower($phase->type) == 'vote')
+                        <th scope="col" class="py-2">Image</th>
+                        <th id="priveTh" scope="col" class="py-2">
+                            Cote privé (Pond : {{ $ponderationJuryPrive }})
+                        </th>
+                        <th id="publicTh" scope="col" class="py-2">
+                            Cote public (Pond : {{ $ponderationJuryPublic }})
+                        </th>
+                        <th scope="col" class="py-2">Cote total</th>
+                    @endif
                     <th scope="col" class="py-2">Pourcentage</th>
+                    <th scope="col" class="py-2" {{ strtolower($phase->type) == 'vote' ? 'hidden' : '' }}>A retenir
+                    </th>
                     <th scope="col" class="py-2">Nombre jury</th>
                 </tr>
             </thead>
@@ -71,24 +76,36 @@
                         <td class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $item->email }}
                         </td>
-                        <td class="py-2 pr-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <img width="40" height="40" class="img img-responsive"
-                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
-                                alt="">
+                        <td class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            {{ strtolower($phase->type) == 'vote' ? 'hidden' : '' }}>
+                            {{ $item->genre == 'M' || $item->genre == 'm' ? 'Masculin' : ($item->genre == 'F' || $item->genre == 'f' ? 'Féminin' : 'Non précisé') }}
                         </td>
-                        <td id="priveTb{{ $i }}"
-                            class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->votePrive }}
-                        </td>
-                        <td id="publicTb{{ $i }}"
-                            class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->votePublic }}
-                        </td>
-                        <td class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->cote }}
-                        </td>
+                        @if (strtolower($phase->type) == 'vote')
+                            <td class="py-2 pr-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <img width="40" height="40" class="img img-responsive"
+                                    src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
+                                    alt="">
+                            </td>
+                            <td id="priveTb{{ $i }}"
+                                class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ $item->votePrive }}
+                            </td>
+                            <td id="publicTb{{ $i }}"
+                                class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ $item->votePublic }}
+                            </td>
+                            <td class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ $item->cote }}
+                            </td>
+                        @endif
                         <td class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $item->pourcentage }}%
+                        </td>
+                        <td class="py-2 text-gray-900 whitespace-nowrap dark:text-gray-400"
+                            {{ strtolower($phase->type) == 'vote' ? 'hidden' : '' }}>
+                            OUI : <span class="font-medium text-white">{{ $item->decisionOui }}</span> | NON : <span
+                                class="font-medium text-white">{{ $item->decisionNon }}</span> | AT : <span
+                                class="font-medium text-white">{{ $item->decisionAttente }}</span>
                         </td>
                         <td class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $item->nombreJury }}
@@ -103,6 +120,10 @@
         window.onload = function() {
             initial("{{ $typeVote }}");
         };
+
+        $(document).ready(function() {
+            $('#resultTable').DataTable();
+        });
 
         function initial(typeVote) {
             const priveTh = document.getElementById("priveTh");

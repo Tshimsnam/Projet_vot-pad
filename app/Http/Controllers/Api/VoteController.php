@@ -1,13 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
-use App\Models\Jury;
-use App\Models\Vote;
-use App\Models\PhaseCritere;
-use Illuminate\Http\Request;
-use App\Models\IntervenantPhase;
 use App\Http\Controllers\Controller;
+use App\Models\Intervenant;
+use App\Models\IntervenantPhase;
+use App\Models\Jury;
+use App\Models\PhaseCritere;
+use App\Models\Vote;
+use Illuminate\Http\Request;
 
 class VoteController extends Controller
 {
@@ -25,7 +25,7 @@ class VoteController extends Controller
     public function store(Request $request)
     {
         $intervenant = $request->intervenantId;
-        $cotes = $request->cote;
+        $cotes       = $request->cote;
         return response()->json($intervenant);
     }
 
@@ -57,29 +57,29 @@ class VoteController extends Controller
     {
         $voteData = $request->input('voteData');
 
-        $phaseId = $voteData['phaseId'];
-        $juryId = $voteData['juryId'];
+        $phaseId   = $voteData['phaseId'];
+        $juryId    = $voteData['juryId'];
         $candidats = $voteData['candidats'];
 
         foreach ($candidats as $candidat) {
             $candidatId = $candidat['candidatId'];
-            $cotes = $candidat['cote'];
+            $cotes      = $candidat['cote'];
 
             foreach ($cotes as $cote) {
                 $critereId = $cote['critereId'];
                 $coteValue = $cote['valeur'];
 
-                $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
+                $intervenantPhase    = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
                 $intervenantPhaseIds = $intervenantPhase->id;
 
-                $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
+                $criterePhase   = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
                 $criterePhaseId = $criterePhase->id;
 
                 $votes = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('phase_jury_id', $juryId)->where('phase_critere_id', $criterePhaseId)->get();
                 if ($votes) {
                     foreach ($votes as $vote) {
                         $vote->update([
-                            'isVerified' => 1
+                            'isVerified' => 1,
                         ]);
                     }
                 }
@@ -91,22 +91,54 @@ class VoteController extends Controller
 
     public function sendVoteByCandidat(Request $request)
     {
-        $voteData = $request->all();
+        $voteData      = $request->all();
         $authorization = str_replace('Bearer ', '', $request->header('Authorization'));
-        $jury = Jury::where('token', $authorization)->first();
+        $jury          = Jury::where('token', $authorization)->first();
 
-        $phaseId = $voteData['phase_id'];
-        $juryId = $jury->id;
-        $candidatId = $voteData['intervenant_id'];
-        $cotes = $voteData['cote'];
-        $nombreUser = $voteData['nombre_user'];
+        $phaseId       = $voteData['phase_id'];
+        $juryId        = $jury->id;
+        $candidatId    = $voteData['intervenant_id'];
+        $cotes         = $voteData['cote'];
+        $nombreUser    = $voteData['nombre_user'];
+        $age           = null;
+        $sexe          = null;
+        $statut        = null;
+        $etablissement = null;
+        $promotion     = null;
+        $decision      = null;
+        $autre         = null;
+
+        if ($jury->type == 'entretien') {
+            $age           = $voteData['age'];
+            $sexe          = $voteData['sexe'];
+            $statut        = $voteData['statut'];
+            $etablissement = $voteData['etablissement'];
+            $promotion     = $voteData['promotion'];
+            $decision      = $voteData['decision'];
+            $autre         = $voteData['autre'];
+        }
 
         $intervenantPhase = IntervenantPhase::where('intervenant_id', $candidatId)->where('phase_id', $phaseId)->first();
-        if(!$intervenantPhase)
-        {
+        if (! $intervenantPhase) {
             return response()->json(['status' => 'unsuccess'], 400);
         }
         $intervenantPhaseIds = $intervenantPhase->id;
+
+        $intervenant = Intervenant::where('id', $candidatId)->first();
+        $statutCand  = "";
+        if ($intervenant) {
+            if ($statut == 'autre') {
+                $statutCand = $autre;
+            } else {
+                $statutCand = $statut;
+            }
+            $intervenant->age        = $age;
+            $intervenant->genre      = $sexe;
+            $intervenant->statut     = $statutCand;
+            $intervenant->universite = $etablissement;
+            $intervenant->promotion  = $promotion;
+            $intervenant->save();
+        }
 
         $votes = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('jury_phase_id', $juryId)->where('nombre', $nombreUser)->get();
         if ($votes) {
@@ -114,37 +146,62 @@ class VoteController extends Controller
                 $vote->delete();
             }
         }
-
+        $jury     = Jury::where('id', $juryId)->first();
+        $typeJury = $jury->type;
         foreach ($cotes as $cote) {
             $critereId = $cote['critere_id'];
             $coteValue = $cote['valeur'];
+            if (strtolower($typeJury) === 'entretien') {
+                $commentaire = $cote['commentaire'];
+            }
 
-            $criterePhase = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
+            $criterePhase   = PhaseCritere::where('critere_id', $critereId)->where('phase_id', $phaseId)->first();
             $criterePhaseId = $criterePhase->id;
 
             $vote = Vote::where('intervenant_phase_id', $intervenantPhaseIds)->where('jury_phase_id', $juryId)->where('phase_critere_id', $criterePhaseId)->first();
 
             if ($vote) {
-                $jury = Jury::where('id', $juryId)->first();
-                $typeJury = $jury->type;
-
                 if ($typeJury == 'public') {
-                    $addVote = new Vote();
+                    $addVote                       = new Vote();
                     $addVote->intervenant_phase_id = $intervenantPhaseIds;
-                    $addVote->jury_phase_id = $juryId;
-                    $addVote->phase_critere_id = $criterePhaseId;
-                    $addVote->cote = $coteValue;
-                    $addVote->nombre = $nombreUser;
+                    $addVote->jury_phase_id        = $juryId;
+                    $addVote->phase_critere_id     = $criterePhaseId;
+                    $addVote->cote                 = $coteValue;
+                    $addVote->nombre               = $nombreUser;
+                    $addVote->save();
+                } else if ($typeJury == 'entretien') {
+                    $addVote                       = new Vote();
+                    $addVote->intervenant_phase_id = $intervenantPhaseIds;
+                    $addVote->jury_phase_id        = $juryId;
+                    $addVote->phase_critere_id     = $criterePhaseId;
+                    $addVote->cote                 = $coteValue;
+                    $addVote->nombre               = $nombreUser;
+                    $addVote->commentaires         = $commentaire;
+                    $addVote->decision             = $decision;
                     $addVote->save();
                 }
             } else {
-                Vote::create([
-                    'intervenant_phase_id' => $intervenantPhaseIds,
-                    'jury_phase_id' => $juryId,
-                    'phase_critere_id' => $criterePhaseId,
-                    'cote' => $coteValue,
-                    'nombre' => $nombreUser,
-                ]);
+                if ($typeJury == 'entretien') {
+                    $voteSend = Vote::create([
+                        'intervenant_phase_id' => $intervenantPhaseIds,
+                        'jury_phase_id'        => $juryId,
+                        'phase_critere_id'     => $criterePhaseId,
+                        'cote'                 => $coteValue,
+                        'nombre'               => $nombreUser,
+                    ]);
+
+                    $voteSend->commentaires = $commentaire;
+                    $voteSend->decision     = $decision;
+                    $voteSend->save();
+                } else {
+                    $voteSend = Vote::create([
+                        'intervenant_phase_id' => $intervenantPhaseIds,
+                        'jury_phase_id'        => $juryId,
+                        'phase_critere_id'     => $criterePhaseId,
+                        'cote'                 => $coteValue,
+                        'nombre'               => $nombreUser,
+                    ]);
+                }
             }
         }
         return response()->json(['status' => 'success'], 200);

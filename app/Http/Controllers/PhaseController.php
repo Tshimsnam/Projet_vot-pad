@@ -368,8 +368,9 @@ class PhaseController extends Controller
                 $intervenant->mail_send          = $intervenantPhase->mail_send;
                 $intervenants[]                  = $intervenant;
             }
-            $totalIntervenants = $intervenantPhases->total();
 
+            $totalIntervenants = $intervenantPhases->total();
+            $intervenantNotes  = 0;
             foreach ($intervenantPhasesAll as $intervenantPhase) {
                 $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
                 if ($intervenant) {
@@ -379,7 +380,19 @@ class PhaseController extends Controller
                     $intervenant->is_use             = $intervenantPhase->token == 0 ? 0 : 1;
                     $intervenantAll[]                = $intervenant;
                 }
+
+                $nombreVotes = Vote::where('intervenant_phase_id', $intervenantPhase->id)
+                    ->whereHas('phaseCritere', function ($query) use ($phase_id) {
+                        $query->where('phase_id', $phase_id);
+                    })
+                    ->count();
+
+                if ($nombreVotes > 0) {
+                    $intervenantNotes++; // On incrémente le compteur
+                }
             }
+
+            
             //recuperer les criteres liés à une phase
             $phases           = $phaseShow;
             $phaseCriteres    = PhaseCritere::where('phase_id', $phase_id)->latest()->paginate(10);
@@ -471,7 +484,7 @@ class PhaseController extends Controller
                 return strtolower($a->noms) <=> strtolower($b->noms);
             });
             $phaseExist = Phase::findOrFail($phase_id);
-            return view('entretiens.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants', 'intervenantAll', 'page', 'sommePonderation'));
+            return view('entretiens.index', compact('criteres', 'phaseCriteres', 'phases', 'phase_id', 'intervenants', 'intervenantPhases', 'jurys', 'juryPhases', 'ponderation_public', 'ponderation_prive', 'type_vote', 'status_phase', 'passNumber', 'intervenantsMails', 'intervenantsFeminin', 'phaseExist', 'totalIntervenants', 'intervenantAll', 'page', 'sommePonderation', 'intervenantNotes'));
 
             //fin entretien
         } else {
@@ -598,7 +611,7 @@ class PhaseController extends Controller
                             array_push($intervenant_succes_fem, $item);
                         }
                     }
-                } 
+                }
                 // else {
                 //     return back()->with('success', "Il n'y a pas de question pour cette phase");
                 // }
