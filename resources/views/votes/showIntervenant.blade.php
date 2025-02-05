@@ -31,7 +31,11 @@
                     <h2 class="text-3xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}
                         @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
                             :
-                            {{ $intervenant_resultat[0]['pourcentage'] }}%
+                            @if(empty($intervenant_resultat))
+                                0%
+                            @else
+                                {{ $intervenant_resultat[0]['pourcentage'] }}%
+                            @endif
                         @endif
                     </h2>
                     <p class="text-sm truncate dark:text-white">
