@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'logmail' => ['E-mail ou mot de passe incorrect. Veuillez réessayer !'],
             ]);
         }
 

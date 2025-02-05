@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
+use App\Models\Phase;
+use App\Models\Evenement;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreEvenementRequest;
 use App\Http\Requests\UpdateEvenementRequest;
-use App\Models\Evenement;
-use App\Models\Phase;
-use DateTime;
-use Illuminate\Http\Request;
 
 class EvenementController extends Controller
 {
@@ -16,7 +17,14 @@ class EvenementController extends Controller
      */
     public function index()
     {
-        $evenements = Evenement::latest()->paginate(13);
+        $user = Auth::user();
+
+
+        if ($user->role == 'super-momekano') {
+            $evenements = Evenement::latest()->paginate(13);
+        } else {
+            $evenements = Evenement::where('user_id', $user->id)->latest()->paginate(13);
+        }
         return view('evenements.index', compact('evenements'));
     }
 
@@ -124,7 +132,14 @@ class EvenementController extends Controller
     public function show(Evenement $evenement)
     {
         $phases = $evenement->phases;
-        return view('evenements.show', compact('evenement', 'phases'));
+        $user = Auth::user();
+        if ($user->role == 'super-momekano') {
+            return view('evenements.show', compact('evenement', 'phases'));
+        } else if ($user->id == $evenement->user_id) {
+            return view('evenements.show', compact('evenement', 'phases'));
+        } else {
+            return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
+        }
     }
 
     /**
@@ -196,6 +211,8 @@ class EvenementController extends Controller
             ]
         );
 
+        $user = Auth::user()->id;
+
         $evenements = Evenement::create(
             [
                 'nom' => $request->name,
@@ -204,6 +221,7 @@ class EvenementController extends Controller
                 //'date_debut' => $dateTimeDebut,
                 //'date_fin' => $dateTimeFin,
                 'status' => 'en attente',
+                'user_id' => $user,
             ]
         );
 

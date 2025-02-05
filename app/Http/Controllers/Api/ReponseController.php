@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assertion;
 use App\Models\IntervenantPhase;
 use App\Models\QuestionPhase;
 use App\Models\Reponse;
@@ -35,56 +35,55 @@ class ReponseController extends Controller
         $intervenant = $request->intervenant_id;
         $phase       = $request->phase_id;
         $cote        = $request->cote;
-        $message = "Merci d'avoir répondu et félicitations";
+        $message     = "Merci d'avoir répondu et félicitations";
 
-        $veri_phase = QuestionPhase::where('phase_id',$phase)->first();
-        if($veri_phase){
-            $verif_interv_affectation = IntervenantPhase::where('phase_id',$veri_phase->phase_id)->where('intervenant_id',$intervenant)->first();
-            if($verif_interv_affectation){ 
+        $veri_phase = QuestionPhase::where('phase_id', $phase)->first();
+        if ($veri_phase) {
+            $verif_interv_affectation = IntervenantPhase::where('phase_id', $veri_phase->phase_id)->where('intervenant_id', $intervenant)->first();
+            if ($verif_interv_affectation) {
                 // return response()->json(['message'=>$verif_interv_affectation],400);
                 // $verif_deja_repondu = Reponse::where('phase_id',$veri_phase->id)->where('intervenant_id',$verif_interv_affectation->id);
-                foreach($cote as  $value){
-                    $question = $value['question_id'];
+                foreach ($cote as $value) {
+                    $question  = $value['question_id'];
                     $assertion = $value['assertion_id'];
-                
+
                     $ponderationQuestion = DB::table('question_phases')
-                                                    ->select('ponderation','id')
-                                                    ->where('question_id',$question)
-                                                    ->where('phase_id',$phase)
-                                                    ->get();
+                        ->select('ponderation', 'id')
+                        ->where('question_id', $question)
+                        ->where('phase_id', $phase)
+                        ->get();
                     $allAssertionQuestion = DB::table('assertions')
-                                                    ->select('id','ponderation')
-                                                    ->where('question_id',$question)
-                                                    ->where('id',$assertion)
-                                                    ->get();  
-                    if($allAssertionQuestion->count() == 0){
+                        ->select('id', 'ponderation')
+                        ->where('question_id', $question)
+                        ->where('id', $assertion)
+                        ->get();
+                    if ($allAssertionQuestion->count() == 0) {
                         $message = "Pas d'assertion avec cet id, un cas possible de tricherie";
-                        return response()->json(['messeage'=>$message]);
-                    }else{
+                        return response()->json(['messeage' => $message]);
+                    } else {
                         $ponderationAssertion = $allAssertionQuestion[0]->ponderation;
-                        if($ponderationAssertion>0){
+                        if ($ponderationAssertion > 0) {
                             $cote = $ponderationQuestion[0]->ponderation;
-                        }else{
+                        } else {
                             $cote = 0;
                         }
                         $question_phase_id = $ponderationQuestion[0]->id;
-                        $saveReponse=Reponse::firstOrCreate([
-                            'question_phase_id'=> $question_phase_id,
-                            'intervenant_id'=> $intervenant,
-                            'assertion_id'=>$assertion,
-                            'phase_id'=>(int)$phase,
-                            'cote'=> $cote,
+                        $saveReponse       = Reponse::firstOrCreate([
+                            'question_phase_id' => $question_phase_id,
+                            'intervenant_id'    => $intervenant,
+                            'assertion_id'      => $assertion,
+                            'phase_id'          => (int) $phase,
                         ]);
-                        
-                    }      
+
+                    }
                 }
-                return response()->json(['messeage'=>$message]);
-            }else{
-                return response()->json(['message'=>"Intervenant n'est pas affecte dans cette phase"],400);
+                return response()->json(['messeage' => $message]);
+            } else {
+                return response()->json(['message' => "Intervenant n'est pas affecte dans cette phase"], 400);
             }
-        
-        }else{
-            return response()->json(['message'=>'Phase invalide'],400);
+
+        } else {
+            return response()->json(['message' => 'Phase invalide'], 400);
         }
     }
 
@@ -118,5 +117,50 @@ class ReponseController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function reponseByIntervenant(Request $request)
+    {
+        $assertionId   = intval($request->assertionId);
+        $questionId    = intval($request->questionId);
+        $phaseId       = intval($request->phaseId);
+        $intervenantId = intval($request->intervenantId);
+
+        $veri_phase = QuestionPhase::where('phase_id', $phaseId)->first();
+        if ($veri_phase) {
+            $verif_interv_affectation = IntervenantPhase::where('phase_id', $veri_phase->phase_id)->where('intervenant_id', $intervenantId)->first();
+            if ($verif_interv_affectation) {
+
+                if($verif_interv_affectation->terminer != null){
+                    return response()->json([
+                        'status'    => 'success',
+                        'bloquer' => true
+                    ], 200);
+                }
+
+                $questionPhase   = QuestionPhase::where('phase_id', $phaseId)->where('question_id', $questionId)->first();
+                $assertionSelect = Assertion::findOrFail($assertionId);
+
+                $reponse = Reponse::where('intervenant_id', $intervenantId)->where('phase_id', $phaseId)->where('question_phase_id', $questionPhase->id)->first();
+                if ($reponse) {
+                    $reponse->assertion_id      = $assertionId;
+                    $reponse->question_phase_id = $questionPhase->id;
+                    $reponse->cote              = $assertionSelect->ponderation;
+                    $reponse->save();
+                } else {
+                    $reponse = Reponse::create([
+                        'intervenant_id'    => $intervenantId,
+                        'phase_id'          => $phaseId,
+                        'question_phase_id' => $questionPhase->id,
+                        'assertion_id'      => $assertionId,
+                        'cote'              => $assertionSelect->ponderation,
+                    ]);
+                }
+            }
+        }
+        return response()->json([
+            'status'    => 'success',
+            'bloquer' => false,
+        ], 200);
     }
 }

@@ -234,7 +234,7 @@
     </div>
 
     <div>
-        <div id="view-content" class="hidden grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4">
+        <div id="view-content" class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4">
             <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mr-2">
                 <div class="flex justify-between">
                     <div class="flex items-center">
@@ -279,7 +279,7 @@
                             class="bg-orange-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-orange-100 dark:bg-gray-500 text-orange-600 dark:text-orange-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $intervenantPhases->total() }}</dt>
+                                {{ count($intervenantPhases) }}</dt>
                             <dd class="text-orange-600 dark:text-orange-300 text-sm font-medium">Tous</dd>
                         </dl>
                         <dl
@@ -294,7 +294,7 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $intervenantPhases->total() - (count($intervenantsMails) + count($intervenantStart)) }}
+                                {{ count($intervenantPhases) - count($intervenantPhases->where('mail_send', 0)) }}
                             </dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Mails</dd>
                         </dl>
@@ -309,7 +309,75 @@
                 </div>
             </div>
 
-            <div class=" bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mr-2">
+            <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mr-2">
+                <div class="flex justify-between">
+                    <div class="flex items-center">
+                        <div class="flex justify-center items-center mb-3">
+                            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Details
+                                évaluation</h5>
+                            <svg data-popover-target="chart-info-pass" data-popover-placement="right"
+                                class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z" />
+                            </svg>
+                            <div data-popover id="chart-info-pass" role="tooltip"
+                                class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                                <div class="p-3 space-y-2">
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Reussite(s)</h3>
+                                    <p>Dans cette section, il s'agit de déterminer le nombre de candidats ayant
+                                        réussi avec une moyenne d'au moins 50%.<br>ND : Non défini</p>
+                                </div>
+                                <div class="p-3 space-y-2">
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Masculin(s)</h3>
+                                    <p>Dans cette section, on détermine le nombre de candidats masculins ayant obtenu
+                                        une moyenne d'au moins 50 %.<br>ND : Non défini</p>
+                                </div>
+                                <div class="p-3 space-y-2">
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Section Féminin(s)</h3>
+                                    <p>Dans cette section, on détermine le nombre de candidats féminins ayant obtenu
+                                        une moyenne d'au moins 50 %.<br>ND : Non défini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                    <div class="grid grid-cols-3 gap-4 mb-2">
+                        <dl
+                            class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                            <dt
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
+                                {{ count($intervenant_succes) ?? 'ND' }}
+                            </dt>
+
+                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Reussite(s)</dd>
+                        </dl>
+                        <dl
+                            class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                            <dt
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
+                                {{ count($intervenant_succes) - count($intervenant_succes_fem) ?? 'ND' }}
+                            </dt>
+
+                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Masculin(s)</dd>
+                        </dl>
+                        <dl
+                            class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                            <dt
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
+                                {{ count($intervenant_succes_fem) ?? 'ND' }}
+                            </dt>
+
+                            <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Féminin(s)</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            {{-- <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mr-2">
                 <div class="flex justify-between">
                     <div class="flex items-center">
                         <div class="flex justify-center items-center mb-3">
@@ -348,9 +416,9 @@
                         </dl>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
-            <div class="bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+            <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                 <div class="flex justify-between">
                     <div class="flex items-center">
                         <div class="flex justify-center items-center mb-3">
@@ -382,7 +450,7 @@
                             class="bg-blue-50 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                             <dt
                                 class="w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                {{ $questionPhasePagnation->total() ?? 'ND' }}
+                                {{ count($questionPhasePagnation) ?? 'ND' }}
                             </dt>
                             <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Nombre</dd>
                         </dl>
@@ -443,8 +511,7 @@
                             </svg>
                         </a>
 
-                        <a href="#" onclick="sendMail(event, '{{ $phase_id }}')"
-                            data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat"
+                        <a href="{{ route('mail.view', $phase_id) }}" {{-- data-modal-target="mail-modal-candidat" data-modal-toggle="mail-modal-candidat" --}}
                             class="px-4 py-2 text-sm font-medium text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
                             Envoyer les mails
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
@@ -466,224 +533,136 @@
                             </svg>
                         </a>
                     </div>
-                    <div class="mb-4">
-                        <input type="text" id="search" placeholder="Rechercher par nom..."
-                            class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-                    </div>
-                    <div class="">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="divPagination">
-                            @foreach ($intervenants as $i => $item)
-                                <div class="w-full">
-                                    <div
-                                        class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                                        <div class="pl-2 pr-5 float-left">
-                                            <img class="w-20 h-20 object-cover border-2 rounded-md"
-                                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
-                                                alt="">
-                                        </div>
+                    @if (count($intervenants) > 10)
+                        <div class="py-4 pb-4 flex justify-between items-center md:gap-96">
+                            <div class="flex-1 items-center pr-8">
+                                <input type="text" id="search" placeholder="Rechercher par nom ou email..."
+                                    class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                    autocomplete="off" />
 
-                                        <div class="flex justify-between">
-                                            <div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->noms }}
-                                                    </h3>
-                                                    @if ($item->mail_send == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->coupon }}
-                                                    </h3>
-                                                    @if ($item->is_use == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <label for="ligneParPage"
+                                    class="text-sm pr-2 text-gray-900 dark:text-gray-200">Lignes</label>
+                                <select id="ligneParPage"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option selected value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                    @endif
 
-                                                <h3 class="text-sm text-gray-900 dark:text-gray-200">
-                                                    {{ $item->email }}
+                    <div id="intervenants-list" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        @foreach ($intervenants as $i => $item)
+                            <div class="intervenant-item w-full">
+                                <div
+                                    class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800 flex items-center">
+                                    <!-- Première div (Image) -->
+                                    <div class="pl-2 pr-5">
+                                        <img class="w-16 h-16 object-cover border-2 rounded-md"
+                                            src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
+                                            alt="">
+                                    </div>
+
+                                    <!-- Deuxième div (Contenu) -->
+                                    <div class="flex-1 flex justify-between items-center">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <h3
+                                                    class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
+                                                    {{ $item->noms }}
                                                 </h3>
-                                                <div class="flex items-center space-x-4">
-                                                    <h3 id='genre-{{ $i }}'
-                                                        class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
-                                                        data-genre="{{ $item->genre }}">
-                                                    </h3>
-                                                    <h3 class="text-sm text-gray-900 dark:text-white">
-                                                        +243{{ $item->telephone }}
-                                                    </h3>
-                                                </div>
-
-                                            </div>
-                                            <div class="pr-2">
-                                                <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
-                                                    data-modal-target="intervEdit-modal"
-                                                    data-modal-toggle="intervEdit-modal" href="#"
-                                                    class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                @if ($item->mail_send == 0)
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
+                                                        fill="currentColor" class="size-7 pl-2 text-red-500">
                                                         <path
-                                                            d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
                                                         <path
-                                                            d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
                                                     </svg>
-
-
-                                                </a>
-                                                <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
-                                                    data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                                    href="#"
-                                                    class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                @else
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
-                                                        <path fill-rule="evenodd"
-                                                            d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                            clip-rule="evenodd" />
+                                                        fill="currentColor" class="size-7 pl-2 text-green-500">
+                                                        <path
+                                                            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                                        <path
+                                                            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
                                                     </svg>
-                                                </a>
+                                                @endif
                                             </div>
+                                            <h3 class="text-sm text-gray-900 dark:text-gray-200">
+                                                {{ $item->email }}
+                                            </h3>
+                                            <div class="flex items-center space-x-4">
+                                                <h3 id='genre-{{ $i }}'
+                                                    class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
+                                                    data-genre="{{ $item->genre }}">
+                                                </h3>
+                                                <h3 class="text-sm text-gray-900 dark:text-white">
+                                                    @if ($item->telephone)
+                                                        +243{{ substr($item->telephone, -9) }}
+                                                    @endif
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class="pr-2 space-y-2">
+                                            <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
+                                                data-modal-target="intervEdit-modal"
+                                                data-modal-toggle="intervEdit-modal" href="#"
+                                                class="py-1 px-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path
+                                                        d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                    <path
+                                                        d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                </svg>
+                                            </a>
+                                            <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
+                                                data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                                href="#"
+                                                class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-4">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-                        <div id="divRecherche" class="grid grid-cols-1 md:grid-cols-2 gap-2 hidden">
-                            @foreach ($intervenantAll as $i => $item)
-                                <div id="recherche" class="w-full">
-                                    <div
-                                        class="mb-3 py-3 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
-                                        <div class="pl-2 pr-5 float-left">
-                                            <img class="w-20 h-20 object-cover border-2 rounded-md"
-                                                src="{{ $item->image && file_exists(public_path($item->image)) ? asset($item->image) : asset('images/profil.jpg') }}"
-                                                alt="">
-                                        </div>
-
-                                        <div class="flex justify-between">
-                                            <div>
-                                                <div class="flex items-center">
-                                                    <h3 id="h3Nom"
-                                                        class="text-xl text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->noms }}
-                                                    </h3>
-                                                    @if ($item->mail_send == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path
-                                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                                            <path
-                                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
-                                                <div class="flex items-center">
-                                                    <h3
-                                                        class="text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                                                        {{ $item->coupon }}
-                                                    </h3>
-                                                    @if ($item->is_use == 0)
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-red-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                            fill="currentColor" class="size-7 pl-2 text-green-500">
-                                                            <path fill-rule="evenodd"
-                                                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    @endif
-                                                </div>
-
-                                                <h3 class="text-sm text-gray-900 dark:text-gray-200">
-                                                    {{ $item->email }}
-                                                </h3>
-                                                <div class="flex items-center space-x-4">
-                                                    <h3 id='genre-{{ $i }}'
-                                                        class="text-sm text-gray-900 whitespace-nowrap dark:text-white"
-                                                        data-genre="{{ $item->genre }}">
-                                                    </h3>
-                                                    <h3 class="text-sm text-gray-900 dark:text-white">
-                                                        +243{{ $item->telephone }}
-                                                    </h3>
-                                                </div>
-
-                                            </div>
-                                            <div class="pr-2">
-                                                <a onclick="editer(event, '{{ route('intervenants.update', $item->id) }}', '{{ $item->noms }}', '{{ $item->email }}', '{{ $item->image }}', '{{ $phase_id }}', '{{ $item->telephone }}', '{{ $item->genre }}')"
-                                                    data-modal-target="intervEdit-modal"
-                                                    data-modal-toggle="intervEdit-modal" href="#"
-                                                    class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
-                                                        <path
-                                                            d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-                                                        <path
-                                                            d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
-                                                    </svg>
-
-
-                                                </a>
-                                                <a onclick="supprimer(event, '{{ route('intervenant.destroy', ['intervenant' => $item->id, 'phaseId' => $phase_id]) }}');"
-                                                    data-modal-target="delete-modal" data-modal-toggle="delete-modal"
-                                                    href="#"
-                                                    class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                        fill="currentColor" class="size-4">
-                                                        <path fill-rule="evenodd"
-                                                            d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
+                            </div>
+                        @endforeach
                     </div>
-                    <div id="pagination" class="p-2">
+                    @if (count($intervenants) > 10)
+                        <div id="pagination-container"
+                            class="flex flex-col items-center md:flex-row justify-between pt-5 mb-5">
+                            <!-- Affichage des éléments de pagination -->
+                            <span
+                                class="text-sm text-gray-700 dark:text-gray-400 w-full md:w-auto mb-2 md:mb-0 text-center md:text-left">
+                                Showing <span class="font-semibold text-gray-900 dark:text-white"
+                                    id="from"></span>
+                                to <span class="font-semibold text-gray-900 dark:text-white" id="to"></span> of
+                                <span class="font-semibold text-gray-900 dark:text-white" id="total"></span>
+                                Entries
+                            </span>
+
+                            <nav aria-label="Page navigation example" class="w-full md:w-auto">
+                                <ul id="pagination"
+                                    class="flex items-center -space-x-px h-8 text-sm justify-center md:justify-start">
+                                    <!-- Pagination générée dynamiquement par JavaScript -->
+                                </ul>
+                            </nav>
+                        </div>
+                    @endif
+
+                    {{-- <div id="pagination" class="p-2">
                         {{ $intervenantPhases->appends(['intervenant_page' => $intervenantPhases->currentPage()])->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -743,21 +722,109 @@
                     {{ $item->id }} @endforeach)"
                     data-modal-target="create-modal-question" data-modal-toggle="create-modal-question"
                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:ring-4 focus:outline-none focus:ring-[#FF7900]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">
-                    Importer les questions
+                    Ajouter Question(s)
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-8 h-5 pl-2">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                 </a>
+                @if (count($questionPhasePagnation) > 10)
+                    <div class="py-4 pb-4 flex justify-between items-center gap-96">
+                        <div class="flex items-center">
+                            <label for="ligneParPage-question"
+                                class="text-sm pr-2 text-gray-900 dark:text-gray-200">Lignes</label>
+                            <select id="ligneParPage-question"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style="padding-top: 10px;">
-                <div class="">
-                    @php
-                        $i = ($questionPhasePagnation->currentPage() - 1) * $questionPhasePagnation->perPage() + 1;
-                    @endphp
+
+                <div id="questions-list" class="">
+                    @foreach ($questionPhasePagnation as $i => $item)
+                        <div class="question-item w-full">
+                            <div
+                                class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
+                                <div class="flex justify-between pl-3 relative">
+                                    <div>
+                                        <div class="flex items-center flex-wrap">
+                                            <h3
+                                                class="text-sm font-bold text-gray-900 dark:text-white capitalize dark:text-gray-300 flex-1 overflow-hidden">
+                                                Question {{ $i++ }} : {!! nl2br(e($item->question->question)) !!}
+                                            </h3>
+                                            <div class="ml-14 flex-shrink-0">
+                                            </div>
+                                        </div>
+
+                                        <h3 class="text-sm text-gray-900 dark:text-gray-200">
+                                            Pondération: {{ $item->ponderation }}
+                                        </h3>
+                                        <div class="flex items-center space-x-4">
+                                            <h3 class="text-sm text-gray-900 whitespace-nowrap dark:text-gray-300">
+                                                Nombre assertions :
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="pr-2 absolute right-0">
+                                        <a href="{{ route('question.phase', ['id' => $item->question->id, 'phase_id' => $phase_id]) }}"
+                                            class="py-1 px-2 mb-2 text-center font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                fill="currentColor" class="size-4">
+                                                <path
+                                                    d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                <path
+                                                    d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                            </svg>
+                                        </a>
+                                        <a href=""
+                                            onclick="supprimer(event, '{{ route('questions.destroy', $item->question->id) }}')"
+                                            data-modal-target="delete-modal" data-modal-toggle="delete-modal"
+                                            class="py-1 px-2 font-medium text-center flex items-center text-white bg-gray-700 rounded-md hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-gray-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                fill="currentColor" class="size-4">
+                                                <path fill-rule="evenodd"
+                                                    d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    @endforeach
+                </div>
+
+                @if (count($questionPhasePagnation) > 10)
+                    <div id="pagination-container-question" class="flex flex-col items-center md:flex-row justify-between pt-5 mb-5">
+                        <!-- Affichage des éléments de pagination -->
+                        <span class="text-sm text-gray-700 dark:text-gray-400 w-full md:w-auto mb-2 md:mb-0 text-center md:text-left">
+                            Showing <span class="font-semibold text-gray-900 dark:text-white"
+                                id="from-question"></span> to <span
+                                class="font-semibold text-gray-900 dark:text-white" id="to-question"></span> of
+                            <span class="font-semibold text-gray-900 dark:text-white" id="total-question"></span>
+                            Entries
+                        </span>
+                        <nav aria-label="Page navigation example">
+                            <ul id="pagination-question" class="flex items-center -space-x-px h-8 text-sm">
+                                <!-- Pagination générée dynamiquement par JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                @endif
+
+                {{-- <div class="">
+                    
                     @foreach ($questionPhasePagnation as $item)
-                        <div class="w-full">
+                        <div class="question-item w-full">
                             <div
                                 class="mb-3 py-1 rounded-md border bg-white drop-shadow-xl dark:bg-gray-800 dark:border-gray-800">
                                 <div class="flex justify-between pl-3 relative">
@@ -811,8 +878,8 @@
                     @endforeach
                 </div>
                 <div class="p-2">
-                    {{ $questionPhasePagnation->appends(['question_page' => $questionPhasePagnation->currentPage()])->links() }}
-                </div>
+                    
+                </div> --}}
             </div>
         </div>
     </div>
@@ -877,6 +944,296 @@
         //script pour modifier l'ordre de question
         $(function() {
             $("#sortable").sortable();
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            let ligneParPage = 10; // Nombre fixe d'éléments par page
+            const intervenantItems = document.querySelectorAll(".intervenant-item");
+            const paginationContainer = document.getElementById("pagination");
+            const fromSpan = document.getElementById("from");
+            const toSpan = document.getElementById("to");
+            const totalSpan = document.getElementById("total");
+            const searchInput = document.getElementById("search");
+            const ligneParPageSelect = document.getElementById("ligneParPage");
+
+            let currentPageCand = 1;
+
+            const createPagination = (totalPages) => {
+                paginationContainer.innerHTML = ""; // Réinitialiser la pagination
+
+                const createPageItem = (page, isActive = false) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<a href="#" class="flex items-center justify-center px-3 h-8 leading-tight ${
+                isActive
+                    ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                    : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            }">${page}</a>`;
+                    li.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        currentPageCand = page;
+                        updateIntervenantsDisplay();
+                    });
+                    return li;
+                };
+
+                const createEllipsis = () => {
+                    const li = document.createElement("li");
+                    li.innerHTML =
+                        `<span class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">...</span>`;
+                    return li;
+                };
+
+                // Bouton précédent
+                const prevLi = document.createElement("li");
+                prevLi.innerHTML = `
+            <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Previous</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                </svg>
+            </a>`;
+                prevLi.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    if (currentPageCand > 1) {
+                        currentPageCand--;
+                        updateIntervenantsDisplay();
+                    }
+                });
+                paginationContainer.appendChild(prevLi);
+
+                // Gestion des pages et ellipses
+                if (totalPages <= 7) {
+                    // Affiche toutes les pages si leur nombre est limité
+                    for (let i = 1; i <= totalPages; i++) {
+                        paginationContainer.appendChild(createPageItem(i, i === currentPageCand));
+                    }
+                } else {
+                    // Première page toujours affichée
+                    paginationContainer.appendChild(createPageItem(1, currentPageCand === 1));
+
+                    if (currentPageCand > 4) {
+                        paginationContainer.appendChild(createEllipsis());
+                    }
+
+                    // Pages autour de la page actuelle
+                    const start = Math.max(2, currentPageCand - 1);
+                    const end = Math.min(totalPages - 1, currentPageCand + 1);
+                    for (let i = start; i <= end; i++) {
+                        paginationContainer.appendChild(createPageItem(i, i === currentPageCand));
+                    }
+
+                    if (currentPageCand < totalPages - 3) {
+                        paginationContainer.appendChild(createEllipsis());
+                    }
+
+                    // Dernière page toujours affichée
+                    paginationContainer.appendChild(createPageItem(totalPages, currentPageCand === totalPages));
+                }
+
+                // Bouton suivant
+                const nextLi = document.createElement("li");
+                nextLi.innerHTML = `
+            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Next</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+            </a>`;
+                nextLi.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    if (currentPageCand < totalPages) {
+                        currentPageCand++;
+                        updateIntervenantsDisplay();
+                    }
+                });
+                paginationContainer.appendChild(nextLi);
+            };
+
+            const updateIntervenantsDisplay = () => {
+                const maxItems = ligneParPage;
+                const totalPages = Math.ceil(intervenantItems.length / maxItems);
+
+                intervenantItems.forEach((item, index) => {
+                    const start = (currentPageCand - 1) * maxItems;
+                    const end = currentPageCand * maxItems;
+                    item.style.display = index >= start && index < end ? "block" : "none";
+                });
+
+                const start = (currentPageCand - 1) * maxItems + 1;
+                const end = Math.min(currentPageCand * maxItems, intervenantItems.length);
+                fromSpan.textContent = start;
+                toSpan.textContent = end;
+                totalSpan.textContent = intervenantItems.length;
+
+                createPagination(totalPages);
+            };
+
+            ligneParPageSelect.addEventListener("change", function() {
+                ligneParPage = parseInt(this.value);
+                currentPageCand = 1;
+                updateIntervenantsDisplay();
+            });
+
+            searchInput.addEventListener("input", function() {
+                const query = searchInput.value.toLowerCase();
+
+                if (query === "") {
+                    intervenantItems.forEach(function(item) {
+                        item.style.display = "block";
+                    });
+
+                    updateIntervenantsDisplay();
+                } else {
+                    intervenantItems.forEach(function(item) {
+                        const name = item.querySelector("h3.text-xl").textContent.toLowerCase();
+                        const email = item.querySelector("h3.text-sm.text-gray-900").textContent
+                            .toLowerCase();
+
+                        if (name.includes(query) || email.includes(query)) {
+                            item.style.display = "block";
+                        } else {
+                            item.style.display = "none";
+                        }
+                    });
+
+                    paginationContainer.innerHTML = "";
+                }
+            });
+
+            // Affichage initial
+            updateIntervenantsDisplay();
+        });
+
+        //pagination question:
+        document.addEventListener("DOMContentLoaded", () => {
+            let lignesParPageQuestion = 10; // Nombre fixe d'éléments par page
+            const questionItems = document.querySelectorAll(".question-item");
+            const paginationContainerQuestion = document.getElementById("pagination-question");
+            const fromSpanQuestion = document.getElementById("from-question");
+            const toSpanQuestion = document.getElementById("to-question");
+            const totalSpanQuestion = document.getElementById("total-question");
+            const ligneParPageSelectQuestion = document.getElementById("ligneParPage-question");
+
+            let currentPageQuestion = 1;
+
+            const createPagination = (totalPages) => {
+                paginationContainerQuestion.innerHTML = ""; // Réinitialiser la pagination
+
+                const createPageItem = (page, isActive = false) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<a href="#" class="flex items-center justify-center px-3 h-8 leading-tight ${
+                isActive
+                    ? "text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                    : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            }">${page}</a>`;
+                    li.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        currentPageQuestion = page;
+                        updateQuestionsDisplay();
+                    });
+                    return li;
+                };
+
+                const createEllipsis = () => {
+                    const li = document.createElement("li");
+                    li.innerHTML =
+                        `<span class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">...</span>`;
+                    return li;
+                };
+
+                // Bouton précédent
+                const prevLi = document.createElement("li");
+                prevLi.innerHTML = `
+            <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Previous</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                </svg>
+            </a>`;
+                prevLi.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    if (currentPageQuestion > 1) {
+                        currentPageQuestion--;
+                        updateQuestionsDisplay();
+                    }
+                });
+                paginationContainerQuestion.appendChild(prevLi);
+
+                // Gestion des pages et ellipses
+                if (totalPages <= 7) {
+                    // Affiche toutes les pages si leur nombre est limité
+                    for (let i = 1; i <= totalPages; i++) {
+                        paginationContainerQuestion.appendChild(createPageItem(i, i === currentPageQuestion));
+                    }
+                } else {
+                    // Première page toujours affichée
+                    paginationContainerQuestion.appendChild(createPageItem(1, currentPageQuestion === 1));
+
+                    if (currentPageQuestion > 4) {
+                        paginationContainerQuestion.appendChild(createEllipsis());
+                    }
+
+                    // Pages autour de la page actuelle
+                    const start = Math.max(2, currentPageQuestion - 1);
+                    const end = Math.min(totalPages - 1, currentPageQuestion + 1);
+                    for (let i = start; i <= end; i++) {
+                        paginationContainerQuestion.appendChild(createPageItem(i, i === currentPageQuestion));
+                    }
+
+                    if (currentPageQuestion < totalPages - 3) {
+                        paginationContainerQuestion.appendChild(createEllipsis());
+                    }
+
+                    // Dernière page toujours affichée
+                    paginationContainerQuestion.appendChild(createPageItem(totalPages, currentPageQuestion ===
+                        totalPages));
+                }
+
+                // Bouton suivant
+                const nextLi = document.createElement("li");
+                nextLi.innerHTML = `
+            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Next</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+            </a>`;
+                nextLi.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    if (currentPageQuestion < totalPages) {
+                        currentPageQuestion++;
+                        updateQuestionsDisplay();
+                    }
+                });
+                paginationContainerQuestion.appendChild(nextLi);
+            };
+
+            const updateQuestionsDisplay = () => {
+                const maxItems = lignesParPageQuestion;
+                const totalPages = Math.ceil(questionItems.length / maxItems);
+
+                questionItems.forEach((item, index) => {
+                    const start = (currentPageQuestion - 1) * maxItems;
+                    const end = currentPageQuestion * maxItems;
+                    item.style.display = index >= start && index < end ? "block" : "none";
+                });
+
+                const start = (currentPageQuestion - 1) * maxItems + 1;
+                const end = Math.min(currentPageQuestion * maxItems, questionItems.length);
+                fromSpanQuestion.textContent = start;
+                toSpanQuestion.textContent = end;
+                totalSpanQuestion.textContent = questionItems.length;
+
+                createPagination(totalPages);
+            };
+
+            ligneParPageSelectQuestion.addEventListener("change", function() {
+                lignesParPageQuestion = parseInt(this.value);
+                currentPageQuestion = 1;
+                updateQuestionsDisplay();
+            });
+
+            // Affichage initial
+            updateQuestionsDisplay();
         });
     </script>
     <script>

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,4 +15,10 @@ class Vote extends Model
         'nombre',
         'isVerified',
     ];
+
+    public function phaseCritere()
+    {
+        return $this->belongsTo(PhaseCritere::class, 'phase_critere_id');
+    }
+
 }

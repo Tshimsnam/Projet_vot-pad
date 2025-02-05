@@ -114,7 +114,7 @@
 
                 <div id="entretien" style="display: none">
                     <div id="">
-                        <label  for="noms"
+                        <label for="noms"
                             class="block mb-2 pt-2 text-sm font-medium text-gray-900 dark:text-white">
                             Noms</label>
                         <input type="text" id="noms" name="noms"
@@ -206,6 +206,8 @@
     const ajoutPublicCheckbox = document.getElementById('ajoutPublic')
     const ajoutDiv = document.getElementById('ajout');
 
+    const nomInput = document.getElementById('noms');
+
     function validateForm(submitButton) {
         const ajoutPriveCheckbox = document.getElementById('ajoutPrive');
         const ajoutPublicCheckbox = document.getElementById('ajoutPublic');
@@ -248,6 +250,7 @@
 
             ponderationPublic.style.display = 'block';
             ajoutPublicCheckbox.value = 1;
+            nomInput.required = false;
 
         } else if (selectedType === 'prive') {
             ponderationPrive.style.display = 'none';
@@ -265,6 +268,7 @@
 
             ponderationPublic.style.display = 'none';
             ajoutPublicCheckbox.value = 0;
+            nomInput.required = false;
 
         } else if (selectedType === 'public') {
             ponderationPrive.style.display = 'none';
@@ -280,6 +284,7 @@
             ponderationPrive.style.display = 'none';
             numberPrive.style.display = 'none';
             numberPriveInput.setAttribute('value', 0);
+            nomInput.required = false;
         }
     });
 
@@ -295,6 +300,7 @@
             numberPrive.style.display = 'none';
             numberPriveInput.setAttribute('value', 0);
         }
+        nomInput.required = false;
     });
 
     ajoutPublicCheckbox.addEventListener('change', () => {
@@ -305,6 +311,7 @@
             ponderationPublic.style.display = 'none';
             ajoutPublicCheckbox.value = 0;
         }
+        nomInput.required = false;
     });
 
     let originPondPublic
@@ -332,6 +339,7 @@
                 ponderationPriveInput.disabled = true;
                 ponderationPublicInput.disabled = true;
                 ponderationPriveInput.value = originPondPrive;
+                nomInput.required = false;
 
             } else if (selectedType === 'public') {
                 ponderationPublic.style.display = 'block';
@@ -341,6 +349,7 @@
                 ponderationPriveInput.disabled = true;
                 ponderationPublicInput.disabled = true;
                 ponderationPublicInput.value = originPondPublic;
+                nomInput.required = false;
             } else {
                 ponderationPrive.style.display = 'none';
                 ponderationPublic.style.display = 'none';
@@ -352,6 +361,7 @@
 
                 ponderationPriveInput.value = originPondPrive;
                 ponderationPublicInput.value = originPondPublic;
+                nomInput.required = false;
             }
 
         } else {
@@ -359,6 +369,7 @@
             buttonAnnul.style.display = 'inline-flex';
             insertH3.style.display = 'none';
             modifH3.style.display = 'flex';
+            nomInput.required = false;
 
             const selectedType = typeSelect.value;
             if (selectedType === 'prive') {
