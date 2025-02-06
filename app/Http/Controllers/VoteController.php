@@ -69,7 +69,13 @@ class VoteController extends Controller
         usort($intervenants, function ($a, $b) {
             return strcmp($a->noms, $b->noms);
         });
-        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement', 'jury'));
+
+        $votedCandidates = DB::table('votes')
+            ->where('jury_phase_id', $jury_id)
+            ->pluck('intervenant_phase_id') 
+            ->toArray();
+
+        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement', 'jury','votedCandidates'));
     }
 
     public function showIntervenant($slugPhase, $candidat_id, $jury_id, $nombreUser, $evenement)
@@ -149,7 +155,12 @@ class VoteController extends Controller
         }
         $jury = Jury::find($jury_id);
 
-        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken', 'nombreUser', 'evenement', 'phase', 'intervenant_resultat', 'jury'));
+        $votedCandidates = DB::table('votes')
+            ->where('jury_phase_id', $jury_id)
+            ->pluck('intervenant_phase_id')
+            ->toArray();
+
+        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken', 'nombreUser', 'evenement', 'phase', 'intervenant_resultat', 'jury','votedCandidates'));
     }
 
     /**
