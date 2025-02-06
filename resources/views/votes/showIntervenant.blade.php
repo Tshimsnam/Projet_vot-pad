@@ -19,24 +19,32 @@
                 </div>
             @endif
         </div>
+        @php
+            $hasVoted = in_array($candidat_id, $votedCandidates);
+        @endphp
+
         <div class="flex justify-between">
             <div class="flex inline-block px-4 md:px-4">
 
                 @if ($phase->type == 'Vote' || $phase->type == 'vote')
                     <img class="mr-4 w-12 h-12 rounded-full border border-gray-300"
                         src="{{ $candidat->image && file_exists(public_path($candidat->image)) ? asset($candidat->image) : asset('images/profil.jpg') }}"
-                        alt=""> 
+                        alt="">
                 @endif
                 <div class="">
                     <h2 class="text-3xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}
-                        @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
-                            :
-                            @if(empty($intervenant_resultat))
-                                0%
-                            @else
-                                {{ $intervenant_resultat[0]['pourcentage'] }}%
+                        @if ($hasVoted)
+                        @else
+                            @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
+                                :
+                                @if (empty($intervenant_resultat))
+                                    0%
+                                @else
+                                    {{ $intervenant_resultat[0]['pourcentage'] }}%
+                                @endif
                             @endif
                         @endif
+
                     </h2>
                     <p class="text-sm truncate dark:text-white">
                         {{ $candidat->email }}
@@ -53,173 +61,189 @@
 
         </div>
 
-        <form action="" method="post" class="space-y-4">
-            @csrf
-            @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
-                <div>
-                    <div class="mt-10">
-                        <div class="flex px-3 gap-4 mb-4">
-                            <div class="flex inline-block">
-                                <div id="ageDiv">
-                                    <label id="ageLabel" for="age"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Age</label>
-                                    <input type="number" id="age" name="age" maxlength="2"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 text-center dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="00" value="" required />
-                                </div>
-                            </div>
-                            <div>
-                                <div id="sexeDiv">
-                                    <label id="sexeLabel" for="sexe"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sexe</label>
-                                    <select id="sexe" name="sexe"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        required>
-                                        <option value="M"
-                                            {{ in_array($candidat->genre, ['M', 'm']) ? 'selected' : '' }}>
-                                            Masculin</option>
-                                        <option value="F"
-                                            {{ in_array($candidat->genre, ['F', 'f']) ? 'selected' : '' }}>
-                                            Féminin</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="flex inline-block">
-                                <div id="statutDiv">
-                                    <label id="statutLabel" for="statut"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Statut</label>
-                                    <select id="statut" name="statut"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        required>
-                                        <option value="etudiant">Etudiant(e)</option>
-                                        <option value="licencie">Licencié(e)</option>
-                                        <option value="employe">Employé(e)</option>
-                                        <option value="recherche">A la recherche d'opportunités</option>
-                                        <option value="autre">Autre</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="flex-1 hidden" id="autreDiv">
-                                <label id="autreLabel" for="autre"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Autre</label>
-                                <input type="text" id="autre" name="autre"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Entrez le statut" value="" />
-                            </div>
-                        </div>
-                        <div class="flex px-3 gap-4 mb-5">
-                            <div class="flex-1" id="etablissDiv">
-                                <label id="etablissLabel" for="etabliss"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Etablissement</label>
-                                <input type="text" id="etabliss" name="etabliss"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Entrez l'établissement du candidat" value="" />
-                            </div>
-                            <div class="flex-1" id="promoDiv">
-                                <label id="promoLabel" for="promo"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Promotion</label>
-                                <input type="text" id="promo" name="promo"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Entrez la promotion du candidat" value="" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-            <div class="space-y-4">
-                @foreach ($criteres as $key => $item)
-                    <div class="px-3 w-full space-y-2">
-                        <div
-                            class="px-5 py-2 rounded-xl border bg-white bg-opacity-95 space-y-1 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
-                            <div class="">
-                                <h1 class="text-xl font-bold dark:text-white">{{ $item->libelle }}</h1>
-                                {{-- <p class="text-sm font-thin dark:text-white">Ponderation : {{ $item->ponderation }}
-                                </p> --}}
-                                {{-- <p class="text-sm font-thin dark:text-white">{{ $item->description }}
-                            </p> --}}
-                            </div>
-                            <div class="relative">
-                                <style>
-                                    .accent {
-                                        accent-color: #FF7900;
-                                    }
-                                </style>
-                                <label for="labels-range-input" class="sr-only">Labels range</label>
-                                <input id="labels-range-input" type="range" value="0" min="0"
-                                    name="cote" max="{{ $item->ponderation }}"
-                                    class="w-full h-2 bg-gray-700 rounded-lg accent dark:bg-gray-100">
-                                <div class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Assez
-                                        bien</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Bien</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Très
-                                        Bien</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
-                                </div>
-                                <div
-                                    class="flex md:hidden flex-col items-center text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">M(0)</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">AB</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">B</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">TB</span>
-                                    <span
-                                        class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">E({{ $item->ponderation }})</span>
-                                </div>
 
-
-                            </div>
-                            <div class="flex justify-between items-center pt-4">
-                                <span id="score-{{ $item->id }}"
-                                    class="flex-1 text-xl font-extrabold pt-5 dark:text-white">COTE
-                                    :
-                                    0</span>
-                                <div class="flex-1 justify-center items-center pt-4 {{ strtolower($phase->type) != 'entretien' ? 'hidden' : '' }}"
-                                    id="promoDiv">
-                                    <input type="text" id="comment-{{ $item->id }}"
-                                        name="comment-{{ $item->id }}"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="Ajoutez le commentaire ici!!!" value="" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-                <div class="flex items-end py-5 px-3 pb-8">
-                    @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
-                        <div id="decisionDiv" class="pr-16">
-                            <label id="decisionLabel" for="decision"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Candidature à
-                                retenir</label>
-                            <select id="decision" name="decision"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                required>
-                                <option value="" disabled selected class="text-gray-400 dark:text-gray-500">Votre
-                                    décision</option>
-                                <option value="oui">Oui</option>
-                                <option value="non">Non</option>
-                                <option value="attente">Mettre en attente</option>
-                            </select>
-                        </div>
-                    @endif
-
-                    <div id="divButton" class="flex">
-                        <button type="button" data-modal-target="valid-modal" data-modal-toggle="valid-modal"
-                            class="text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-8 py-3 me-2 dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">Valider</button>
-                    </div>
-                </div>
+        @if ($hasVoted)
+            <div
+                class="px-6 mt-5 text-center py-4 rounded-xl border bg-white bg-opacity-95 space-y-2 drop-shadow-xl dark:bg-gray-700 dark:border-gray-700 dark:bg-opacity-95">
+                <h1 class="text-2xl font-extrabold text-red-600 dark:text-red-400">⚠ Évaluation Non Autorisée</h1>
+                <p class="text-lg text-gray-800 dark:text-gray-200">
+                    Vous avez déjà évalué ce candidat. Une nouvelle évaluation n'est pas possible.
+                    Pour toute correction ou clarification, veuillez contacter l'administration.
+                </p>
             </div>
+        @else
+            <form action="" method="post" class="space-y-4">
+                @csrf
+                @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
+                    <div>
+                        <div class="mt-10">
+                            <div class="flex px-3 gap-4 mb-4">
+                                <div class="flex inline-block">
+                                    <div id="ageDiv">
+                                        <label id="ageLabel" for="age"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Age</label>
+                                        <input type="number" id="age" name="age" maxlength="2"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 text-center dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="00" value="" required />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="sexeDiv">
+                                        <label id="sexeLabel" for="sexe"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sexe</label>
+                                        <select id="sexe" name="sexe"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            required>
+                                            <option value="M"
+                                                {{ in_array($candidat->genre, ['M', 'm']) ? 'selected' : '' }}>
+                                                Masculin</option>
+                                            <option value="F"
+                                                {{ in_array($candidat->genre, ['F', 'f']) ? 'selected' : '' }}>
+                                                Féminin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="flex inline-block">
+                                    <div id="statutDiv">
+                                        <label id="statutLabel" for="statut"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Statut</label>
+                                        <select id="statut" name="statut"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            required>
+                                            <option value="etudiant">Etudiant(e)</option>
+                                            <option value="licencie">Licencié(e)</option>
+                                            <option value="employe">Employé(e)</option>
+                                            <option value="recherche">A la recherche d'opportunités</option>
+                                            <option value="autre">Autre</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="flex-1 hidden" id="autreDiv">
+                                    <label id="autreLabel" for="autre"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Autre</label>
+                                    <input type="text" id="autre" name="autre"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Entrez le statut" value="" />
+                                </div>
+                            </div>
+                            <div class="flex px-3 gap-4 mb-5">
+                                <div class="flex-1" id="etablissDiv">
+                                    <label id="etablissLabel" for="etabliss"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Etablissement</label>
+                                    <input type="text" id="etabliss" name="etabliss"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Entrez l'établissement du candidat" value="" />
+                                </div>
+                                <div class="flex-1" id="promoDiv">
+                                    <label id="promoLabel" for="promo"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Promotion</label>
+                                    <input type="text" id="promo" name="promo"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Entrez la promotion du candidat" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                <div class="space-y-4">
+                    @foreach ($criteres as $key => $item)
+                        <div class="px-3 w-full space-y-2">
+                            <div
+                                class="px-5 py-2 rounded-xl border bg-white bg-opacity-95 space-y-1 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
+                                <div class="">
+                                    <h1 class="text-xl font-bold dark:text-white">{{ $item->libelle }}</h1>
+                                    {{-- <p class="text-sm font-thin dark:text-white">Ponderation : {{ $item->ponderation }}
+                                </p> --}}
+                                    {{-- <p class="text-sm font-thin dark:text-white">{{ $item->description }}
+                            </p> --}}
+                                </div>
+                                <div class="relative">
+                                    <style>
+                                        .accent {
+                                            accent-color: #FF7900;
+                                        }
+                                    </style>
+                                    <label for="labels-range-input" class="sr-only">Labels range</label>
+                                    <input id="labels-range-input" type="range" value="0" min="0"
+                                        name="cote" max="{{ $item->ponderation }}"
+                                        class="w-full h-2 bg-gray-700 rounded-lg accent dark:bg-gray-100">
+                                    <div
+                                        class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Assez
+                                            bien</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Bien</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Très
+                                            Bien</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
+                                    </div>
+                                    <div
+                                        class="flex md:hidden flex-col items-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">M(0)</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">AB</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">B</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">TB</span>
+                                        <span
+                                            class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">E({{ $item->ponderation }})</span>
+                                    </div>
 
-        </form>
+
+                                </div>
+                                <div class="flex justify-between items-center pt-4">
+                                    <span id="score-{{ $item->id }}"
+                                        class="flex-1 text-xl font-extrabold pt-5 dark:text-white">COTE
+                                        :
+                                        0</span>
+                                    <div class="flex-1 justify-center items-center pt-4 {{ strtolower($phase->type) != 'entretien' ? 'hidden' : '' }}"
+                                        id="promoDiv">
+                                        <input type="text" id="comment-{{ $item->id }}"
+                                            name="comment-{{ $item->id }}"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Ajoutez le commentaire ici!!!" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                    <div class="flex items-end py-5 px-3 pb-8">
+                        @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
+                            <div id="decisionDiv" class="pr-16">
+                                <label id="decisionLabel" for="decision"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Candidature à
+                                    retenir</label>
+                                <select id="decision" name="decision"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required>
+                                    <option value="" disabled selected class="text-gray-400 dark:text-gray-500">
+                                        Votre
+                                        décision</option>
+                                    <option value="oui">Oui</option>
+                                    <option value="non">Non</option>
+                                    <option value="attente">Mettre en attente</option>
+                                </select>
+                            </div>
+                        @endif
+
+                        <div id="divButton" class="flex">
+                            <button type="button" data-modal-target="valid-modal" data-modal-toggle="valid-modal"
+                                class="text-white bg-[#FF7900] hover:bg-[#FF7900]/80 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-8 py-3 me-2 dark:hover:bg-[#FF7900]/80 dark:focus:ring-[#FF7900]/40">Valider</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        @endif
+
+
         <div id="valid-modal" tabindex="-1"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-md max-h-full">
