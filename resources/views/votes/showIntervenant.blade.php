@@ -125,6 +125,13 @@
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="Entrez le statut" value="" />
                                 </div>
+                                <div id="totalCotesDiv">
+                                    <label id="totalCotesLabel" for="totalCotes"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total
+                                        Cotes</label>
+                                    <input id="totalCotes" name="totalCotes" readonly value="0"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                </div>
                             </div>
                             <div class="flex px-3 gap-4 mb-5">
                                 <div class="flex-1" id="etablissDiv">
@@ -150,66 +157,64 @@
                         <div class="px-3 w-full space-y-2">
                             <div
                                 class="px-5 py-2 rounded-xl border bg-white bg-opacity-95 space-y-1 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
-                                <div class="">
-                                    <h1 class="text-xl font-bold dark:text-white">{{ $item->libelle }}</h1>
-                                    {{-- <p class="text-sm font-thin dark:text-white">Ponderation : {{ $item->ponderation }}
-                                </p> --}}
-                                    {{-- <p class="text-sm font-thin dark:text-white">{{ $item->description }}
-                            </p> --}}
-                                </div>
-                                <div class="relative">
-                                    <style>
-                                        .accent {
-                                            accent-color: #FF7900;
-                                        }
-                                    </style>
-                                    <label for="labels-range-input" class="sr-only">Labels range</label>
-                                    <input id="labels-range-input" type="range" value="0" min="0"
-                                        name="cote" max="{{ $item->ponderation }}"
-                                        class="w-full h-2 bg-gray-700 rounded-lg accent dark:bg-gray-100">
-                                    <div
-                                        class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Assez
-                                            bien</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Bien</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Très
-                                            Bien</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
+                                <div class="grid grid-cols-4 gap-4">
+                                    <div class="lg:col-span-3 col-span-4">
+                                        <div class="">
+                                            <h1 class="text-xl font-bold dark:text-white">{{ $item->libelle }}</h1>
+                                        </div>
+                                        <div class="relative">
+                                            <style>
+                                                .accent {
+                                                    accent-color: #FF7900;
+                                                }
+                                            </style>
+                                            <label for="labels-range-input" class="sr-only">Labels range</label>
+                                            <input id="labels-range-input" type="range" value="0" min="0"
+                                                name="cote" max="{{ $item->ponderation }}"
+                                                class="w-full h-2 bg-gray-700 rounded-lg accent dark:bg-gray-100">
+                                            <div
+                                                class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Assez
+                                                    bien</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Bien</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Très
+                                                    Bien</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
+                                            </div>
+                                            <div
+                                                class="flex md:hidden flex-col items-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">M(0)</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">AB</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">B</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">TB</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">E({{ $item->ponderation }})</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div
-                                        class="flex md:hidden flex-col items-center text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">M(0)</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">AB</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">B</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">TB</span>
-                                        <span
-                                            class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">E({{ $item->ponderation }})</span>
-                                    </div>
-
-
-                                </div>
-                                <div class="flex justify-between items-center pt-4">
-                                    <span id="score-{{ $item->id }}"
-                                        class="flex-1 text-xl font-extrabold pt-5 dark:text-white">COTE
-                                        :
-                                        0</span>
-                                    <div class="flex-1 justify-center items-center pt-4 {{ strtolower($phase->type) != 'entretien' ? 'hidden' : '' }}"
+                                    <div class="lg:col-span-1 col-span-4 lg:mt-0 mt-8 flex-1 justify-center items-center {{ strtolower($phase->type) != 'entretien' ? 'hidden' : '' }}"
                                         id="promoDiv">
-                                        <input type="text" id="comment-{{ $item->id }}"
+                                        <textarea id="comment-{{ $item->id }}" cols="30" rows="5"
                                             name="comment-{{ $item->id }}"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Ajoutez le commentaire ici!!!" value="" />
+                                            placeholder="Ajoutez le commentaire ici!!!" value="" ></textarea>
                                     </div>
+                                </div>
+                                <div class="flex justify-between items-center -pt-6">
+                                    <span id="score-{{ $item->id }}"
+                                        class="flex-1 text-xl font-extrabold dark:text-white">COTE
+                                        :
+                                        0</span>
                                 </div>
                             </div>
                         </div>
@@ -299,10 +304,13 @@
 
         const rangeInputs = document.querySelectorAll('input[type="range"]');
         const scoreSpans = document.querySelectorAll('span[id^="score-"]');
+        let totalCotes = 0;
         const urlParams = window.location;
         const tailleCritere = {{ count($criteres) }};
         const critereNombre = document.getElementById('critereNombre');
+        const totalCotesElement = document.getElementById('totalCotes');
         let critereValide = 0;
+        let previousValues = Array(rangeInputs.length).fill(0);
 
         rangeInputs.forEach((input, index) => {
             input.addEventListener('input', function() {
@@ -311,6 +319,10 @@
                     input.dataset.valid = true; // Mark input as valid to avoid recounting
                 }
                 scoreSpans[index].textContent = 'COTE : ' + input.value;
+                totalCotes -= previousValues[index];
+                totalCotes += parseInt(input.value);
+                previousValues[index] = parseInt(input.value);
+                totalCotesElement.value = totalCotes;
                 critereNombre.textContent = critereValide + "/" + tailleCritere + " critères";
             });
         });
