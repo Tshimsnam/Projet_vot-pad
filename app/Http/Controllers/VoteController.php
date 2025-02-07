@@ -71,9 +71,11 @@ class VoteController extends Controller
         });
 
         $votedCandidates = DB::table('votes')
+            ->join('intervenant_phases', 'votes.intervenant_phase_id', '=', 'intervenant_phases.id')
             ->where('jury_phase_id', $jury_id)
-            ->pluck('intervenant_phase_id') 
+            ->pluck('intervenant_phases.intervenant_id')
             ->toArray();
+
 
         return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement', 'jury','votedCandidates'));
     }
@@ -156,8 +158,9 @@ class VoteController extends Controller
         $jury = Jury::find($jury_id);
 
         $votedCandidates = DB::table('votes')
+            ->join('intervenant_phases', 'votes.intervenant_phase_id', '=', 'intervenant_phases.id')
             ->where('jury_phase_id', $jury_id)
-            ->pluck('intervenant_phase_id')
+            ->pluck('intervenant_phases.intervenant_id')
             ->toArray();
 
         return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken', 'nombreUser', 'evenement', 'phase', 'intervenant_resultat', 'jury','votedCandidates'));
@@ -339,7 +342,7 @@ class VoteController extends Controller
                 return $vote->decision === 'attente';
             })->count();
             $decisionAttente = $decisionAttente / $numberCritere;
-            
+
             $numberVoteByInter = $votes->count();
 
             $totalVoteByCandidat = $moyenne;
@@ -401,7 +404,7 @@ class VoteController extends Controller
         session(['breadPhase' => $phase_id]);
         $phase     = Phase::findOrFail($phase_id);
         $evenement = Evenement::findOrFail($phase->evenement_id);
-        
+
         //return response()->json($intervenants);
         return view('votes.showResultat', compact('intervenants', 'totalVote', 'ponderationJuryPublic', 'ponderationJuryPrive', 'typeVote', 'phase_id', 'evenement', 'phase'));
     }

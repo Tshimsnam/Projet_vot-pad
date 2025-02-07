@@ -446,6 +446,7 @@
                             {{ $candidat->id }}]
                     );
                     localStorage.setItem("refreshPreviousPage", true);
+                    localStorage.setItem("hasVoted", true);
                     //Retourner à la page précédente après une réponse réussie
                     window.history.back();
                 })
