@@ -96,10 +96,13 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
                     $commentsText = '';
                     // Ajouter chaque commentaire sur une nouvelle ligne
                     foreach ($intervenant->comments as $comment) {
-                        $commentsText .= $comment->commentaires . "\n";
+                        if ($comment->commentaires != null){
+                            $commentsText .= $comment->commentaires . "\n";
+                        }
                     }
                     // Supprimer le dernier retour à la ligne pour éviter un espace inutile
-                    $commentsText = rtrim($commentsText, "\n");
+                    $commentsText = rtrim($commentsText, "\r");
+                    $event->sheet->getStyle('H' . $row)->getAlignment()->setWrapText(true);
                     $event->sheet->setCellValue('H' . $row, $commentsText);
                     foreach ($intervenant->juryCotes as $key => $totalCote) {
                         $colIndex = array_search($key, $this->juryNames);
