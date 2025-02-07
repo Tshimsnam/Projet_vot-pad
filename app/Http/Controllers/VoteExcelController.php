@@ -1,17 +1,19 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Exports\VoteExport;
+use App\Models\Jury;
+use App\Models\Vote;
+use App\Models\Phase;
+use App\Models\Groupe;
 use App\Models\Critere;
 use App\Models\Evenement;
-use App\Models\Groupe;
-use App\Models\Intervenant;
-use App\Models\IntervenantPhase;
-use App\Models\Jury;
 use App\Models\JuryPhase;
-use App\Models\Phase;
+use App\Exports\VoteExport;
+use App\Models\Intervenant;
 use App\Models\PhaseCritere;
-use App\Models\Vote;
+use App\Models\IntervenantPhase;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class VoteExcelController extends Controller
@@ -43,6 +45,15 @@ class VoteExcelController extends Controller
         $totalVoteByCandidat = 0;
         $totalVote           = 0;
         $nombreMaxJury       = 0;
+
+        $juriesByCandidat = DB::table('juries')
+            ->join('jury_phases', 'juries.id', '=', 'jury_phases.jury_id')
+            ->where('jury_phases.phase_id', $phase_id)
+            ->select('juries.noms', 'juries.id')
+            ->get();
+
+        $juryNames = $juriesByCandidat->pluck('noms')->toArray();
+
         foreach ($intervenantPhases as $intervenantPhase) {
             $intervenant                     = Intervenant::find($intervenantPhase->intervenant_id);
             $groupe                          = Groupe::find($intervenant->groupe_id);
@@ -51,6 +62,34 @@ class VoteExcelController extends Controller
             $JuryByCandidat = Vote::where('intervenant_phase_id', $intervenantPhase->id)
                 ->distinct('jury_phase_id')
                 ->pluck('jury_phase_id');
+
+            $juriesByCandidatWithCotes = DB::table('juries')
+                ->join('jury_phases', 'juries.id', '=', 'jury_phases.jury_id')
+                ->join('votes', 'juries.id', '=', 'votes.jury_phase_id')
+                ->where('jury_phases.phase_id', $phase_id)
+                ->where('votes.intervenant_phase_id', $intervenantPhase->id)
+                ->select('juries.noms as jury_name', 'votes.cote')
+                ->get();
+
+            $comments = Vote::where('intervenant_phase_id', $intervenantPhase->id)
+                ->select('commentaires')
+                ->get();
+
+            $intervenant->comments = $comments;
+
+            $juryCotes = [];
+
+            // Initialiser la somme des cotes pour chaque juré
+            foreach ($juriesByCandidat as $jury) {
+                $juryCotes[$jury->noms] = 0;
+            }
+
+            // Additionner les cotes de chaque juré pour cet intervenant
+            foreach ($juriesByCandidatWithCotes as $vote) {
+                $juryCotes[$vote->jury_name] += $vote->cote;
+            }
+
+            $intervenant->juryCotes = $juryCotes;
 
             $votes = Vote::whereIn('jury_phase_id', $JuryByCandidat)
                 ->where('intervenant_phase_id', $intervenantPhase->id)
@@ -155,6 +194,6 @@ class VoteExcelController extends Controller
 
         //return response()->json($evenement_nom);
 
-        return Excel::download(new VoteExport($intervenants, $phase_nom, $evenement_nom), 'rapportVote.xlsx');
+        return Excel::download(new VoteExport($intervenants, $phase_nom, $evenement_nom, $juriesByCandidat, $juryNames), 'rapportVote.xlsx');
     }
 }
