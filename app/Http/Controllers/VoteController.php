@@ -1,23 +1,24 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Jury;
+use App\Models\Vote;
+use App\Models\Phase;
+use App\Models\Groupe;
+use App\Models\Critere;
+use App\Models\Reponse;
+use App\Models\Evenement;
+use App\Models\JuryPhase;
+use App\Models\Intervenant;
+use App\Models\PhaseCritere;
+use Illuminate\Http\Request;
+use App\Models\QuestionPhase;
+use App\Models\IntervenantPhase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
-use App\Models\Critere;
-use App\Models\Evenement;
-use App\Models\Groupe;
-use App\Models\Intervenant;
-use App\Models\IntervenantPhase;
-use App\Models\Jury;
-use App\Models\JuryPhase;
-use App\Models\Phase;
-use App\Models\PhaseCritere;
-use App\Models\QuestionPhase;
-use App\Models\Reponse;
-use App\Models\Vote;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class VoteController extends Controller
 {
@@ -202,6 +203,11 @@ class VoteController extends Controller
         ]);
 
         $coupon = $request->coupon;
+
+        if (Cache::has("used_coupon_{$coupon}")) {
+            return redirect(route('form-authenticate'))->with('unsuccessJury', 'Ce coupon a déjà été utilisé.');
+        }
+
         $jury   = Jury::where('coupon', $coupon)->first();
 
         if ($jury) {
@@ -248,6 +254,8 @@ class VoteController extends Controller
             $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
             $candidats       = $phaseAndSpeaker->intervenants->pluck('id');
             $evenement       = Evenement::findOrFail($phase->evenement_id);
+
+            Cache::put("used_coupon_{$coupon}", true, 3600);
 
             return redirect()->route('jury.success', [
                 'phase_id'   => $phase_id,
