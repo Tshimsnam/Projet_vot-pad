@@ -388,6 +388,8 @@ class VoteController extends Controller
             $intervenant->decisionOui = $decisionOui;
             $intervenant->decisionNon = $decisionNon;
             $intervenant->decisionAttente = $decisionAttente;
+            $intervenant->phase_id = $phase_id;
+
 
             $intervenants[] = $intervenant;
         }
@@ -416,4 +418,50 @@ class VoteController extends Controller
         //return response()->json($intervenants);
         return view('votes.showResultat', compact('intervenants', 'totalVote', 'ponderationJuryPublic', 'ponderationJuryPrive', 'typeVote', 'phase_id', 'evenement', 'phase'));
     }
+
+
+    public function getVotes($intervenant_id, $phase_id)
+    {
+
+        $intervenant = DB::table('intervenants')
+            ->where('id', $intervenant_id)
+            ->select('noms') // Assure-toi que la colonne correspond au nom de l'intervenant
+            ->first();
+
+        // requettes
+        $juriesByCandidatWithCotes = DB::table('juries')
+            ->join('jury_phases', 'juries.id', '=', 'jury_phases.jury_id')
+            ->join('votes', 'jury_phases.id', '=', 'votes.jury_phase_id')
+            ->join('phase_criteres', function ($join) {
+                $join->on('jury_phases.phase_id', '=', 'phase_criteres.phase_id')
+                     ->on('votes.phase_critere_id', '=', 'phase_criteres.critere_id');
+            })
+            ->join('criteres', 'phase_criteres.critere_id', '=', 'criteres.id')
+            ->where('jury_phases.phase_id', $phase_id)
+            ->where('votes.intervenant_phase_id', $intervenant_id)
+            ->select('juries.noms as jury_name', 'criteres.libelle as critere_name', 'votes.cote')
+            ->get();
+
+        //tableau associatif
+        $juryCotes = [];
+        foreach ($juriesByCandidatWithCotes as $vote) {
+            if (!isset($juryCotes[$vote->jury_name])) {
+                $juryCotes[$vote->jury_name] = [];
+            }
+
+            $juryCotes[$vote->jury_name][] = [
+                'critere' => $vote->critere_name,
+                'cote'    => $vote->cote
+            ];
+        }
+
+        // Retourner les données en JSON
+        return response()->json([
+            'intervenant_id' => $intervenant_id,
+            'intervenant_nom' => $intervenant ? $intervenant->noms : 'Inconnu',
+            'phase_id' => $phase_id,
+            'juryCotes' => $juryCotes
+        ]);
+    }
+
 }
