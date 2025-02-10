@@ -7,6 +7,9 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class VoteExport implements FromCollection, WithMapping, WithEvents
 {
@@ -25,9 +28,6 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
         $this->juryNames = $juryNames;
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
     public function collection()
     {
         return $this->intervenants;
@@ -35,13 +35,17 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
 
     public function map($row): array
     {
-        // Le compteur n'est pas nécessaire ici
         return [
             $row->noms,
             $row->email,
             $row->telephone,
             $row->genre,
-            $row->pourcentage
+            $row->age,
+            $row->statut,
+            $row->universite,
+            $row->promotion,
+            ...array_values($row->juryCotes),
+            $row->cote, // Total Cotes
         ];
     }
 
@@ -49,41 +53,46 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $event->sheet->mergeCells('A1:' . chr(72 + count($this->juriesByCandidat)) . '1');
+                // Définition de la colonne après les jurys
+                $lastColumn = chr(75 + count($this->juryNames)); // 'K' + nombre de jurys
+
+                // 🎨 Style du titre
+                $event->sheet->mergeCells('A1:' . $lastColumn . '1');
                 $event->sheet->setCellValue('A1', strtoupper($this->evenement_nom . ': ' . $this->phase_name));
-                $styleArray = [
-                    'font' => [
-                        'bold' => true,
-                        'color' => ['argb' => Color::COLOR_BLACK], // Texte en noir
-                    ],
-                    'fill' => [
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        'startColor' => ['argb' => Color::COLOR_YELLOW], // Fond en jaune
-                    ],
-                    'alignment' => [
-                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    ],
-                ];
-                $indexs = ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-                $event->sheet->getStyle('A1')->applyFromArray($styleArray);
-                // Ajouter les en-têtes sur la deuxième ligne
-                $event->sheet->getCell('A2')->setValue('N°');
-                $event->sheet->getCell('B2')->setValue('Noms');
-                $event->sheet->getCell('C2')->setValue('Email');
-                $event->sheet->getCell('D2')->setValue('Téléphone');
-                $event->sheet->getCell('E2')->setValue('Genre');
-                $event->sheet->getCell('F2')->setValue('Pourcentage');
-                $event->sheet->getCell('G2')->setValue('Total Cotes');
-                $event->sheet->getCell('H2')->setValue('Commentaires');
-                foreach ($this->juryNames as $key => $value) {
-                    $event->sheet->getCell($indexs[$key] . '2')->setValue($value);
+                $event->sheet->getStyle('A1')->applyFromArray([
+                    'font' => ['bold' => true, 'size' => 14, 'color' => ['argb' => Color::COLOR_WHITE]],
+                    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => '000000']],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+                ]);
+
+                // 🏷️ En-têtes
+                $headers = ['N°', 'Noms', 'Email', 'Téléphone', 'Genre', 'Âge', 'Statut', 'Université', 'Promotion'];
+                $indexs = range('J', 'Z'); 
+
+                foreach ($headers as $key => $value) {
+                    $col = chr(65 + $key);
+                    $event->sheet->setCellValue($col . '2', $value);
                 }
 
-                $event->sheet->getStyle('A2:F2')->getFont()->setBold(true);
+                // Ajouter les noms des jurys
+                foreach ($this->juryNames as $key => $value) {
+                    $event->sheet->setCellValue($indexs[$key] . '2', 'jury ' . $value);
+                }
 
-                // Ajouter les données
+                // Ajouter "Total Cotes"
+                $totalCotesColumn = $indexs[count($this->juryNames)];
+                $event->sheet->setCellValue($totalCotesColumn . '2', 'Total Cotes');
+
+                // 🎨 Style des en-têtes
+                $event->sheet->getStyle('A2:' . $totalCotesColumn . '2')->applyFromArray([
+                    'font' => ['bold' => true, 'size' => 12],
+                    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFD700']], // Or
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+                    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+                ]);
+
+                // 🔢 Ajouter les données
                 $startRow = 3;
-                $juriesPerCandidat = $this->juriesByCandidat->toArray();
                 foreach ($this->intervenants as $index => $intervenant) {
                     $row = $startRow + $index;
                     $event->sheet->setCellValue('A' . $row, $index + 1);
@@ -91,26 +100,34 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
                     $event->sheet->setCellValue('C' . $row, $intervenant->email);
                     $event->sheet->setCellValue('D' . $row, $intervenant->telephone);
                     $event->sheet->setCellValue('E' . $row, $intervenant->genre);
-                    $event->sheet->setCellValue('F' . $row, $intervenant->pourcentage);
-                    $event->sheet->setCellValue('G' . $row, $intervenant->cote);
-                    $commentsText = '';
-                    // Ajouter chaque commentaire sur une nouvelle ligne
-                    foreach ($intervenant->comments as $comment) {
-                        if ($comment->commentaires != null){
-                            $commentsText .= $comment->commentaires . "\n";
-                        }
-                    }
-                    // Supprimer le dernier retour à la ligne pour éviter un espace inutile
-                    $commentsText = rtrim($commentsText, "\r");
-                    $event->sheet->getStyle('H' . $row)->getAlignment()->setWrapText(true);
-                    $event->sheet->setCellValue('H' . $row, $commentsText);
+                    $event->sheet->setCellValue('F' . $row, ($intervenant->age ?? '') . ' ans');
+                    $event->sheet->setCellValue('G' . $row, $intervenant->statut);
+                    $event->sheet->setCellValue('H' . $row, $intervenant->universite);
+                    $event->sheet->setCellValue('I' . $row, $intervenant->promotion);
+
+                    // Ajouter les cotes des jurys
                     foreach ($intervenant->juryCotes as $key => $totalCote) {
                         $colIndex = array_search($key, $this->juryNames);
                         if ($colIndex !== false) {
                             $event->sheet->setCellValue($indexs[$colIndex] . $row, $totalCote);
                         }
                     }
+
+                    // Ajouter "Total Cotes"
+                    $event->sheet->setCellValue($totalCotesColumn . $row, $intervenant->cote);
                 }
+
+                // 📏 Ajustement des colonnes pour une meilleure lisibilité
+                foreach (range('A', $totalCotesColumn) as $columnID) {
+                    $event->sheet->getColumnDimension($columnID)->setWidth(15);
+                }
+
+                // 🎨 Ajout des bordures pour toutes les cellules
+                $event->sheet->getStyle('A2:' . $totalCotesColumn . ($startRow + count($this->intervenants)))->applyFromArray([
+                    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+                    'font' => ['size' => 11],
+                ]);
             },
         ];
     }
