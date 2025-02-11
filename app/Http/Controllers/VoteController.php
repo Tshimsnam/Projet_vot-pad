@@ -462,4 +462,43 @@ class VoteController extends Controller
         ]);
     }
 
+    public function getVotesForJury($intervenant_id, $phase_id, $intervenant_phase_id, $jury_id)
+    {
+        $intervenant = Intervenant::find($intervenant_id);
+        // requettes
+        $juriesByCandidatWithCotes = DB::table('juries')
+        ->join('jury_phases', 'juries.id', '=', 'jury_phases.jury_id')
+        ->join('votes', 'juries.id', '=', 'votes.jury_phase_id')
+        ->join('phase_criteres', function ($join) {
+            $join->on('jury_phases.phase_id', '=', 'phase_criteres.phase_id')
+            ->on('votes.phase_critere_id', '=', 'phase_criteres.critere_id');
+        })
+            ->join('criteres', 'phase_criteres.critere_id', '=', 'criteres.id')
+            ->where('jury_phases.phase_id', $phase_id)
+            ->where('juries.id', $jury_id)
+            ->where('votes.intervenant_phase_id', $intervenant_phase_id)
+            ->select('juries.noms as jury_name', 'criteres.libelle as critere_name', 'votes.cote')
+            ->get();
+
+        //tableau associatif
+        $juryCotes = [];
+        foreach ($juriesByCandidatWithCotes as $vote) {
+            if (!isset($juryCotes[$vote->jury_name])) {
+                $juryCotes[$vote->jury_name] = [];
+            }
+
+            $juryCotes[$vote->jury_name][] = [
+                'critere' => $vote->critere_name,
+                'cote' => $vote->cote
+            ];
+        }
+
+        // Retourner les données en JSON
+        return response()->json([
+            'intervenant_id' => $intervenant->id,
+            'intervenant_nom' => $intervenant ? $intervenant->noms : 'Inconnu',
+            'phase_id' => $phase_id,
+            'juryCotes' => $juryCotes
+        ]);
+    }
 }
