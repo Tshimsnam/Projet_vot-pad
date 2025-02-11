@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.start-0 {
+    inset-inline-start: 0px;
+  }
+  .start-1\/5 {
+    inset-inline-start: 20%;
+  }
+  .start-2\/5 {
+    inset-inline-start: 40%;
+  }
+  .start-3\/5 {
+    inset-inline-start: 60%;
+  }
+
+  .start-4\/5 {
+    inset-inline-start: 80%;
+  }
+
