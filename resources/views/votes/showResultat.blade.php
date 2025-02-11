@@ -112,7 +112,8 @@
                             {{ $item->nombreJury }}
                         </td>
                         <td>
-                            <button onclick="openModal(this)" data-id="{{ $item->id }}" data-phase="{{$item->phase_id}}"
+                            <button onclick="openModal(this)" data-id="{{ $item->id }}" data-intervenant_phase="{{$item->intervenantPhase_id}}"
+                                data-phase="{{ $item->phase_id }}"
                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40">
                                 Voir les votes
                             </button>
@@ -171,62 +172,64 @@
         }
 
         function openModal(button) {
-    let intervenant_id = button.getAttribute("data-id");
-    let phase_id = button.getAttribute("data-phase");
+            let intervenant_id = button.getAttribute("data-id");
+            let phase_id = button.getAttribute("data-phase");
+            let interveant_phase_id = button.getAttribute("data-intervenant_phase");
 
-    fetch(`/votes/${intervenant_id}/${phase_id}`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('intervenant').textContent = `${data.intervenant_nom.toUpperCase()}`;
+            fetch(`/votes/${intervenant_id}/${phase_id}/${interveant_phase_id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('intervenant').textContent = `${data.intervenant_nom}`;
 
-            let modalBody = document.getElementById('modalBody');
-            modalBody.innerHTML = '';
+                    let modalBody = document.getElementById('modalBody');
+                    modalBody.innerHTML = '';
 
-            let juryCotes = data.juryCotes;
+                    let juryCotes = data.juryCotes;
 
-            if (Object.keys(juryCotes).length > 0) {
+                    if (Object.keys(juryCotes).length > 0) {
 
-                let criteres = new Set();
-                for (let jury in juryCotes) {
-                    juryCotes[jury].forEach(vote => criteres.add(vote.critere));
-                }
-                criteres = Array.from(criteres);
+                        let criteres = new Set();
+                        for (let jury in juryCotes) {
+                            juryCotes[jury].forEach(vote => criteres.add(vote.critere));
+                        }
+                        criteres = Array.from(criteres);
 
-                let tableHtml = `<table class="w-full border border-gray-300">
+                        let tableHtml = `<table class="w-full border border-gray-300">
                                     <thead>
                                         <tr class="bg-gray-200">
                                             <th class="border px-4 py-2">Jurys</th>`;
 
-                criteres.forEach(critere => {
-                    tableHtml += `<th class="border px-4 py-2">${critere}</th>`;
-                });
+                        criteres.forEach(critere => {
+                            tableHtml += `<th class="border px-4 py-2">${critere}</th>`;
+                        });
 
-                tableHtml += `</tr></thead><tbody>`;
+                        tableHtml += `</tr></thead><tbody>`;
 
-                for (let jury in juryCotes) {
-                    tableHtml += `<tr>
+                        for (let jury in juryCotes) {
+                            tableHtml += `<tr>
                                     <td class="border px-4 py-2">${jury}</td>`;
 
-                    criteres.forEach(critere => {
-                        let cote = juryCotes[jury].find(vote => vote.critere === critere);
-                        tableHtml += `<td class="border px-4 py-2 text-center">${cote ? cote.cote : '-'}</td>`;
-                    });
+                            criteres.forEach(critere => {
+                                let cote = juryCotes[jury].find(vote => vote.critere === critere);
+                                tableHtml +=
+                                    `<td class="border px-4 py-2 text-center">${cote ? cote.cote : '-'}</td>`;
+                            });
 
-                    tableHtml += `</tr>`;
-                }
+                            tableHtml += `</tr>`;
+                        }
 
-                tableHtml += `</tbody></table>`;
-                modalBody.innerHTML = tableHtml;
-            } else {
-                modalBody.innerHTML =
-                    `<p class="text-gray-600">Aucune cote attribuée pour cet intervenant.</p>`;
-            }
+                        tableHtml += `</tbody></table>`;
+                        modalBody.innerHTML = tableHtml;
+                    } else {
+                        modalBody.innerHTML =
+                            `<p class="text-gray-600">Aucune cote attribuée pour cet intervenant.</p>`;
+                    }
 
 
-            document.getElementById('voteModal').classList.remove('hidden');
-        })
-        .catch(error => console.error("Erreur lors du chargement des votes :", error));
-}
+                    document.getElementById('voteModal').classList.remove('hidden');
+                })
+                .catch(error => console.error("Erreur lors du chargement des votes :", error));
+        }
 
         function closeModal() {
             document.getElementById('voteModal').classList.add('hidden');

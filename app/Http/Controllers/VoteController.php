@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreVoteRequest;
 use App\Http\Requests\UpdateVoteRequest;
 
+use function PHPSTORM_META\type;
+
 class VoteController extends Controller
 {
     /**
@@ -55,16 +57,16 @@ class VoteController extends Controller
      */
     public function show($phase_id, $jury_id, $candidats, $criteres, $nombreUser, $evenement_id)
     {
-        $phaseAndSpeaker   = Phase::with('intervenants')->find($phase_id);
-        $evenement         = Evenement::find($evenement_id);
+        $phaseAndSpeaker = Phase::with('intervenants')->find($phase_id);
+        $evenement = Evenement::find($evenement_id);
         $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
-        $intervenants      = [];
+        $intervenants = [];
         $jury = Jury::find($jury_id);
         foreach ($intervenantPhases as $intervenantPhase) {
-            $intervenant                     = Intervenant::find($intervenantPhase->intervenant_id);
-            $groupe                          = Groupe::find($intervenant->groupe_id);
+            $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+            $groupe = Groupe::find($intervenant->groupe_id);
             $intervenant->intervenantPhaseId = $intervenantPhase->id;
-            $intervenants[]                  = $intervenant;
+            $intervenants[] = $intervenant;
         }
 
         usort($intervenants, function ($a, $b) {
@@ -78,31 +80,31 @@ class VoteController extends Controller
             ->toArray();
 
 
-        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement', 'jury','votedCandidates'));
+        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement', 'jury', 'votedCandidates'));
     }
 
     public function showIntervenant($slugPhase, $candidat_id, $jury_id, $nombreUser, $evenement)
     {
-        $phase         = Phase::where('slug', $slugPhase)->first();
-        $phase_id      = $phase->id;
+        $phase = Phase::where('slug', $slugPhase)->first();
+        $phase_id = $phase->id;
         $phaseCriteres = PhaseCritere::where('phase_id', $phase_id)->get();
-        $criteres      = [];
+        $criteres = [];
         foreach ($phaseCriteres as $phaseCritere) {
-            $critere                 = Critere::find($phaseCritere->critere_id);
+            $critere = Critere::find($phaseCritere->critere_id);
             $critere->criterePhaseId = $phaseCritere->id;
-            $critere->echelle        = $phaseCritere->echelle;
-            $critere->phase_id       = $phase_id;
-            $criteres[]              = $critere;
+            $critere->echelle = $phaseCritere->echelle;
+            $critere->phase_id = $phase_id;
+            $criteres[] = $critere;
         }
         usort($criteres, function ($a, $b) {
             return $a->id - $b->id;
         });
-        $candidat  = Intervenant::findOrFail($candidat_id);
-        $groupe    = Groupe::find($candidat->groupe_id);
-        $jury      = Jury::findOrFail($jury_id);
+        $candidat = Intervenant::findOrFail($candidat_id);
+        $groupe = Groupe::find($candidat->groupe_id);
+        $jury = Jury::findOrFail($jury_id);
         $juryToken = $jury->token;
 
-        $evenement       = Evenement::where('id', $phase->evenement_id)->first();
+        $evenement = Evenement::where('id', $phase->evenement_id)->first();
         $phasePrecedente = Phase::where('evenement_id', $evenement->id)
             ->where('id', '<', $phase->id)
             ->orderBy('id', 'desc')
@@ -111,7 +113,7 @@ class VoteController extends Controller
         $intervenant_resultat = [];
 
         if ($phasePrecedente) {
-            $question                = QuestionPhase::where('phase_id', '=', $phasePrecedente->id)->get();
+            $question = QuestionPhase::where('phase_id', '=', $phasePrecedente->id)->get();
             $somme_ponderation_phase = $question->sum('ponderation');
 
             if ($somme_ponderation_phase > 0) {
@@ -137,7 +139,7 @@ class VoteController extends Controller
                         ->exists() ? 1 : null;
 
                     $pourcentage_interv = ($point_inter / $somme_ponderation_phase) * 100;
-                    $pourcentage        = round($pourcentage_interv, 2);
+                    $pourcentage = round($pourcentage_interv, 2);
 
                     $sexe = match (strtolower($intervenant->genre)) {
                         'm' => 'Masculine',
@@ -146,12 +148,12 @@ class VoteController extends Controller
                     };
 
                     $intervenant_resultat[] = [
-                        'id'          => $intervenant->id,
-                        'email'       => $intervenant->email,
-                        'noms'        => $intervenant->noms,
+                        'id' => $intervenant->id,
+                        'email' => $intervenant->email,
+                        'noms' => $intervenant->noms,
                         'pourcentage' => $pourcentage,
-                        'evaluee'     => $msg,
-                        'genre'       => $sexe,
+                        'evaluee' => $msg,
+                        'genre' => $sexe,
                     ];
                 }
             }
@@ -164,7 +166,7 @@ class VoteController extends Controller
             ->pluck('intervenant_phases.intervenant_id')
             ->toArray();
 
-        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken', 'nombreUser', 'evenement', 'phase', 'intervenant_resultat', 'jury','votedCandidates'));
+        return view("votes.showIntervenant", compact('criteres', 'phase_id', 'candidat_id', 'candidat', 'jury_id', 'juryToken', 'nombreUser', 'evenement', 'phase', 'intervenant_resultat', 'jury', 'votedCandidates'));
     }
 
     /**
@@ -194,7 +196,7 @@ class VoteController extends Controller
     public function authenticate(Request $request)
     {
 
-        if (! $request->has('coupon') && ! $request->hasCookie('juryToken')) {
+        if (!$request->has('coupon') && !$request->hasCookie('juryToken')) {
             return redirect(route('form-authenticate'))->with('unsuccessJury', 'Veuillez vous authentifier.');
         }
 
@@ -208,40 +210,40 @@ class VoteController extends Controller
             return redirect(route('form-authenticate'))->with('unsuccessJury', 'Ce coupon a déjà été utilisé.');
         }
 
-        $jury   = Jury::where('coupon', $coupon)->first();
+        $jury = Jury::where('coupon', $coupon)->first();
 
         if ($jury) {
             $juryCoupon = $jury->coupon;
-            $phaseSlug  = substr($juryCoupon, 0, 3);
-            $phase      = Phase::where('slug', $phaseSlug)->first();
+            $phaseSlug = substr($juryCoupon, 0, 3);
+            $phase = Phase::where('slug', $phaseSlug)->first();
 
             $statutPhase = $phase->statut;
             if ($statutPhase != "En cours") {
                 return redirect(route('form-authenticate'))->with('unsuccessJury', 'Desolé, vous ne pouvez pas accéder au vote maintenant.');
             }
 
-            $phase_id      = $phase->id;
+            $phase_id = $phase->id;
             $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
-            $criteres      = $criterePhases->pluck('critere_id')->sort()->values();
-            $jury_type     = $jury->type;
-            $jury_use      = $jury->is_use;
+            $criteres = $criterePhases->pluck('critere_id')->sort()->values();
+            $jury_type = $jury->type;
+            $jury_use = $jury->is_use;
 
             if ($jury_type == 'prive' && $jury_use != 0) {
                 return redirect(route('form-authenticate'))->with('unsuccessJury', 'Desolé, vous ne pouvez plus accéder au vote.');
             }
-            $jury_id    = $jury->id;
+            $jury_id = $jury->id;
             $jury_token = $jury->token;
             if ($jury_type == "prive") {
                 if ($jury_token == "0") {
-                    $token        = $jury->createToken($juryCoupon)->plainTextToken;
-                    $jury->token  = $token;
+                    $token = $jury->createToken($juryCoupon)->plainTextToken;
+                    $jury->token = $token;
                     $jury->is_use = 1;
                     $jury->save();
                 }
             } else {
                 if ($jury_token == "0") {
-                    $token        = $jury->createToken($juryCoupon)->plainTextToken;
-                    $jury->token  = $token;
+                    $token = $jury->createToken($juryCoupon)->plainTextToken;
+                    $jury->token = $token;
                     $jury->is_use = $jury_use + 1;
                     $jury->save();
                 } else {
@@ -250,20 +252,20 @@ class VoteController extends Controller
                 }
             }
 
-            $phase_id        = Phase::where('slug', $phaseSlug)->first()->id;
+            $phase_id = Phase::where('slug', $phaseSlug)->first()->id;
             $phaseAndSpeaker = Phase::with('intervenants')->findOrFail($phase_id);
-            $candidats       = $phaseAndSpeaker->intervenants->pluck('id');
-            $evenement       = Evenement::findOrFail($phase->evenement_id);
+            $candidats = $phaseAndSpeaker->intervenants->pluck('id');
+            $evenement = Evenement::findOrFail($phase->evenement_id);
 
             Cache::put("used_coupon_{$coupon}", true, 3600);
 
             return redirect()->route('jury.success', [
-                'phase_id'   => $phase_id,
-                'jury_id'    => $jury_id,
-                'candidats'  => $candidats,
-                'criteres'   => $criteres,
+                'phase_id' => $phase_id,
+                'jury_id' => $jury_id,
+                'candidats' => $candidats,
+                'criteres' => $criteres,
                 'nombreUser' => $jury->is_use,
-                'evenement'  => $evenement,
+                'evenement' => $evenement,
             ])->withCookie(cookie('juryToken', $jury->token, 720));
         } else {
             return redirect(route('form-authenticate'))->with('unsuccessJury', 'Le coupon inséré est invalide.');
@@ -272,20 +274,20 @@ class VoteController extends Controller
 
     public function results($phase_id)
     {
-        $user              = Auth::user();
-        $phase             = Phase::find($phase_id);
+        $user = Auth::user();
+        $phase = Phase::find($phase_id);
         $evenement_user_id = Evenement::find($phase->evenement_id)->user_id;
         if ($user->role == 'super-momekano') {
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
-            $criterePhases     = PhaseCritere::where('phase_id', $phase_id)->get();
+            $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
         } else if ($user->id == $evenement_user_id) {
             $intervenantPhases = IntervenantPhase::where('phase_id', $phase_id)->get();
-            $criterePhases     = PhaseCritere::where('phase_id', $phase_id)->get();
+            $criterePhases = PhaseCritere::where('phase_id', $phase_id)->get();
         } else {
             return response()->json(['error' => 'Vous n\'avez pas les droits pour accéder à cette page'], 403);
         }
 
-        $numberCritere     = $criterePhases->count();
+        $numberCritere = $criterePhases->count();
         $ponderationTotale = 0;
         foreach ($criterePhases as $key => $criterePhase) {
             $critere = Critere::findOrFail($criterePhase->critere_id);
@@ -295,21 +297,21 @@ class VoteController extends Controller
         $juryPhase = JuryPhase::where('phase_id', $phase_id)->first();
         if ($juryPhase) {
             $ponderationJuryPublic = $juryPhase->ponderation_public;
-            $ponderationJuryPrive  = $juryPhase->ponderation_prive;
-            $typeVote              = $juryPhase->type;
+            $ponderationJuryPrive = $juryPhase->ponderation_prive;
+            $typeVote = $juryPhase->type;
         } else {
             $ponderationJuryPublic = 0;
-            $ponderationJuryPrive  = 0;
-            $typeVote              = 'prive et public';
+            $ponderationJuryPrive = 0;
+            $typeVote = 'prive et public';
         }
 
-        $intervenants        = [];
+        $intervenants = [];
         $totalVoteByCandidat = 0;
-        $totalVote           = 0;
-        $nombreMaxJury       = 0;
+        $totalVote = 0;
+        $nombreMaxJury = 0;
         foreach ($intervenantPhases as $intervenantPhase) {
-            $intervenant                     = Intervenant::find($intervenantPhase->intervenant_id);
-            $groupe                          = Groupe::find($intervenant->groupe_id);
+            $intervenant = Intervenant::find($intervenantPhase->intervenant_id);
+            $groupe = Groupe::find($intervenant->groupe_id);
             $intervenant->intervenantPhaseId = $intervenantPhase->id;
 
             $JuryByCandidat = Vote::where('intervenant_phase_id', $intervenantPhase->id)
@@ -323,7 +325,7 @@ class VoteController extends Controller
             $jurys = Jury::whereIn('id', $JuryByCandidat)->get()->keyBy('id');
 
             foreach ($votes as $vote) {
-                $jury            = $jurys->get($vote->jury_phase_id);
+                $jury = $jurys->get($vote->jury_phase_id);
                 $vote->jury_type = $jury ? $jury->type : null;
             }
 
@@ -365,33 +367,34 @@ class VoteController extends Controller
             } else {
                 $JuryByCandidat = 0;
             }
-            $sommeByTypePrive  = $sommeByType->get('prive', 0);
+            $sommeByTypePrive = $sommeByType->get('prive', 0);
             $sommeByTypePublic = $sommeByType->get('public', 0);
 
             if ($typeVote == 'entretien' || $typeVote == 'Entretien') {
                 $cote = $totalVoteByCandidat;
                 $totalVote += $cote;
             } else if ($typeVote == 'prive et public') {
-                $sommeByTypePrive  = round(($sommeByTypePrive) * ($ponderationJuryPrive / 100), 2);
+                $sommeByTypePrive = round(($sommeByTypePrive) * ($ponderationJuryPrive / 100), 2);
                 $sommeByTypePublic = round(($sommeByTypePublic) * ($ponderationJuryPublic / 100), 2);
-                $cote              = $sommeByTypePublic + $sommeByTypePrive;
+                $cote = $sommeByTypePublic + $sommeByTypePrive;
                 $totalVote += $cote;
             } else {
                 $totalVote += $totalVoteByCandidat;
                 $cote = $sommeByTypePublic + $sommeByTypePrive;
             }
 
-            $intervenant->cote       = $cote;
+            $intervenant->cote = $cote;
             $intervenant->nombreJury = $JuryByCandidat;
             $intervenant->votePublic = $sommeByTypePublic;
-            $intervenant->votePrive  = $sommeByTypePrive;
+            $intervenant->votePrive = $sommeByTypePrive;
             $intervenant->decisionOui = $decisionOui;
             $intervenant->decisionNon = $decisionNon;
             $intervenant->decisionAttente = $decisionAttente;
             $intervenant->phase_id = $phase_id;
+            $intervenant->intervenantPhase_id = $intervenantPhase->id; // Ajout de l'ID de la phase
 
+            $intervenants[] = $intervenant; // Ajout dans le tableau
 
-            $intervenants[] = $intervenant;
         }
 
         foreach ($intervenants as $intervenant) {
@@ -412,7 +415,7 @@ class VoteController extends Controller
             return $b->pourcentage - $a->pourcentage;
         });
         session(['breadPhase' => $phase_id]);
-        $phase     = Phase::findOrFail($phase_id);
+        $phase = Phase::findOrFail($phase_id);
         $evenement = Evenement::findOrFail($phase->evenement_id);
 
         //return response()->json($intervenants);
@@ -420,25 +423,20 @@ class VoteController extends Controller
     }
 
 
-    public function getVotes($intervenant_id, $phase_id)
+    public function getVotes($intervenant_id, $phase_id, $intervenant_phase_id)
     {
-
-        $intervenant = DB::table('intervenants')
-            ->where('id', $intervenant_id)
-            ->select('noms') // Assure-toi que la colonne correspond au nom de l'intervenant
-            ->first();
-
+        $intervenant = Intervenant::find($intervenant_id);
         // requettes
         $juriesByCandidatWithCotes = DB::table('juries')
             ->join('jury_phases', 'juries.id', '=', 'jury_phases.jury_id')
-            ->join('votes', 'jury_phases.id', '=', 'votes.jury_phase_id')
+            ->join('votes', 'juries.id', '=', 'votes.jury_phase_id')
             ->join('phase_criteres', function ($join) {
                 $join->on('jury_phases.phase_id', '=', 'phase_criteres.phase_id')
-                     ->on('votes.phase_critere_id', '=', 'phase_criteres.critere_id');
+                    ->on('votes.phase_critere_id', '=', 'phase_criteres.critere_id');
             })
             ->join('criteres', 'phase_criteres.critere_id', '=', 'criteres.id')
             ->where('jury_phases.phase_id', $phase_id)
-            ->where('votes.intervenant_phase_id', $intervenant_id)
+            ->where('votes.intervenant_phase_id', $intervenant_phase_id)
             ->select('juries.noms as jury_name', 'criteres.libelle as critere_name', 'votes.cote')
             ->get();
 
@@ -451,13 +449,13 @@ class VoteController extends Controller
 
             $juryCotes[$vote->jury_name][] = [
                 'critere' => $vote->critere_name,
-                'cote'    => $vote->cote
+                'cote' => $vote->cote
             ];
         }
 
         // Retourner les données en JSON
         return response()->json([
-            'intervenant_id' => $intervenant_id,
+            'intervenant_id' => $intervenant->id,
             'intervenant_nom' => $intervenant ? $intervenant->noms : 'Inconnu',
             'phase_id' => $phase_id,
             'juryCotes' => $juryCotes
