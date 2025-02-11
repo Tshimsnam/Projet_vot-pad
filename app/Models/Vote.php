@@ -21,4 +21,10 @@ class Vote extends Model
         return $this->belongsTo(PhaseCritere::class, 'phase_critere_id');
     }
 
+    public function intervenantPhase()
+    {
+        return $this->belongsTo(IntervenantPhase::class, 'intervenant_phase_id');
+    }
+
+
 }

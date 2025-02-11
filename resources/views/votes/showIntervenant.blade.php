@@ -33,7 +33,7 @@
                 @endif
                 <div class="">
                     <h2 class="text-3xl uppercase font-extrabold dark:text-white">{{ $candidat->noms }}
-                        @if ($hasVoted)
+                        {{-- @if ($hasVoted)
                         @else
                             @if ($phase->type == 'Entretien' || $phase->type == 'entretien')
                                 :
@@ -43,7 +43,7 @@
                                     {{ $intervenant_resultat[0]['pourcentage'] }}%
                                 @endif
                             @endif
-                        @endif
+                        @endif --}}
 
                     </h2>
                     <p class="text-sm truncate dark:text-white">

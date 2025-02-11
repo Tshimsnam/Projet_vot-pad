@@ -25,4 +25,10 @@ class IntervenantPhase extends Model
     {
         return $this->belongsTo(Phase::class);
     }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class, 'intervenant_phase_id');
+    }
+
 }
