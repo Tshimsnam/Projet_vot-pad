@@ -67,7 +67,7 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
 
                 // 🏷️ En-têtes
                 $headers = ['N°', 'Noms', 'Email', 'Téléphone', 'Genre', 'Âge', 'Statut', 'Université', 'Promotion'];
-                $indexs = range('J', 'Z'); 
+                $indexs = range('J', 'Z');
 
                 foreach ($headers as $key => $value) {
                     $col = chr(65 + $key);
@@ -100,7 +100,7 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
                     $event->sheet->setCellValue('C' . $row, $intervenant->email);
                     $event->sheet->setCellValue('D' . $row, $intervenant->telephone);
                     $event->sheet->setCellValue('E' . $row, $intervenant->genre);
-                    $event->sheet->setCellValue('F' . $row, ($intervenant->age ?? '') . ' ans');
+                    $event->sheet->setCellValue('F' . $row, ($intervenant->age . ' ans' ?? ''));
                     $event->sheet->setCellValue('G' . $row, $intervenant->statut);
                     $event->sheet->setCellValue('H' . $row, $intervenant->universite);
                     $event->sheet->setCellValue('I' . $row, $intervenant->promotion);

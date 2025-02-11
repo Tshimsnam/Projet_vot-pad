@@ -79,8 +79,16 @@ class VoteController extends Controller
             ->pluck('intervenant_phases.intervenant_id')
             ->toArray();
 
+        $totalCote = DB::table('votes')
+        ->join('intervenant_phases', 'votes.intervenant_phase_id', '=', 'intervenant_phases.id')
+        ->where('jury_phase_id', $jury_id)
+        ->sum('votes.cote');
 
-        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement', 'jury', 'votedCandidates'));
+       
+
+
+
+        return view('votes.show', compact('phaseAndSpeaker', 'phase_id', 'candidats', 'jury_id', 'criteres', 'intervenants', 'nombreUser', 'evenement', 'jury', 'votedCandidates', 'totalCote'));
     }
 
     public function showIntervenant($slugPhase, $candidat_id, $jury_id, $nombreUser, $evenement)
@@ -331,6 +339,8 @@ class VoteController extends Controller
 
             $sommeByType = $votes->groupBy('jury_type')->map(function ($group) {
                 return $group->sum('cote');
+
+                
             });
 
             $moyenne = 0;

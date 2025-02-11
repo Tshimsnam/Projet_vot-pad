@@ -17,8 +17,7 @@
                         <span class="mr-2">{{ $jury->noms }}</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 9l-7 7-7-7"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
 
@@ -70,9 +69,17 @@
                                 <p class="text-sm text-gray-500 truncate dark:text-gray-300">
                                     {{ $item->email }}
                                 </p>
-                                <h3 id="cote-{{ $item->id }}"
-                                    class="inline-flex items-center text-base font-semibold dark:text-white">
-                                </h3>
+                                @if ($hasVoted)
+                                    <h3 id="cote-"
+                                        class="inline-flex items-center text-base font-semibold dark:text-white">
+                                        COTE : {{ $totalCote }}
+                                    </h3>
+                                @else
+                                    <h3 id="cote-{{ $item->id }}"
+                                        class="inline-flex items-center text-base font-semibold dark:text-white">
+                                    </h3>
+                                @endif
+
                             </div>
                             <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
 
@@ -93,9 +100,9 @@
                                                     transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                                 <path
                                                     d="M 45 90 C
-                                                                                                                                        20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
-                                                                                                                                        5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
-                                                                                                                                        -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
+                                                                                                                                                    20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
+                                                                                                                                                    5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
+                                                                                                                                                    -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
                                                     style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                     transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                             </g>
@@ -126,9 +133,9 @@
                                                     transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                                 <path
                                                     d="M 45 90 C
-                                                                                                                                        20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
-                                                                                                                                        5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
-                                                                                                                                        -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
+                                                                                                                                                    20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 2.762 0 5 2.239 5 5 s -2.238
+                                                                                                                                                    5 -5 5 c -19.299 0 -35 15.701 -35 35 s 15.701 35 35 35 s 35 -15.701 35 -35 c 0
+                                                                                                                                                    -2.761 2.238 -5 5 -5 s 5 2.239 5 5 C 90 69.813 69.813 90 45 90 z"
                                                     style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,165,16); fill-rule: nonzero; opacity: 1;"
                                                     transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                                             </g>
