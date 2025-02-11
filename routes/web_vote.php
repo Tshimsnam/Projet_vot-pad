@@ -20,3 +20,4 @@ Route::prefix('eval')->group(function () {
 Route::get('/results/{phase}', [VoteController::class,'results'])->name('results');
 
 Route::post('passation', [PhaseController::class, 'passation'])->name('passation');
+Route::get('/votes/{intervenant_id}/{phase_id}', [VoteController::class, 'getVotes']);
