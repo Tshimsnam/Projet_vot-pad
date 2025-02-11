@@ -17,7 +17,8 @@
                         <span class="mr-2">{{ $jury->noms }}</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
 
@@ -54,7 +55,8 @@
                     @php
                         $hasVoted = in_array($item->id, $votedCandidates);
                     @endphp
-                    <div
+                    <div onclick="openModal(this)" data-id="{{ $item->id }}" data-phase="{{ $phase_id }}"
+                        data-intervenant_phase="{{ $item->intervenantPhaseId }}" data-jury="{{ $jury->id }}"
                         class="bg-gray-200 bg-opacity-95 border border-gray-300 border-opacity-90 rounded-lg shadow sm:p-4 dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
                         <div class="flex items-center space-x-4 rtl:space-x-reverse p-2 md:p-0">
                             <div class="flex-shrink-0">
@@ -149,6 +151,20 @@
                 @endforeach
             </div>
         </div>
+        <!-- Modal pour les details de vote -->
+        <div id="voteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h2 class="text-xl font-semibold" id="intervenant"></h2>
+                </div>
+                <div id="modalBody" class="mt-4">
+
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="closeModal()" class="bg-red-500 text-white px-4 py-2 rounded">Fermer</button>
+                </div>
+            </div>
+        </div>
         <div class="pb-5">
             <button id="buttonCheck" data-modal-target="check-modal" data-modal-toggle="check-modal"
                 class="block text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
@@ -200,6 +216,71 @@
         </div>
     </section>
 
+    <!-- Script pour l'affichage du modal des details de vote -->
+    <script>
+        function closeModal() {
+            document.getElementById('voteModal').classList.add('hidden');
+        }
+        function openModal(element) {
+            let intervenant_id = element.getAttribute("data-id");
+            let phase_id = element.getAttribute("data-phase");
+            let intervenant_phase_id = element.getAttribute("data-intervenant_phase");
+            let jury_id = element.getAttribute("data-jury");
+
+            fetch(`/votes/${intervenant_id}/${phase_id}/${intervenant_phase_id}/${jury_id}`)
+                .then(response => response.json())
+                .then(data => {
+
+                    document.getElementById('intervenant').textContent = `${data.intervenant_nom}`;
+
+                    let modalBody = document.getElementById('modalBody');
+                    modalBody.innerHTML = '';
+
+                    let juryCotes = data.juryCotes;
+
+                    if (Object.keys(juryCotes).length > 0) {
+
+                        let criteres = new Set();
+                        for (let jury in juryCotes) {
+                            juryCotes[jury].forEach(vote => criteres.add(vote.critere));
+                        }
+                        criteres = Array.from(criteres);
+
+                        let tableHtml = `<table class="w-full border border-gray-300">
+                                    <thead>
+                                        <tr class="bg-gray-200">`;
+
+                        criteres.forEach(critere => {
+                            tableHtml += `<th class="border px-4 py-2">${critere}</th>`;
+                        });
+
+                        tableHtml += `</tr></thead><tbody>`;
+
+                        for (let jury in juryCotes) {
+                            tableHtml += `<tr>`;
+
+                            criteres.forEach(critere => {
+                                let cote = juryCotes[jury].find(vote => vote.critere === critere);
+                                tableHtml +=
+                                    `<td class="border px-4 py-2 text-center">${cote ? cote.cote : '-'}</td>`;
+                            });
+
+                            tableHtml += `</tr>`;
+                        }
+
+                        tableHtml += `</tbody></table>`;
+                        modalBody.innerHTML = tableHtml;
+                    } else {
+                        modalBody.innerHTML =
+                            `<p class="text-gray-600">Aucune cote attribuée pour cet intervenant.</p>`;
+                    }
+
+
+                    document.getElementById('voteModal').classList.remove('hidden');
+                })
+                .catch(error => console.error("Erreur lors du chargement des votes :", error));
+        }
+    </script>
     <script>
         if (localStorage.getItem("refreshPreviousPage") === "true") {
             console.log('back succes');
