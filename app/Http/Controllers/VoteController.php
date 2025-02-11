@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Jury;
@@ -80,11 +81,11 @@ class VoteController extends Controller
             ->toArray();
 
         $totalCote = DB::table('votes')
-        ->join('intervenant_phases', 'votes.intervenant_phase_id', '=', 'intervenant_phases.id')
-        ->where('jury_phase_id', $jury_id)
-        ->sum('votes.cote');
+            ->join('intervenant_phases', 'votes.intervenant_phase_id', '=', 'intervenant_phases.id')
+            ->where('jury_phase_id', $jury_id)
+            ->sum('votes.cote');
 
-       
+
 
 
 
@@ -339,8 +340,6 @@ class VoteController extends Controller
 
             $sommeByType = $votes->groupBy('jury_type')->map(function ($group) {
                 return $group->sum('cote');
-
-                
             });
 
             $moyenne = 0;
@@ -472,18 +471,17 @@ class VoteController extends Controller
         ]);
     }
 
-}
     public function getVotesForJury($intervenant_id, $phase_id, $intervenant_phase_id, $jury_id)
     {
         $intervenant = Intervenant::find($intervenant_id);
         // requettes
         $juriesByCandidatWithCotes = DB::table('juries')
-        ->join('jury_phases', 'juries.id', '=', 'jury_phases.jury_id')
-        ->join('votes', 'juries.id', '=', 'votes.jury_phase_id')
-        ->join('phase_criteres', function ($join) {
-            $join->on('jury_phases.phase_id', '=', 'phase_criteres.phase_id')
-            ->on('votes.phase_critere_id', '=', 'phase_criteres.critere_id');
-        })
+            ->join('jury_phases', 'juries.id', '=', 'jury_phases.jury_id')
+            ->join('votes', 'juries.id', '=', 'votes.jury_phase_id')
+            ->join('phase_criteres', function ($join) {
+                $join->on('jury_phases.phase_id', '=', 'phase_criteres.phase_id')
+                    ->on('votes.phase_critere_id', '=', 'phase_criteres.critere_id');
+            })
             ->join('criteres', 'phase_criteres.critere_id', '=', 'criteres.id')
             ->where('jury_phases.phase_id', $phase_id)
             ->where('juries.id', $jury_id)
