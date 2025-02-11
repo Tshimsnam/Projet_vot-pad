@@ -154,9 +154,9 @@
                 @endif
                 <div class="space-y-4">
                     @foreach ($criteres as $key => $item)
-                    @php
-                    $cote= number_format($item->ponderation/4,1);
-                    @endphp
+                        @php
+                            $cote = number_format($item->ponderation / 5, 0);
+                        @endphp
                         <div class="px-3 w-full space-y-2">
                             <div
                                 class="px-5 py-2 rounded-xl border bg-white bg-opacity-95 space-y-1 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
@@ -180,13 +180,16 @@
                                                 <span
                                                     class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">0</span>
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">{{ $cote}}
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/5 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">{{ $cote }}
                                                 </span>
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">{{ $cote*2 }}</span>
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/5 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">{{ $cote * 2 }}</span>
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
-                                                    {{ $cote*3 }}</span>
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/5 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
+                                                    {{ $cote * 3 }}</span>
+                                                <span
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-4/5 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
+                                                    {{ $cote * 4 }}</span>
                                                 <span
                                                     class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">({{ $item->ponderation }})</span>
                                             </div>
