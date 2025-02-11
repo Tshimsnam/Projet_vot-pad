@@ -154,6 +154,9 @@
                 @endif
                 <div class="space-y-4">
                     @foreach ($criteres as $key => $item)
+                    @php
+                    $cote= number_format($item->ponderation/4,1);
+                    @endphp
                         <div class="px-3 w-full space-y-2">
                             <div
                                 class="px-5 py-2 rounded-xl border bg-white bg-opacity-95 space-y-1 drop-shadow-xl dark:bg-gray-600 dark:border-gray-600 dark:bg-opacity-95">
@@ -175,17 +178,17 @@
                                             <div
                                                 class="hidden md:flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">Mauvais(0)</span>
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">0</span>
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Assez
-                                                    bien</span>
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">{{ $cote}}
+                                                </span>
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Bien</span>
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-2/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">{{ $cote*2 }}</span>
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">Très
-                                                    Bien</span>
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute start-3/4 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
+                                                    {{ $cote*3 }}</span>
                                                 <span
-                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">Excellent({{ $item->ponderation }})</span>
+                                                    class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">({{ $item->ponderation }})</span>
                                             </div>
                                             <div
                                                 class="flex md:hidden flex-col items-center text-sm text-gray-500 dark:text-gray-400 mt-2">
@@ -204,10 +207,9 @@
                                     </div>
                                     <div class="lg:col-span-1 col-span-4 lg:mt-0 mt-8 flex-1 justify-center items-center {{ strtolower($phase->type) != 'entretien' ? 'hidden' : '' }}"
                                         id="promoDiv">
-                                        <textarea id="comment-{{ $item->id }}" cols="30" rows="5"
-                                            name="comment-{{ $item->id }}"
+                                        <textarea id="comment-{{ $item->id }}" cols="30" rows="5" name="comment-{{ $item->id }}"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Ajoutez le commentaire ici!!!" value="" ></textarea>
+                                            placeholder="Ajoutez le commentaire ici!!!" value=""></textarea>
                                     </div>
                                 </div>
                                 <div class="flex justify-between items-center -pt-6">
