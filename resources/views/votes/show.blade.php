@@ -10,11 +10,31 @@
                 </h2>
             </div>
             <div class="flex items-center absolute right-0">
-                <h2
-                    class="text-xl font-extrabold leading-none tracking-tight flex items-center text-2xl font-semibold dark:text-white">
-                    <img class="w-10 h-10 mr-2 rounded-full" src="{{ asset('img/profil.jpeg') }}" alt="profil">
-                    {{ $jury->noms }}
-                </h2>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open"
+                        class="flex items-center px-4 py-2 text-white bg-gray-800 rounded-lg focus:outline-none">
+                        <img class="w-10 h-10 mr-2 rounded-full" src="{{ asset('img/profil.jpeg') }}" alt="profil">
+                        <span class="mr-2">{{ $jury->noms }}</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <div x-show="open" @click.away="open = false"
+                        class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg dark:bg-gray-700">
+                        <!-- Formulaire de déconnexion -->
+                        <form method="POST" action="{{ route('lougoutvo') }}">
+                            @csrf
+                            <button type="submit"
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600">
+                                Déconnexion
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
 
