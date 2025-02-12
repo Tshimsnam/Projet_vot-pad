@@ -66,8 +66,8 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
                 ]);
 
                 // 🏷️ En-têtes
-                $headers = ['N°', 'Noms', 'Email', 'Téléphone', 'Genre', 'Âge', 'Statut', 'Université', 'Promotion'];
-                $indexs = range('J', 'Z');
+                $headers = ['N°', 'Noms', 'Email', 'Téléphone', 'Genre', 'Âge', 'Statut', 'Université', 'Promotion', 'Commentaires'];
+                $indexs = range('K', 'Z');
 
                 foreach ($headers as $key => $value) {
                     $col = chr(65 + $key);
@@ -104,6 +104,17 @@ class VoteExport implements FromCollection, WithMapping, WithEvents
                     $event->sheet->setCellValue('G' . $row, $intervenant->statut);
                     $event->sheet->setCellValue('H' . $row, $intervenant->universite);
                     $event->sheet->setCellValue('I' . $row, $intervenant->promotion);
+                    $commentsText = '';
+                    // Ajouter chaque commentaire sur une nouvelle ligne
+                    foreach ($intervenant->comments as $comment) {
+                        if ($comment->commentaires != null) {
+                            $commentsText .= $comment->commentaires . "\n";
+                        }
+                    }
+                    // Supprimer le dernier retour à la ligne pour éviter un espace inutile
+                    $commentsText = rtrim($commentsText, "\r");
+                    $event->sheet->getStyle('J' . $row)->getAlignment()->setWrapText(true);
+                    $event->sheet->setCellValue('J' . $row, $commentsText);
 
                     // Ajouter les cotes des jurys
                     foreach ($intervenant->juryCotes as $key => $totalCote) {
